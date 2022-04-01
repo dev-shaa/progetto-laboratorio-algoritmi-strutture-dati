@@ -26,8 +26,6 @@ namespace lasd
     Container &operator=(const Container &other) = delete;
     Container &operator=(Container &&other) noexcept = delete;
 
-    /* ************************************************************************ */
-
     bool operator==(const Container &other) const noexcept = delete;
     bool operator!=(const Container &other) const noexcept = delete;
 
@@ -54,17 +52,14 @@ namespace lasd
     LinearContainer &operator=(const LinearContainer &other) = delete;
     LinearContainer &operator=(LinearContainer &&other) noexcept = delete;
 
-    /* ************************************************************************ */
-
     bool operator==(const LinearContainer &other) const noexcept;
     bool operator!=(const LinearContainer &other) const noexcept;
 
-    /* ************************************************************************ */
-
     virtual Data &operator[](const ulong index) const = 0;
 
-    virtual Data &Front() const;
+    /* ************************************************************************ */
 
+    virtual Data &Front() const;
     virtual Data &Back() const;
   };
 
@@ -81,12 +76,11 @@ namespace lasd
     TestableContainer &operator=(const TestableContainer &other) = delete;
     TestableContainer &operator=(TestableContainer &&other) noexcept = delete;
 
-    /* ************************************************************************ */
-
     bool operator==(const TestableContainer &other) const noexcept = delete;
     bool operator!=(const TestableContainer &other) const noexcept = delete;
 
     /* ************************************************************************ */
+
     virtual bool Exists(const Data &item) const noexcept = 0;
   };
 
@@ -103,12 +97,11 @@ namespace lasd
     MappableContainer &operator=(const MappableContainer &other) = delete;
     MappableContainer &operator=(MappableContainer &&other) noexcept = delete;
 
-    /* ************************************************************************ */
-
     bool operator==(const MappableContainer &other) const noexcept = delete;
     bool operator!=(const MappableContainer &other) const noexcept = delete;
 
     /* ************************************************************************ */
+
     typedef std::function<void(Data &, void *)> MapFunctor;
 
     virtual void Map(MapFunctor, void *) = 0;
@@ -117,7 +110,7 @@ namespace lasd
   /* ************************************************************************** */
 
   template <typename Data>
-  class FoldableContainer : virtual public TestableContainer
+  class FoldableContainer : virtual public TestableContainer<Data>
   {
   public:
     virtual ~FoldableContainer() = default;
@@ -127,8 +120,6 @@ namespace lasd
     FoldableContainer &operator=(const FoldableContainer &other) = delete;
     FoldableContainer &operator=(FoldableContainer &&other) noexcept = delete;
 
-    /* ************************************************************************ */
-
     bool operator==(const FoldableContainer &other) const noexcept = delete;
     bool operator!=(const FoldableContainer &other) const noexcept = delete;
 
@@ -136,7 +127,7 @@ namespace lasd
 
     typedef std::function<void(const Data &, const void *, void *)> FoldFunctor;
 
-    virtual void Fold(FoldFunctor functor, const void *initialValue, void *supportValue) const = 0;
+    virtual void Fold(FoldFunctor functor, const void *initialValue, void *accumulator) const = 0;
 
     /* ************************************************************************ */
 
@@ -146,7 +137,7 @@ namespace lasd
   /* ************************************************************************** */
 
   template <typename Data>
-  class PreOrderMappableContainer : virtual public MappableContainer
+  class PreOrderMappableContainer : virtual public MappableContainer<Data>
   {
   public:
     virtual ~PreOrderMappableContainer() = default;
@@ -156,8 +147,6 @@ namespace lasd
     PreOrderMappableContainer &operator=(const PreOrderMappableContainer &other) = delete;
     PreOrderMappableContainer &operator=(PreOrderMappableContainer &&other) noexcept = delete;
 
-    /* ************************************************************************ */
-
     bool operator==(const PreOrderMappableContainer &other) const noexcept = delete;
     bool operator!=(const PreOrderMappableContainer &other) const noexcept = delete;
 
@@ -165,7 +154,7 @@ namespace lasd
 
     using typename MappableContainer<Data>::MapFunctor;
 
-    virtual void MapPreOrder(MapFunctor functor, void *) = 0;
+    virtual void MapPreOrder(MapFunctor functor, void *) = 0; // TODO: nome della variabile
 
     /* ************************************************************************ */
 
@@ -175,7 +164,7 @@ namespace lasd
   /* ************************************************************************** */
 
   template <typename Data>
-  class PreOrderFoldableContainer : virtual public FoldableContainer
+  class PreOrderFoldableContainer : virtual public FoldableContainer<Data>
   {
   public:
     virtual ~PreOrderFoldableContainer() = default;
@@ -192,19 +181,19 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    using typename MappableContainer<Data>::MapFunctor;
+    using typename FoldableContainer<Data>::FoldFunctor;
 
-    virtual void FoldInOrder(FoldFunctor, const void *, void *) = 0;
+    virtual void FoldPreOrder(FoldFunctor, const void *, void *) const = 0;
 
     /* ************************************************************************ */
 
-    virtual void Fold(FoldFunctor, const void *, void *) override;
+    virtual void Fold(FoldFunctor, const void *, void *) const override;
   };
 
   /* ************************************************************************** */
 
   template <typename Data>
-  class PostOrderMappableContainer : virtual public MappableContainer
+  class PostOrderMappableContainer : virtual public MappableContainer<Data>
   {
   public:
     virtual ~PostOrderMappableContainer() = default;
@@ -214,8 +203,6 @@ namespace lasd
     PostOrderMappableContainer &operator=(const PostOrderMappableContainer &other) = delete;
     PostOrderMappableContainer &operator=(PostOrderMappableContainer &&other) noexcept = delete;
 
-    /* ************************************************************************ */
-
     bool operator==(const PostOrderMappableContainer &other) const noexcept = delete;
     bool operator!=(const PostOrderMappableContainer &other) const noexcept = delete;
 
@@ -223,17 +210,17 @@ namespace lasd
 
     using typename MappableContainer<Data>::MapFunctor;
 
-    virtual void MapPostOrder(MapFunctor, void *) = 0; // NOTE: doveva essere chiamato preorder?
+    virtual void MapPostOrder(MapFunctor functor, void *) = 0;
 
     /* ************************************************************************ */
 
-    virtual void Map(MapFunctor, void *) override;
+    virtual void Map(MapFunctor functor, void *) override;
   };
 
   /* ************************************************************************** */
 
   template <typename Data>
-  class PostOrderFoldableContainer : FoldableContainer<Data>
+  class PostOrderFoldableContainer : virtual public FoldableContainer<Data>
   {
   public:
     virtual ~PostOrderFoldableContainer() = default;
@@ -250,19 +237,21 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    using typename MappableContainer<Data>::MapFunctor;
+    using typename FoldableContainer<Data>::FoldFunctor;
 
-    virtual void FoldPostOrder(FoldFunctor, const void *, void *) = 0;
+    virtual void FoldPostOrder(FoldFunctor functor, const void *, void *) const = 0;
 
     /* ************************************************************************ */
 
-    virtual void Fold(FoldFunctor, const void *, void *) override;
+    virtual void Fold(FoldFunctor functor, const void *, void *) const override;
   };
 
   /* ************************************************************************** */
 
+  // TODO:
+
   template <typename Data>
-  class InOrderMappableContainer : MappableContainer<Data>
+  class InOrderMappableContainer : virtual public MappableContainer<Data>
   {
 
   private:
@@ -307,7 +296,7 @@ namespace lasd
   /* ************************************************************************** */
 
   template <typename Data>
-  class InOrderFoldableContainer : virtual public FoldableContainer
+  class InOrderFoldableContainer : virtual public FoldableContainer<Data>
   {
 
   private:
@@ -332,7 +321,7 @@ namespace lasd
 
     // using typename MappableContainer<Data>::MapFunctor;
 
-    // type FoldInOrder(arguments) specifiers;
+    // type FoldPreOrder(arguments) specifiers;
 
     /* ************************************************************************ */
 

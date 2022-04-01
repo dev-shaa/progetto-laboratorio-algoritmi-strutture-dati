@@ -59,19 +59,18 @@ namespace lasd
 
     /* ************************************************************************** */
 
-    // TODO: cleanup
     template <typename Data>
-    void setFlagIfValuesAreEquals(const Data &data, const void *value, void *exists)
+    void setFlagIfEqual(const Data &data, const void *otherData, void *flag)
     {
-        if (data == *((Data *)value))
-            *((bool *)exists) = true;
+        if (data == *((Data *)otherData))
+            *((bool *)flag) = true;
     }
 
     template <typename Data>
     bool FoldableContainer<Data>::Exists(const Data &item) const noexcept
     {
         bool exists = false;
-        Fold(&setFlagIfValuesAreEquals<Data>, &item, &exists);
+        Fold(&setFlagIfEqual<Data>, &item, &exists);
         return exists;
     }
 
@@ -80,9 +79,31 @@ namespace lasd
     template <typename Data>
     void PreOrderMappableContainer<Data>::Map(MapFunctor fun, void *par)
     {
-        MapInOrder(fun, par);
+        MapPreOrder(fun, par);
     }
 
     /* ************************************************************************** */
+
+    template <typename Data>
+    void PreOrderFoldableContainer<Data>::Fold(FoldFunctor fun, const void *foo, void *accumulator) const
+    {
+        FoldPreOrder(fun, foo, accumulator);
+    }
+
+    /* ************************************************************************** */
+
+    template <typename Data>
+    void PostOrderMappableContainer<Data>::Map(MapFunctor fun, void *par)
+    {
+        MapPostOrder(fun, par);
+    }
+
+    /* ************************************************************************** */
+
+    template <typename Data>
+    void PostOrderFoldableContainer<Data>::Fold(FoldFunctor fun, const void *foo, void *accumulator) const
+    {
+        FoldPostOrder(fun, foo, accumulator);
+    }
 
 }
