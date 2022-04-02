@@ -1,4 +1,3 @@
-
 #ifndef LIST_HPP
 #define LIST_HPP
 
@@ -14,15 +13,13 @@ namespace lasd
   /* ************************************************************************** */
 
   template <typename Data>
-  class List : LinearContainer<Data>, PreOrderMappableContainer<Data>, PostOrderMappableContainer<Data>, PreOrderFoldableContainer<Data>, PostOrderFoldableContainer<Data>
+  class List : virtual public LinearContainer<Data>,
+               virtual public PreOrderMappableContainer<Data>,
+               virtual public PostOrderMappableContainer<Data>,
+               virtual public PreOrderFoldableContainer<Data>,
+               virtual public PostOrderFoldableContainer<Data>
   {
-
-  private:
-    // ...
-
   protected:
-    // using LinearContainer<Data>::???;
-
     struct Node
     {
       Data item;
@@ -30,31 +27,17 @@ namespace lasd
 
       /* ********************************************************************** */
 
-      // Specific constructors
-      // ...
+      Node(Data &item, Node *next);
+
+      Node(const Node &other);
+      Node(Node &&other) noexcept;
+
+      virtual ~Node() = default;
 
       /* ********************************************************************** */
 
-      // Copy constructor
-      // ...
-
-      // Move constructor
-      // ...
-
-      /* ********************************************************************** */
-
-      // Destructor
-      // ...
-
-      /* ********************************************************************** */
-
-      // Comparison operators
-      // ...
-
-      bool operator==(const Node &other)
-      {
-        return item == other.item;
-      }
+      bool operator==(const Node &other) const;
+      bool operator!=(const Node &other) const;
 
       /* ********************************************************************** */
 
@@ -63,134 +46,68 @@ namespace lasd
       // ...
     };
 
-    // ...
+    using LinearContainer<Data>::size;
+
+    Node *start = nullptr;
+    Node *end = nullptr;
 
   public:
-    // Default constructor
-    // List() specifiers;
-    List()
-    {
-    }
+    List() = default;
+    List(const LinearContainer<Data> &linearContainer);
+
+    List(const List &list);
+    List(List &&list) noexcept;
+
+    virtual ~List();
 
     /* ************************************************************************ */
 
-    // Specific constructor
-    // List(argument) specifiers; // A list obtained from a LinearContainer
-    List(LinearContainer linearContainer)
-    {
-    }
+    List &operator=(const List &other);
+    List &operator=(List &&other) noexcept;
+
+    bool operator==(const List &other) const noexcept;
+    bool operator!=(const List &other) const noexcept;
+
+    Data &operator[](const ulong index) const override;
 
     /* ************************************************************************ */
 
-    // Copy constructor
-    // List(argument) specifiers;
+    void InsertAtFront(Data item); // copy of the value
+    // void InsertAtFront(Data &item); // move of the value
+    void RemoveFromFront();
+    Data &FrontNRemove();
 
-    // Move constructor
-    // List(argument) specifiers;
-
-    /* ************************************************************************ */
-
-    // Destructor
-    // ~List() specifiers;
+    void InsertAtBack(Data &item); // copy
+    void InsertAtBack(Data item);  // move
 
     /* ************************************************************************ */
 
-    // Copy assignment
-    // type operator=(argument) specifiers;
+    // TODO: override front and back
 
-    // Move assignment
-    // type operator=(argument) specifiers;
+    Data &Front() const override;
+    Data &Back() const override;
 
-    /* ************************************************************************ */
-
-    // Comparison operators
-    // type operator==(argument) specifiers;
-    // type operator!=(argument) specifiers;
+    void Clear() override;
 
     /* ************************************************************************ */
 
-    // Specific member functions
+    using typename MappableContainer<Data>::MapFunctor;
 
-    // type InsertAtFront(argument) specifier; // Copy of the value
-    // type InsertAtFront(argument) specifier; // Move of the value
-    // type RemoveFromFront() specifier; // (must throw std::length_error when empty)
-    // type FrontNRemove() specifier; // (must throw std::length_error when empty)
-
-    // type InsertAtBack(argument) specifier; // Copy of the value
-    // type InsertAtBack(argument) specifier; // Move of the value
+    void Map(MapFunctor, void *) override;
+    void MapPreOrder(MapFunctor functor, void *) override;
+    void MapPostOrder(MapFunctor functor, void *) override;
 
     /* ************************************************************************ */
 
-    // Specific member functions (inherited from Container)
+    using typename FoldableContainer<Data>::FoldFunctor;
 
-    // type Clear() specifiers; // Override Container member
-
-    void Clear() override
-    {
-    }
-
-    /* ************************************************************************ */
-
-    Data operator[](uint index) override throw std::out_of_range
-    {
-      if (index < 0 || index > Size())
-        throw std::out_of_range("index out of range");
-
-      // TODO: implementa
-    }
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from MappableContainer)
-
-    // using typename MappableContainer<Data>::MapFunctor;
-
-    // type Map(arguments) specifiers; // Override MappableContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from PreOrderMappableContainer)
-
-    // type MapPreOrder(arguments) specifiers; // Override PreOrderMappableContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from PostOrderMappableContainer)
-
-    // type MapPostOrder(arguments) specifiers; // Override PostOrderMappableContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from FoldableContainer)
-
-    // using typename FoldableContainer<Data>::FoldFunctor;
-
-    // type Fold(arguments) specifiers; // Override FoldableContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from PreOrderFoldableContainer)
-
-    // type FoldPreOrder(arguments) specifiers; // Override FoldableContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from PostOrderFoldableContainer)
-
-    // type FoldPostOrder(arguments) specifiers; // Override FoldableContainer member
+    void Fold(FoldFunctor functor, const void *, void *accumulator) const override;
+    void FoldPreOrder(FoldFunctor functor, const void *, void *accumulator) const override;
+    void FoldPostOrder(FoldFunctor functor, const void *, void *accumulator) const override;
 
   protected:
-    // Auxiliary member functions (for PreOrderMappableContainer & PostOrderMappableContainer)
-
-    // type MapPreOrder(arguments) specifiers; // Accessory function executing from one point of the list onwards
-    // type MapPostOrder(arguments) specifiers; // Accessory function executing from one point of the list onwards
-
-    /* ************************************************************************ */
-
-    // Auxiliary member functions (for PreOrderFoldableContainer & PostOrderFoldableContainer)
-
-    // type FoldPreOrder(arguments) specifiers; // Accessory function executing from one point of the list onwards
-    // type FoldPostOrder(arguments) specifiers; // Accessory function executing from one point of the list onwards
+    void AuxMapPostOrder(MapFunctor functor, void *par, Node *node);
+    void AuxFoldPostOrder(FoldFunctor functor, const void *par, void *accumulator, Node *node) const;
   };
 
   /* ************************************************************************** */
