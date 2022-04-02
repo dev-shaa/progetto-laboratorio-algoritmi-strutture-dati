@@ -107,7 +107,14 @@ namespace lasd
         }
         else
         {
-            // TODO: implementa
+            ulong elementsToCopyCount = size < this->size ? size : this->size;
+            Data *newArray = new Data[size];
+            std::copy(array, array + elementsToCopyCount, newArray);
+
+            delete[] array;
+            array = newArray;
+
+            this->size = size;
         }
     }
 
