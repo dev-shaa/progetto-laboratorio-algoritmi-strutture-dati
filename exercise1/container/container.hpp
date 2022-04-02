@@ -31,9 +31,9 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    virtual bool Empty() const noexcept;
+    inline virtual bool Empty() const noexcept;
 
-    virtual ulong Size() const noexcept;
+    inline virtual ulong Size() const noexcept;
 
     virtual void Clear() = 0;
   };

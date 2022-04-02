@@ -3,12 +3,12 @@ namespace lasd
 
     /* ************************************************************************** */
 
-    bool Container::Empty() const noexcept
+    inline bool Container::Empty() const noexcept
     {
         return size == 0;
     }
 
-    ulong Container::Size() const noexcept
+    inline ulong Container::Size() const noexcept
     {
         return size;
     }
