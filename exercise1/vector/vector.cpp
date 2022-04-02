@@ -108,12 +108,12 @@ namespace lasd
         else
         {
             ulong elementsToCopyCount = size < this->size ? size : this->size;
+
             Data *newArray = new Data[size];
             std::copy(array, array + elementsToCopyCount, newArray);
 
             delete[] array;
             array = newArray;
-
             this->size = size;
         }
     }
@@ -123,6 +123,7 @@ namespace lasd
     {
         delete[] array;
         size = 0;
+        array = nullptr;
     }
 
     /* ************************************************************************** */
@@ -143,7 +144,7 @@ namespace lasd
     template <typename Data>
     void Vector<Data>::MapPostOrder(MapFunctor functor, void *par)
     {
-        for (ulong i = size - 1; i >= 0; i--)
+        for (ulong i = size; i > 0; --i)
             functor(array[i], par);
     }
 
@@ -165,7 +166,7 @@ namespace lasd
     template <typename Data>
     void Vector<Data>::FoldPostOrder(FoldFunctor functor, const void *foo, void *accumulator) const
     {
-        for (ulong i = size - 1; i >= 0; i--)
+        for (ulong i = size; i > 0; --i)
             functor(array[i], foo, accumulator);
     }
 
