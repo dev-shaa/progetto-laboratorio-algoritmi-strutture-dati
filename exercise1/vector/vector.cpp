@@ -144,8 +144,13 @@ namespace lasd
     template <typename Data>
     void Vector<Data>::MapPostOrder(MapFunctor functor, void *par)
     {
-        for (ulong i = size; i > 0; --i)
+        ulong i = size;
+
+        while (i > 0)
+        {
+            i--;
             functor(array[i], par);
+        }
     }
 
     /* ************************************************************************** */
@@ -166,8 +171,13 @@ namespace lasd
     template <typename Data>
     void Vector<Data>::FoldPostOrder(FoldFunctor functor, const void *foo, void *accumulator) const
     {
-        for (ulong i = size; i > 0; --i)
+        ulong i = size;
+
+        while (i > 0)
+        {
+            i--;
             functor(array[i], foo, accumulator);
+        }
     }
 
     /* ************************************************************************** */
