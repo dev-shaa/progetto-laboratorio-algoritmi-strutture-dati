@@ -32,9 +32,7 @@ namespace lasd
     /* ************************************************************************ */
 
     inline virtual bool Empty() const noexcept;
-
     inline virtual ulong Size() const noexcept;
-
     virtual void Clear() = 0;
   };
 
@@ -81,7 +79,7 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    virtual bool Exists(const Data &item) const noexcept = 0;
+    virtual bool Exists(const Data &value) const noexcept = 0;
   };
 
   /* ************************************************************************** */
@@ -104,7 +102,7 @@ namespace lasd
 
     typedef std::function<void(Data &, void *)> MapFunctor;
 
-    virtual void Map(MapFunctor, void *) = 0;
+    virtual void Map(MapFunctor functor, void *par) = 0;
   };
 
   /* ************************************************************************** */
@@ -127,11 +125,11 @@ namespace lasd
 
     typedef std::function<void(const Data &, const void *, void *)> FoldFunctor;
 
-    virtual void Fold(FoldFunctor functor, const void *initialValue, void *accumulator) const = 0;
+    virtual void Fold(FoldFunctor functor, const void *par, void *accumulator) const = 0;
 
     /* ************************************************************************ */
 
-    virtual bool Exists(const Data &item) const noexcept override;
+    virtual bool Exists(const Data &value) const noexcept override;
   };
 
   /* ************************************************************************** */
@@ -154,11 +152,8 @@ namespace lasd
 
     using typename MappableContainer<Data>::MapFunctor;
 
-    virtual void MapPreOrder(MapFunctor functor, void *) = 0; // TODO: nome della variabile
-
-    /* ************************************************************************ */
-
-    virtual void Map(MapFunctor, void *) override;
+    virtual void MapPreOrder(MapFunctor functor, void *par) = 0;
+    virtual void Map(MapFunctor functor, void *par) override;
   };
 
   /* ************************************************************************** */
@@ -183,11 +178,8 @@ namespace lasd
 
     using typename FoldableContainer<Data>::FoldFunctor;
 
-    virtual void FoldPreOrder(FoldFunctor, const void *, void *) const = 0;
-
-    /* ************************************************************************ */
-
-    virtual void Fold(FoldFunctor, const void *, void *) const override;
+    virtual void FoldPreOrder(FoldFunctor functor, const void *par, void *accumulator) const = 0;
+    virtual void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
   };
 
   /* ************************************************************************** */
@@ -210,11 +202,8 @@ namespace lasd
 
     using typename MappableContainer<Data>::MapFunctor;
 
-    virtual void MapPostOrder(MapFunctor functor, void *) = 0;
-
-    /* ************************************************************************ */
-
-    virtual void Map(MapFunctor functor, void *) override;
+    virtual void MapPostOrder(MapFunctor functor, void *par) = 0;
+    virtual void Map(MapFunctor functor, void *par) override;
   };
 
   /* ************************************************************************** */
@@ -239,58 +228,32 @@ namespace lasd
 
     using typename FoldableContainer<Data>::FoldFunctor;
 
-    virtual void FoldPostOrder(FoldFunctor functor, const void *, void *) const = 0;
-
-    /* ************************************************************************ */
-
-    virtual void Fold(FoldFunctor functor, const void *, void *) const override;
+    virtual void FoldPostOrder(FoldFunctor functor, const void *par, void *accumulator) const = 0;
+    virtual void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
   };
 
   /* ************************************************************************** */
 
-  // TODO:
-
   template <typename Data>
   class InOrderMappableContainer : virtual public MappableContainer<Data>
   {
-
-  private:
-    // ...
-
-  protected:
-    // ...
-
   public:
-    // Destructor
-    // ~InOrderMappableContainer() specifiers
+    virtual ~InOrderMappableContainer() = default;
 
     /* ************************************************************************ */
 
-    // Copy assignment
-    // type operator=(argument); // Copy assignment of abstract types should not be possible.
+    InOrderMappableContainer &operator=(const InOrderMappableContainer &other) = delete;
+    InOrderMappableContainer &operator=(InOrderMappableContainer &&other) noexcept = delete;
 
-    // Move assignment
-    // type operator=(argument); // Move assignment of abstract types should not be possible.
-
-    /* ************************************************************************ */
-
-    // Comparison operators
-    // type operator==(argument) specifiers; // Comparison of abstract types might not be possible.
-    // type operator!=(argument) specifiers; // Comparison of abstract types might not be possible.
+    bool operator==(const InOrderMappableContainer &other) const noexcept = delete;
+    bool operator!=(const InOrderMappableContainer &other) const noexcept = delete;
 
     /* ************************************************************************ */
 
-    // Specific member functions
+    using typename MappableContainer<Data>::MapFunctor;
 
-    // using typename MappableContainer<Data>::MapFunctor;
-
-    // type MapInOrder(arguments) specifiers;
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from MappableContainer)
-
-    // type Map(argument) specifiers; // Override MappableContainer member
+    virtual void MapInOrder(MapFunctor functor, void *par) = 0;
+    virtual void Map(MapFunctor functor, void *par) override;
   };
 
   /* ************************************************************************** */
@@ -298,36 +261,25 @@ namespace lasd
   template <typename Data>
   class InOrderFoldableContainer : virtual public FoldableContainer<Data>
   {
-
-  private:
-    // ...
-
-  protected:
-    // ...
-
   public:
-    // Destructor
-    // ~InOrderFoldableContainer() specifiers
+    virtual ~InOrderFoldableContainer() = default;
 
     /* ************************************************************************ */
 
-    // Comparison operators
-    // type operator==(argument) specifiers; // Comparison of abstract types might not be possible.
-    // type operator!=(argument) specifiers; // Comparison of abstract types might not be possible.
+    InOrderFoldableContainer &operator=(const InOrderFoldableContainer &other) = delete;
+    InOrderFoldableContainer &operator=(InOrderFoldableContainer &&other) noexcept = delete;
 
     /* ************************************************************************ */
 
-    // Specific member functions
-
-    // using typename MappableContainer<Data>::MapFunctor;
-
-    // type FoldPreOrder(arguments) specifiers;
+    bool operator==(const InOrderFoldableContainer &other) const noexcept = delete;
+    bool operator!=(const InOrderFoldableContainer &other) const noexcept = delete;
 
     /* ************************************************************************ */
 
-    // Specific member functions (inherited from FoldableContainer)
+    using typename FoldableContainer<Data>::FoldFunctor;
 
-    // type Fold(argument) specifiers; // Override FoldableContainer member
+    virtual void FoldInOrder(FoldFunctor functor, const void *par, void *accumulator) const = 0;
+    virtual void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
   };
 
   /* ************************************************************************** */
@@ -350,11 +302,8 @@ namespace lasd
 
     using typename MappableContainer<Data>::MapFunctor;
 
-    virtual void MapBreadth(MapFunctor functor, void *) = 0;
-
-    /* ************************************************************************ */
-
-    virtual void Map(MapFunctor functor, void *) override;
+    virtual void MapBreadth(MapFunctor functor, void *par) = 0;
+    virtual void Map(MapFunctor functor, void *par) override;
   };
 
   /* ************************************************************************** */
@@ -377,11 +326,8 @@ namespace lasd
 
     using typename FoldableContainer<Data>::FoldFunctor;
 
-    virtual void FoldBreadth(FoldFunctor functor, const void *, void *) const = 0;
-
-    /* ************************************************************************ */
-
-    virtual void Fold(FoldFunctor functor, const void *, void *) const override;
+    virtual void FoldBreadth(FoldFunctor functor, const void *par, void *accumulator) const = 0;
+    virtual void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
   };
 
   /* ************************************************************************** */

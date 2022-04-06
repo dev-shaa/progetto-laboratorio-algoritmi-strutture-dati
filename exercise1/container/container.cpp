@@ -60,66 +60,82 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    void setFlagIfEqual(const Data &data, const void *otherData, void *flag)
+    void setFlagIfEqual(const Data &value, const void *otherData, void *flag)
     {
-        if (data == *((Data *)otherData))
+        if (value == *((Data *)otherData))
             *((bool *)flag) = true;
     }
 
     template <typename Data>
-    bool FoldableContainer<Data>::Exists(const Data &item) const noexcept
+    bool FoldableContainer<Data>::Exists(const Data &value) const noexcept
     {
         bool exists = false;
-        Fold(&setFlagIfEqual<Data>, &item, &exists);
+        Fold(&setFlagIfEqual<Data>, &value, &exists);
         return exists;
     }
 
     /* ************************************************************************** */
 
     template <typename Data>
-    void PreOrderMappableContainer<Data>::Map(MapFunctor fun, void *par)
+    void PreOrderMappableContainer<Data>::Map(MapFunctor functor, void *par)
     {
-        MapPreOrder(fun, par);
+        MapPreOrder(functor, par);
     }
 
     /* ************************************************************************** */
 
     template <typename Data>
-    void PreOrderFoldableContainer<Data>::Fold(FoldFunctor fun, const void *foo, void *accumulator) const
+    void PreOrderFoldableContainer<Data>::Fold(FoldFunctor functor, const void *par, void *accumulator) const
     {
-        FoldPreOrder(fun, foo, accumulator);
+        FoldPreOrder(functor, par, accumulator);
     }
 
     /* ************************************************************************** */
 
     template <typename Data>
-    void PostOrderMappableContainer<Data>::Map(MapFunctor fun, void *par)
+    void PostOrderMappableContainer<Data>::Map(MapFunctor functor, void *par)
     {
-        MapPostOrder(fun, par);
+        MapPostOrder(functor, par);
     }
 
     /* ************************************************************************** */
 
     template <typename Data>
-    void PostOrderFoldableContainer<Data>::Fold(FoldFunctor fun, const void *foo, void *accumulator) const
+    void PostOrderFoldableContainer<Data>::Fold(FoldFunctor functor, const void *par, void *accumulator) const
     {
-        FoldPostOrder(fun, foo, accumulator);
+        FoldPostOrder(functor, par, accumulator);
     }
 
     /* ************************************************************************** */
 
     template <typename Data>
-    void BreadthMappableContainer<Data>::Map(MapFunctor fun, void *par)
+    void InOrderMappableContainer<Data>::Map(MapFunctor functor, void *par)
     {
-        MapBreadth(fun, par);
+        MapInOrder(functor, par);
     }
 
     /* ************************************************************************** */
 
     template <typename Data>
-    void BreadthFoldableContainer<Data>::Fold(FoldFunctor fun, const void *foo, void *accumulator) const
+    void InOrderFoldableContainer<Data>::Fold(FoldFunctor functor, const void *par, void *accumulator) const
     {
-        FoldBreadth(fun, foo, accumulator);
+        FoldInOrder(functor, par, accumulator);
+    }
+
+    /* ************************************************************************** */
+
+    template <typename Data>
+    void BreadthMappableContainer<Data>::Map(MapFunctor functor, void *par)
+    {
+        MapBreadth(functor, par);
+    }
+
+    /* ************************************************************************** */
+
+    template <typename Data>
+    void BreadthFoldableContainer<Data>::Fold(FoldFunctor functor, const void *par, void *accumulator) const
+    {
+        FoldBreadth(functor, par, accumulator);
     }
 
 }
