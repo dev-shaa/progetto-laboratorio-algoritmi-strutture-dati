@@ -22,28 +22,27 @@ namespace lasd
   protected:
     struct Node
     {
-      Data item;
-      Node *next;
+      Data value;
+      Node *next = nullptr;
 
       /* ********************************************************************** */
 
-      Node(Data &item, Node *next);
+      Node() = default;
+      Node(const Data &value);
+      Node(Data &&value) noexcept;
 
-      Node(const Node &other);
-      Node(Node &&other) noexcept;
+      Node(const Node &node);
+      Node(Node &&node) noexcept;
 
       virtual ~Node() = default;
 
       /* ********************************************************************** */
 
-      bool operator==(const Node &other) const;
-      bool operator!=(const Node &other) const;
+      Node &operator=(const Node &other);
+      Node &operator=(Node &&other) noexcept;
 
-      /* ********************************************************************** */
-
-      // Specific member functions
-
-      // ...
+      bool operator==(const Node &other) const noexcept;
+      bool operator!=(const Node &other) const noexcept;
     };
 
     using LinearContainer<Data>::size;
@@ -72,17 +71,15 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    void InsertAtFront(Data item); // copy of the value
-    // void InsertAtFront(Data &item); // move of the value
+    void InsertAtFront(const Data &item);     // copy of the value
+    void InsertAtFront(Data &&item) noexcept; // move of the value
     void RemoveFromFront();
     Data &FrontNRemove();
 
-    void InsertAtBack(Data &item); // copy
-    void InsertAtBack(Data item);  // move
+    void InsertAtBack(const Data &item);     // copy
+    void InsertAtBack(Data &&item) noexcept; // move
 
     /* ************************************************************************ */
-
-    // TODO: override front and back
 
     Data &Front() const override;
     Data &Back() const override;

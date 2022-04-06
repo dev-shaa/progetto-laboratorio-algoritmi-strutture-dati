@@ -4,20 +4,63 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    List<Data>::Node::Node(Data &item, Node *next)
+    List<Data>::Node::Node(const Data &value)
     {
-        this->item = item;
-        this->next = next;
+        this->value = value;
     }
 
     template <typename Data>
-    bool List<Data>::Node::operator==(const Node &other) const
+    List<Data>::Node::Node(Data &&value) noexcept
     {
-        return item == other.item && next == other.next;
+        std::swap(this->value, value);
     }
 
     template <typename Data>
-    bool List<Data>::Node::operator!=(const Node &other) const
+    List<Data>::Node::Node(const Node &other)
+    {
+        value = other.value;
+        next = other.next;
+    }
+
+    template <typename Data>
+    List<Data>::Node::Node(Node &&other) noexcept
+    {
+        std::swap(value, other.value);
+        std::swap(value, other.next);
+    }
+
+    template <typename Data>
+    typename List<Data>::Node &List<Data>::Node::operator=(const Node &other)
+    {
+        if (this != &other)
+        {
+            value = other.value;
+            next = other.next;
+        }
+
+        return *this;
+    }
+
+    template <typename Data>
+    typename List<Data>::Node &List<Data>::Node::operator=(Node &&other) noexcept
+    {
+        if (this != &other)
+        {
+            value = std::move(other.value);
+            next = std::move(other.next);
+        }
+
+        return *this;
+    }
+
+    template <typename Data>
+    bool List<Data>::Node::operator==(const Node &other) const noexcept
+    {
+        return value == other.value && *next == *(other.next);
+    }
+
+    template <typename Data>
+    bool List<Data>::Node::operator!=(const Node &other) const noexcept
     {
         return !(*this == other);
     }
@@ -27,14 +70,20 @@ namespace lasd
     template <typename Data>
     List<Data>::List(const LinearContainer<Data> &linearContainer)
     {
-        for (ulong i = linearContainer.Size() - 1; i >= 0; i--)
-            InsertAtFront(linearContainer[i]);
+        for (ulong i = 0; i < linearContainer.Size(); i++)
+            InsertAtBack(linearContainer[i]);
     }
 
     template <typename Data>
-    List<Data>::List(const List &list)
+    List<Data>::List(const List &other)
     {
-        // TODO: implementa
+        Node *current = other.start;
+
+        while (current != nullptr)
+        {
+            InsertAtBack(current->value);
+            current = current->next;
+        }
     }
 
     template <typename Data>
@@ -56,7 +105,13 @@ namespace lasd
     template <typename Data>
     List<Data> &List<Data>::operator=(const List &other)
     {
-        // TODO: copy
+        if (this != &other)
+        {
+            Clear();
+
+            for (Node *temp = other.start; temp != nullptr; temp = temp->next)
+                InsertAtBack(temp->value);
+        }
 
         return *this;
     }
@@ -64,9 +119,12 @@ namespace lasd
     template <typename Data>
     List<Data> &List<Data>::operator=(List &&other) noexcept
     {
-        std::swap(start, other.start);
-        std::swap(end, other.end);
-        std::swap(size, other.size);
+        if (this != &other)
+        {
+            std::swap(start, other.start);
+            std::swap(end, other.end);
+            std::swap(size, other.size);
+        }
 
         return *this;
     }
@@ -74,18 +132,20 @@ namespace lasd
     template <typename Data>
     bool List<Data>::operator==(const List &other) const noexcept
     {
-        // TODO: implementa
-
-        if (size != other.Size())
+        if (size != other.size)
             return false;
 
-        // Node *thisNode;
-        // Node *otherNode;
+        Node *thisNode = start;
+        Node *otherNode = other.start;
 
-        // while (thisNode != nullptr)
-        // {
-        //     /* code */
-        // }
+        while (thisNode != nullptr)
+        {
+            if (thisNode->value != otherNode->value)
+                return false;
+
+            thisNode = thisNode->next;
+            otherNode = otherNode->next;
+        }
 
         return true;
     }
@@ -99,7 +159,7 @@ namespace lasd
     template <typename Data>
     Data &List<Data>::operator[](const ulong index) const
     {
-        if (index > size)
+        if (index >= size)
             throw std::out_of_range("index out of range");
 
         Node *current = start;
@@ -107,7 +167,7 @@ namespace lasd
         for (ulong i = 0; i < index; i++)
             current = current->next;
 
-        return current->item;
+        return current->value;
     }
 
     /* ************************************************************************** */
@@ -115,19 +175,19 @@ namespace lasd
     template <typename Data>
     Data &List<Data>::Front() const
     {
-        if (Container::Empty())
-            throw std::length_error("Can't access front item because container is empty");
+        if (size == 0)
+            throw std::length_error("Can't access front value because container is empty");
 
-        return start->item;
+        return start->value;
     }
 
     template <typename Data>
     Data &List<Data>::Back() const
     {
-        if (Container::Empty())
-            throw std::length_error("Can't access back item because container is empty");
+        if (size == 0)
+            throw std::length_error("Can't access back value because container is empty");
 
-        return end->item;
+        return end->value;
     }
 
     template <typename Data>
@@ -149,60 +209,91 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    void List<Data>::InsertAtFront(Data item)
+    void List<Data>::InsertAtFront(const Data &value)
     {
-        // TODO: copy
-        start = new Node(item, start);
+        Node *newStart = new Node(value);
+        newStart->next = start;
+        start = newStart;
+
+        if (start->next == nullptr)
+            end = start;
+
         size++;
     }
 
-    // template <typename Data>
-    // void List<Data>::InsertAtFront(Data &item)
-    // {
-    //     // TODO: move
-    // }
+    template <typename Data>
+    void List<Data>::InsertAtFront(Data &&value) noexcept
+    {
+        Node *newStart = new Node(std::move(value));
+        newStart->next = start;
+        start = newStart;
+
+        if (start->next == nullptr)
+            end = start;
+
+        size++;
+    }
 
     template <typename Data>
     void List<Data>::RemoveFromFront()
     {
-        if (Container::Empty())
-            throw std::length_error("can't remove front item because container is empty");
+        if (size == 0)
+            throw std::length_error("can't remove front value because container is empty");
 
         Node *next = start->next;
         delete start;
         start = next;
+
+        size--;
     }
 
     template <typename Data>
     Data &List<Data>::FrontNRemove()
     {
-        if (Container::Empty())
-            throw std::length_error("can't remove front item because container is empty");
+        if (size == 0)
+            throw std::length_error("can't remove front value because container is empty");
+
+        Data *value = new Data(std::move(Front()));
 
         Node *temp = start;
-        Data &item = start->item;
-
         start = start->next;
         delete temp;
 
-        return item;
+        size--;
+
+        return *value;
     }
 
     template <typename Data>
-    void List<Data>::InsertAtBack(Data &item)
+    void List<Data>::InsertAtBack(const Data &value)
     {
-        Node *newEnd = new Node(item, nullptr);
-        end->next = newEnd;
-        end = newEnd;
+        if (size == 0)
+        {
+            InsertAtFront(value);
+        }
+        else
+        {
+            Node *newNode = new Node(value);
+            end->next = newNode;
+            end = newNode;
+            size++;
+        }
     }
 
     template <typename Data>
-    void List<Data>::InsertAtBack(Data item)
+    void List<Data>::InsertAtBack(Data &&value) noexcept
     {
-        if (Container::Empty())
-            InsertAtFront(item);
-
-        size++;
+        if (size == 0)
+        {
+            InsertAtFront(value);
+        }
+        else
+        {
+            Node *newNode = new Node(std::move(value));
+            end->next = newNode;
+            end = newNode;
+            size++;
+        }
     }
 
     /* ************************************************************************** */
@@ -220,7 +311,7 @@ namespace lasd
 
         while (current != nullptr)
         {
-            functor(current->item, par);
+            functor(current->value, par);
             current = current->next;
         }
     }
@@ -238,7 +329,7 @@ namespace lasd
             return;
 
         AuxMapPostOrder(functor, par, node->next);
-        functor(node->item, par);
+        functor(node->value, par);
     }
 
     /* ************************************************************************** */
@@ -256,7 +347,7 @@ namespace lasd
 
         while (current != nullptr)
         {
-            functor(current->item, foo, accumulator);
+            functor(current->value, foo, accumulator);
             current = current->next;
         }
     }
@@ -274,7 +365,7 @@ namespace lasd
             return;
 
         AuxFoldPostOrder(functor, par, accumulator, node->next);
-        functor(node->item, par, accumulator);
+        functor(node->value, par, accumulator);
     }
 
     /* ************************************************************************** */

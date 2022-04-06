@@ -335,44 +335,26 @@ namespace lasd
   template <typename Data>
   class BreadthMappableContainer : MappableContainer<Data>
   {
-
-  private:
-    // ...
-
-  protected:
-    // ...
-
   public:
-    // Destructor
-    // ~BreadthMappableContainer() specifiers
+    virtual ~BreadthMappableContainer() = default;
 
     /* ************************************************************************ */
 
-    // Copy assignment
-    // type operator=(argument); // Copy assignment of abstract types should not be possible.
+    BreadthMappableContainer &operator=(const BreadthMappableContainer &other) = delete;
+    BreadthMappableContainer &operator=(BreadthMappableContainer &&other) noexcept = delete;
 
-    // Move assignment
-    // type operator=(argument); // Move assignment of abstract types should not be possible.
-
-    /* ************************************************************************ */
-
-    // Comparison operators
-    // type operator==(argument) specifiers; // Comparison of abstract types might not be possible.
-    // type operator!=(argument) specifiers; // Comparison of abstract types might not be possible.
+    bool operator==(const BreadthMappableContainer &other) const noexcept = delete;
+    bool operator!=(const BreadthMappableContainer &other) const noexcept = delete;
 
     /* ************************************************************************ */
 
-    // Specific member functions
+    using typename MappableContainer<Data>::MapFunctor;
 
-    // using typename MappableContainer<Data>::MapFunctor;
-
-    // type MapBreadth(arguments) specifiers;
+    virtual void MapBreadth(MapFunctor functor, void *) = 0;
 
     /* ************************************************************************ */
 
-    // Specific member functions (inherited from MappableContainer)
-
-    // type Map(argument) specifiers; // Override MappableContainer member
+    virtual void Map(MapFunctor functor, void *) override;
   };
 
   /* ************************************************************************** */
@@ -380,44 +362,26 @@ namespace lasd
   template <typename Data>
   class BreadthFoldableContainer : FoldableContainer<Data>
   {
-
-  private:
-    // ...
-
-  protected:
-    // ...
-
   public:
-    // Destructor
-    // ~BreadthFoldableContainer() specifiers
+    virtual ~BreadthFoldableContainer() = default;
 
     /* ************************************************************************ */
 
-    // Copy assignment
-    // type operator=(argument); // Copy assignment of abstract types should not be possible.
+    BreadthFoldableContainer &operator=(const BreadthFoldableContainer &other) = delete;
+    BreadthFoldableContainer &operator=(BreadthFoldableContainer &&other) noexcept = delete;
 
-    // Move assignment
-    // type operator=(argument); // Move assignment of abstract types should not be possible.
-
-    /* ************************************************************************ */
-
-    // Comparison operators
-    // type operator==(argument) specifiers; // Comparison of abstract types might not be possible.
-    // type operator!=(argument) specifiers; // Comparison of abstract types might not be possible.
+    bool operator==(const BreadthFoldableContainer &other) const noexcept = delete;
+    bool operator!=(const BreadthFoldableContainer &other) const noexcept = delete;
 
     /* ************************************************************************ */
 
-    // Specific member functions
+    using typename FoldableContainer<Data>::FoldFunctor;
 
-    // using typename FoldableContainer<Data>::FoldFunctor;
-
-    // type FoldBreadth(arguments) specifiers;
+    virtual void FoldBreadth(FoldFunctor functor, const void *, void *) const = 0;
 
     /* ************************************************************************ */
 
-    // Specific member functions (inherited from FoldableContainer)
-
-    // type Fold(argument) specifiers; // Override FoldableContainer member
+    virtual void Fold(FoldFunctor functor, const void *, void *) const override;
   };
 
   /* ************************************************************************** */

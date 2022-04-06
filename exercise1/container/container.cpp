@@ -106,4 +106,20 @@ namespace lasd
         FoldPostOrder(fun, foo, accumulator);
     }
 
+    /* ************************************************************************** */
+
+    template <typename Data>
+    void BreadthMappableContainer<Data>::Map(MapFunctor fun, void *par)
+    {
+        MapBreadth(fun, par);
+    }
+
+    /* ************************************************************************** */
+
+    template <typename Data>
+    void BreadthFoldableContainer<Data>::Fold(FoldFunctor fun, const void *foo, void *accumulator) const
+    {
+        FoldBreadth(fun, foo, accumulator);
+    }
+
 }
