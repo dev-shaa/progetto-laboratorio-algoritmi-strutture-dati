@@ -53,16 +53,16 @@ namespace lasd
     using typename MappableContainer<Data>::MapFunctor;
 
     void Map(MapFunctor, void *) override;
-    void MapPreOrder(MapFunctor functor, void *) override;
-    void MapPostOrder(MapFunctor functor, void *) override;
+    void MapPreOrder(MapFunctor functor, void *par) override;
+    void MapPostOrder(MapFunctor functor, void *par) override;
 
     /* ************************************************************************ */
 
     using typename FoldableContainer<Data>::FoldFunctor;
 
-    void Fold(FoldFunctor functor, const void *, void *accumulator) const override;
-    void FoldPreOrder(FoldFunctor functor, const void *, void *accumulator) const override;
-    void FoldPostOrder(FoldFunctor functor, const void *, void *accumulator) const override;
+    void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
+    void FoldPreOrder(FoldFunctor functor, const void *par, void *accumulator) const override;
+    void FoldPostOrder(FoldFunctor functor, const void *par, void *accumulator) const override;
   };
 
   /* ************************************************************************** */

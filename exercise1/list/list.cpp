@@ -285,7 +285,7 @@ namespace lasd
     {
         if (size == 0)
         {
-            InsertAtFront(value);
+            InsertAtFront(std::move(value));
         }
         else
         {

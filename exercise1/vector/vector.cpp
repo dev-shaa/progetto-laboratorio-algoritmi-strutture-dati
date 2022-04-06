@@ -46,10 +46,13 @@ namespace lasd
     template <typename Data>
     Vector<Data> &Vector<Data>::operator=(const Vector &other)
     {
-        size = other.size;
-        delete[] array;
-        array = new Data[size];
-        std::copy(other.array, other.array + size, array);
+        if (this != &other)
+        {
+            delete[] array;
+            size = other.size;
+            array = new Data[size];
+            std::copy(other.array, other.array + size, array);
+        }
 
         return *this;
     }
@@ -57,8 +60,11 @@ namespace lasd
     template <typename Data>
     Vector<Data> &Vector<Data>::operator=(Vector &&other) noexcept
     {
-        std::swap(size, other.size);
-        std::swap(array, other.array);
+        if (this != &other)
+        {
+            std::swap(size, other.size);
+            std::swap(array, other.array);
+        }
 
         return *this;
     }
