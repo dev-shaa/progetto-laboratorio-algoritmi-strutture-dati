@@ -26,45 +26,14 @@ using namespace std;
 // - calcolo di una delle seguenti funzioni (effettuato per mezzo delle funzioni fold) e relativa visualizzazione del risultato:
 //      - somma per gli interi minori di n, prodotto per i float maggiori di n, e concatenazione per le stringhe con lunghezza minore o uguale a n, dove n è un parametro dato dall’utente in ingresso;
 // - applicazione di una delle seguenti funzioni a tutti gli elementi: 2n per gli interi, n^2 per i float, e “uppercase” per le stringhe.
-
 // Da un opportuno menu, dovrà essere inoltre possibile operare sulla struttura scelta attraverso
 // le funzioni di libreria di cui ai punti (4) e (5). Infine, è necessario prevedere l’accesso alla
 // funzionalità di test prevista dal docente.
 
-int get_random_int()
-{
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist(1, 100);
-
-    return dist(rng);
-}
-
-// float get_random_float()
-// {
-//     std::random_device dev;
-//     std::mt19937 rng(dev());
-//     std::uniform_real_distribution<std::mt19937::result_type> dist(1, 1000);
-
-//     return dist(rng);
-// }
-
-std::string random_string()
-{
-    std::string str("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-
-    std::random_device rd;
-    std::mt19937 generator(rd());
-
-    std::shuffle(str.begin(), str.end(), generator);
-
-    return str.substr(0, 32); // assumes 32 < number of characters in str
-}
-
 template <typename Data>
 void check_exists(const lasd::TestableContainer<Data> &container, const Data &value)
 {
-    std::cout << "Value " << value << " is " << (container.Exists(value) ? "" : "not") << " contained." << std::endl;
+    std::cout << value << " is" << (container.Exists(value) ? " " : " not ") << "contained." << std::endl;
 }
 
 template <typename Data>
@@ -81,44 +50,31 @@ void print_all(lasd::MappableContainer<Data> &container)
     std::cout << "]" << endl;
 }
 
-void intListTest()
-{
-}
-
-void floatListTest()
-{
-}
-
-void stringListTest()
-{
-}
-
-void listTest(std::string dataType, ulong size)
-{
-}
-
 template <typename Data>
-void vectorTest(ulong size, std::function<void(Data &, void *)> randomGenerator, std::function<void(Data &, void *)> mapFunctor, std::function<void(const Data &, const void *, void *)> foldFunctor)
+void vectorTest(ulong size, std::function<void(Data &, void *)> randomGenerator, std::function<Data(string)> dataGetter, std::function<void(Data &, void *)> mapFunctor, std::function<void(const Data &, const void *, void *)> foldFunctor)
 {
     lasd::Vector<Data> vec(size);
-    std::string in, arg;
+    std::string command, arg;
 
     vec.Map(randomGenerator, nullptr);
+
+    std::cout << "available commands:\n- show \t| [all/front/back/index]\n- check \t| [value]\n- resize \t| [new size]\n- map \t| 2*n for integers, n^2 for floats and uppercase for strings)\n- fold\n- cancel" << std::endl;
 
     do
     {
         std::cout << ">";
-        std::cin >> in;
+        std::cin >> command;
 
-        if (in == "exit")
-            break;
-
-        if (in == "show")
+        try
         {
-            std::cin >> arg;
-
-            try
+            if (command == "cancel")
             {
+                break;
+            }
+            else if (command == "show")
+            {
+                std::cin >> arg;
+
                 if (arg == "all")
                     print_all(vec);
                 else if (arg == "front")
@@ -128,36 +84,44 @@ void vectorTest(ulong size, std::function<void(Data &, void *)> randomGenerator,
                 else
                     std::cout << vec[std::stoul(arg)] << std::endl;
             }
-            catch (const std::exception &e)
+            else if (command == "check")
             {
-                std::cerr << e.what() << std::endl;
+                std::cin >> arg;
+                Data value = dataGetter(arg);
+                check_exists<Data>(vec, value);
+            }
+            else if (command == "resize")
+            {
+                std::cin >> arg;
+                ulong value = std::stoul(arg);
+                vec.Resize(value);
+            }
+            else if (command == "map")
+            {
+                vec.Map(mapFunctor, nullptr);
+            }
+            else if (command == "fold")
+            {
+                // int sum = 0;
+                // vec.Fold(foldFunctor, (void *)vec.Size(), (void *)&sum);
             }
         }
-        else if (in == "check")
+        catch (const std::exception &e)
         {
-            std::cin >> arg;
-
-            int value = std::stoi(arg);
-            check_exists(vec, value);
+            std::cerr << e.what() << '\n';
         }
-        else if (in == "resize")
-        {
-            std::cin >> arg;
-
-            ulong value = std::stoul(arg);
-            vec.Resize(value);
-        }
-        else if (in == "map")
-        {
-            vec.Map(mapFunctor, nullptr);
-        }
-        else if (in == "fold")
-        {
-            int sum = 0;
-            vec.Fold(foldFunctor, (void *)vec.Size(), (void *)&sum);
-        }
-
     } while (true);
+}
+
+#pragma region ints
+
+int get_random_int()
+{
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(1, 100);
+
+    return dist(rng);
 }
 
 void int_rand_aux(int &value, void *_)
@@ -170,19 +134,69 @@ void int_map_aux(int &value, void *_)
     value *= 2;
 }
 
-void int_fold_aux(const int &value, const void *n, void *accumulator)
+void int_fold_aux(const int &value, const void *n, void *sum)
 {
     if (value < *((int *)n))
-        *((int *)accumulator) += value;
+        *((int *)sum) += value;
 }
 
-void floatVectorTest(ulong size)
+int string_to_int(std::string value)
 {
+    return std::stoi(value);
 }
 
-void stringVectorTest(ulong size)
+#pragma endregion
+
+#pragma region floats
+
+float get_random_float()
 {
+    // TODO: implementa
+    return 0;
 }
+
+#pragma endregion
+
+#pragma region strings
+
+std::string get_random_string()
+{
+    std::string str("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+
+    std::random_device rd;
+    std::mt19937 generator(rd());
+
+    std::shuffle(str.begin(), str.end(), generator);
+
+    return str.substr(0, 16); // assumes 32 < number of characters in str
+}
+
+void string_rand_aux(string &value, void *_)
+{
+    value = get_random_string();
+}
+
+void string_map_aux(string &value, void *_)
+{
+    // uppercase
+
+    transform(value.begin(), value.end(), value.begin(), ::toupper);
+}
+
+void string_fold_aux(const string &value, const void *n, void *concatenation)
+{
+    // concatenazione per le stringhe con lunghezza minore o uguale a n
+
+    if (value.size() <= *((int *)n))
+        (*(string *)concatenation) += value;
+}
+
+string return_self(string value)
+{
+    return value;
+}
+
+#pragma endregion
 
 void myTest()
 {
@@ -203,18 +217,18 @@ void myTest()
         if (containerType == VECTOR_INPUT)
         {
             if (dataType == INT_INPUT)
-                vectorTest<int>(size, &int_rand_aux, &int_map_aux, &int_fold_aux);
-            else if (dataType == FLOAT_INPUT)
-                floatVectorTest(size);
+                vectorTest<int>(size, &int_rand_aux, &string_to_int, &int_map_aux, &int_fold_aux);
             else if (dataType == STRING_INPUT)
-                stringVectorTest(size);
+                vectorTest<string>(size, &string_rand_aux, &return_self, &string_map_aux, &string_fold_aux);
+            // else if (dataType == STRING_INPUT)
+            // stringVectorTest(size);
         }
-        else if (containerType == LIST_INPUT)
-            listTest(dataType, size);
-        else
-        {
-            std::cout << "Please insert a valid input" << std::endl;
-            validInput = false;
-        }
+        // else if (containerType == LIST_INPUT)
+        //     listTest(dataType, size);
+        // else
+        // {
+        //     std::cout << "Please insert a valid input" << std::endl;
+        //     validInput = false;
+        // }
     }
 }
