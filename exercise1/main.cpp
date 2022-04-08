@@ -9,29 +9,28 @@
 
 /* ************************************************************************** */
 
-#define EXIT_INPUT "exit"
-
 int main()
 {
   std::cout << "Lasd Libraries 2022" << std::endl;
-
-  // TODO: chiedi all'utente cosa eseguire
-
   std::string command;
 
   do
   {
-    // std::cout << "Type 'custom', 'lasd' or 'exit'" << std::endl;
-    // std::cin >> command;
+    std::cout << std::endl
+              << "Type one of the following commands:" << std::endl
+              << "- 'default' to execute the standard automated test" << std::endl
+              << "- 'custom' to execute the custom test" << std::endl
+              << "- 'exit' to close the program" << std::endl
+              << ">";
 
-    myTest();
+    std::cin >> command;
 
-    // if (command == "custom")
-    //   myTest();
-    // else if (command == "lasd")
-    //   lasdtest(); // To call in the menu of your library test!
+    if (command == "default")
+      lasdtest();
+    else if (command == "custom")
+      myTest();
 
-  } while (command != EXIT_INPUT);
+  } while (command != "exit");
 
   return 0;
 }
