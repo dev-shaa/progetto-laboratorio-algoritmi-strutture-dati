@@ -6,25 +6,20 @@ namespace lasd
     template <typename Data>
     Vector<Data>::Vector(ulong size)
     {
-        array = new Data[size];
+        array = new Data[size]{};
         this->size = size;
     }
 
     template <typename Data>
-    Vector<Data>::Vector(LinearContainer<Data> &container)
+    Vector<Data>::Vector(LinearContainer<Data> &container) : Vector(container.Size())
     {
-        size = container.Size();
-        array = new Data[size]{};
-
         for (ulong i = 0; i < size; i++)
             array[i] = container[i];
     }
 
     template <typename Data>
-    Vector<Data>::Vector(const Vector &other)
+    Vector<Data>::Vector(const Vector &other) : Vector(other.size)
     {
-        size = other.size;
-        array = new Data[size];
         std::copy(other.array, other.array + size, array);
     }
 
@@ -49,8 +44,8 @@ namespace lasd
         if (this != &other)
         {
             delete[] array;
+            array = new Data[other.size];
             size = other.size;
-            array = new Data[size];
             std::copy(other.array, other.array + size, array);
         }
 

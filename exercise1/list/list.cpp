@@ -136,20 +136,6 @@ namespace lasd
             return false;
 
         return *start == *(other.start);
-
-        // Node *thisNode = start;
-        // Node *otherNode = other.start;
-
-        // while (thisNode != nullptr)
-        // {
-        //     if (thisNode->value != otherNode->value)
-        //         return false;
-
-        //     thisNode = thisNode->next;
-        //     otherNode = otherNode->next;
-        // }
-
-        // return true;
     }
 
     template <typename Data>
@@ -162,7 +148,7 @@ namespace lasd
     Data &List<Data>::operator[](const ulong index) const
     {
         if (index >= size)
-            throw std::out_of_range("index out of range");
+            throw std::out_of_range("index " + std::to_string(index) + " out of range (" + std::to_string(size) + ")");
 
         Node *current = start;
 
@@ -178,7 +164,7 @@ namespace lasd
     Data &List<Data>::Front() const
     {
         if (size == 0)
-            throw std::length_error("Can't access front value because container is empty");
+            throw std::length_error("can't access front value because container is empty");
 
         return start->value;
     }
@@ -187,7 +173,7 @@ namespace lasd
     Data &List<Data>::Back() const
     {
         if (size == 0)
-            throw std::length_error("Can't access back value because container is empty");
+            throw std::length_error("can't access back value because container is empty");
 
         return end->value;
     }
