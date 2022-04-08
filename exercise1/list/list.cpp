@@ -56,7 +56,7 @@ namespace lasd
     template <typename Data>
     bool List<Data>::Node::operator==(const Node &other) const noexcept
     {
-        return value == other.value && *next == *(other.next);
+        return value == other.value && ((next == nullptr && other.next == nullptr) || *next == *(other.next));
     }
 
     template <typename Data>
@@ -135,19 +135,21 @@ namespace lasd
         if (size != other.size)
             return false;
 
-        Node *thisNode = start;
-        Node *otherNode = other.start;
+        return *start == *(other.start);
 
-        while (thisNode != nullptr)
-        {
-            if (thisNode->value != otherNode->value)
-                return false;
+        // Node *thisNode = start;
+        // Node *otherNode = other.start;
 
-            thisNode = thisNode->next;
-            otherNode = otherNode->next;
-        }
+        // while (thisNode != nullptr)
+        // {
+        //     if (thisNode->value != otherNode->value)
+        //         return false;
 
-        return true;
+        //     thisNode = thisNode->next;
+        //     otherNode = otherNode->next;
+        // }
+
+        // return true;
     }
 
     template <typename Data>

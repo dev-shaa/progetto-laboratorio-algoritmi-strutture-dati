@@ -71,13 +71,13 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    void InsertAtFront(const Data &item);     // copy of the value
-    void InsertAtFront(Data &&item) noexcept; // move of the value
+    void InsertAtFront(const Data &item);
+    void InsertAtFront(Data &&item) noexcept;
     void RemoveFromFront();
     Data &FrontNRemove();
 
-    void InsertAtBack(const Data &item);     // copy
-    void InsertAtBack(Data &&item) noexcept; // move
+    void InsertAtBack(const Data &item);
+    void InsertAtBack(Data &&item) noexcept;
 
     /* ************************************************************************ */
 

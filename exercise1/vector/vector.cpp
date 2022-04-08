@@ -14,7 +14,7 @@ namespace lasd
     Vector<Data>::Vector(LinearContainer<Data> &container)
     {
         size = container.Size();
-        array = new Data[size];
+        array = new Data[size]{};
 
         for (ulong i = 0; i < size; i++)
             array[i] = container[i];
@@ -96,8 +96,8 @@ namespace lasd
     template <typename Data>
     Data &Vector<Data>::operator[](const ulong index) const
     {
-        if (index > size)
-            throw std::out_of_range("index out of range");
+        if (index >= size)
+            throw std::out_of_range("index " + std::to_string(index) + " out of range (" + std::to_string(size) + ")");
 
         return array[index];
     }
@@ -107,6 +107,9 @@ namespace lasd
     template <typename Data>
     void Vector<Data>::Resize(const ulong size)
     {
+        if (this->size == size)
+            return;
+
         if (size == 0)
         {
             Clear();
@@ -115,7 +118,7 @@ namespace lasd
         {
             ulong elementsToCopyCount = size < this->size ? size : this->size;
 
-            Data *newArray = new Data[size];
+            Data *newArray = new Data[size]{};
             std::copy(array, array + elementsToCopyCount, newArray);
 
             delete[] array;
