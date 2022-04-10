@@ -9,93 +9,57 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class StackVec {
-                  // Must extend Stack<Data>,
-                  //             Vector<Data>
+  template <typename Data>
+  class StackVec : virtual public Stack<Data>, virtual protected Vector<Data>
+  {
 
-private:
+  protected:
+    ulong capacity = 0;
+    ulong size = 0;
 
-  // ...
+  public:
+    StackVec();
+    StackVec(const LinearContainer<Data> &container);
 
-protected:
+    StackVec(const StackVec &list);
+    StackVec(StackVec &&list) noexcept;
 
-  // using Vector<Data>::???;
+    virtual ~StackVec() = default;
 
-  // ...
+    /* ************************************************************************ */
 
-public:
+    StackVec &operator=(const StackVec &other);
+    StackVec &operator=(StackVec &&other) noexcept;
 
-  // Default constructor
-  // StackVec() specifier;
+    bool operator==(const StackVec &other) const noexcept;
+    bool operator!=(const StackVec &other) const noexcept;
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Specific constructor
-  // StackVec(argument) specifiers; // A stack obtained from a LinearContainer
+    const Data &Top() const override; // returns top but unmodifiable
+    Data &Top() override;
+    void Pop() override;
+    Data &TopNPop() override;
+    void Push(const Data &value) override;
+    void Push(Data &&value) noexcept override;
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Copy constructor
-  // StackVec(argument);
+    inline virtual bool Empty() const noexcept override;
+    inline virtual ulong Size() const noexcept override;
+    void Clear();
 
-  // Move constructor
-  // StackVec(argument);
+  protected:
+    void Expand();
+    void Reduce();
+  };
 
-  /* ************************************************************************ */
-
-  // Destructor
-  // ~StackVec() specifier;
-
-  /* ************************************************************************ */
-
-  // Copy assignment
-  // type operator=(argument);
-
-  // Move assignment
-  // type operator=(argument);
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Stack)
-
-  // type Top() specifiers; // Override Stack member (constant version; must throw std::length_error when empty)
-  // type Top() specifiers; // Override Stack member (must throw std::length_error when empty)
-  // type Pop() specifiers; // Override Stack member (must throw std::length_error when empty)
-  // type TopNPop() specifiers; // Override Stack member (must throw std::length_error when empty)
-  // type Push(argument) specifiers; // Override Stack member (copy of the value)
-  // type Push(argument) specifiers; // Override Stack member (move of the value)
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Container)
-
-  // type Empty() specifiers; // Override Container member
-
-  // type Size() specifiers; // Override Container member
-
-  // type Clear() specifiers; // Override Container member
-
-protected:
-
-  // Auxiliary member functions
-
-  // type Expand() specifiers;
-  // type Reduce() specifiers;
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 

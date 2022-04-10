@@ -8,55 +8,36 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class Stack {
-              // Must extend Container
+  template <typename Data>
+  class Stack : virtual public Container
+  {
+  public:
+    virtual ~Stack() = default;
 
-private:
+    /* ************************************************************************ */
 
-  // ...
+    Stack &operator=(const Stack &other) = delete;
+    Stack &operator=(Stack &&other) noexcept = delete;
 
-protected:
+    bool operator==(const Stack &other) const noexcept = delete;
+    bool operator!=(const Stack &other) const noexcept = delete;
 
-  // ...
+    /* ************************************************************************ */
 
-public:
+    virtual const Data &Top() const = 0; // returns top but unmodifiable
+    virtual Data &Top() = 0;
+    virtual void Pop() = 0;
+    virtual Data &TopNPop() = 0;
+    virtual void Push(const Data &value) = 0;
+    virtual void Push(Data &&value) = 0;
+  };
 
-  // Destructor
-  // ~Stack() specifiers
-
-  /* ************************************************************************ */
-
-  // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types should not be possible.
-
-  // Move assignment
-  // type operator=(argument); // Move assignment of abstract types should not be possible.
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types might not be possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types might not be possible.
-
-  /* ************************************************************************ */
-
-  // Specific member functions
-
-  // type Top() specifiers; // (constant version; concrete function must throw std::length_error when empty)
-  // type Top() specifiers; // (concrete function must throw std::length_error when empty)
-  // type Pop() specifiers; // (concrete function must throw std::length_error when empty)
-  // type TopNPop() specifiers; // (concrete function must throw std::length_error when empty)
-  // type Push(argument) specifiers; // Copy of the value
-  // type Push(argument) specifiers; // Move of the value
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 
