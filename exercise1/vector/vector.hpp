@@ -26,7 +26,7 @@ namespace lasd
   public:
     Vector() = default;
     Vector(ulong size);
-    Vector(LinearContainer<Data> &container);
+    Vector(const LinearContainer<Data> &container);
 
     Vector(const Vector &other);
     Vector(Vector &&other) noexcept;
