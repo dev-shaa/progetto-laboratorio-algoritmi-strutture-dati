@@ -8,55 +8,36 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class Queue {
-              // Must extend Container
+  template <typename Data>
+  class Queue : virtual public Container
+  {
+  public:
+    virtual ~Queue() = default;
 
-private:
+    /* ************************************************************************ */
 
-  // ...
+    virtual Queue &operator=(const Queue &other) = delete;
+    virtual Queue &operator=(Queue &&other) noexcept = delete;
 
-protected:
+    bool operator==(const Queue &other) const noexcept = delete;
+    bool operator!=(const Queue &other) const noexcept = delete;
 
-  // ...
+    /* ************************************************************************ */
 
-public:
+    virtual const Data &Head() const = 0; // returns top but unmodifiable
+    virtual Data &Head() = 0;
+    virtual void Dequeue() = 0;
+    virtual Data &HeadNDequeue() = 0;
+    virtual void Enqueue(const Data &value) = 0;
+    virtual void Enqueue(Data &&value) = 0;
+  };
 
-  // Destructor
-  // ~Queue() specifiers
-
-  /* ************************************************************************ */
-
-  // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types should not be possible.
-
-  // Move assignment
-  // type operator=(argument); // Move assignment of abstract types should not be possible.
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types might not be possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types might not be possible.
-
-  /* ************************************************************************ */
-
-  // Specific member functions
-
-  // type Head() specifiers; // (constant version; concrete function must throw std::length_error when empty)
-  // type Head() specifiers; // (concrete function must throw std::length_error when empty)
-  // type Dequeue() specifiers; // (concrete function must throw std::length_error when empty)
-  // type HeadNDequeue() specifiers; // (concrete function must throw std::length_error when empty)
-  // type Enqueue(argument) specifiers; // Copy of the value
-  // type Enqueue(argument) specifiers; // Move of the value
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 

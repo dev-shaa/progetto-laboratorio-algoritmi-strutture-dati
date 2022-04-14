@@ -9,82 +9,50 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class QueueLst {
-                  // Must extend Queue<Data>,
-                  //             List<Data>
+  template <typename Data>
+  class QueueLst : virtual public Queue<Data>, virtual protected List<Data>
+  {
+  protected:
+    using List<Data>::start;
+    using List<Data>::size;
 
-private:
+  public:
+    QueueLst();
+    QueueLst(const LinearContainer<Data> &container);
 
-  // ...
+    QueueLst(const QueueLst &other);
+    QueueLst(QueueLst &&other) noexcept;
 
-protected:
+    virtual ~QueueLst() = default;
 
-  // using List<Data>::???;
+    /* ************************************************************************ */
 
-  // ...
+    QueueLst &operator=(const QueueLst &other);
+    QueueLst &operator=(QueueLst &&other) noexcept;
 
-public:
+    bool operator==(const QueueLst &other) const noexcept;
+    bool operator!=(const QueueLst &other) const noexcept;
 
-  // Default constructor
-  // QueueLst() specifier;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    const Data &Head() const override; // returns top but unmodifiable
+    Data &Head() override;
+    void Dequeue() override;
+    Data &HeadNDequeue() override;
+    void Enqueue(const Data &value) override;
+    void Enqueue(Data &&value) override;
 
-  // Specific constructor
-  // QueueLst(argument) specifiers; // A queue obtained from a LinearContainer
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    void Clear() override;
+  };
 
-  // Copy constructor
-  // QueueLst(argument);
-
-  // Move constructor
-  // QueueLst(argument);
-
-  /* ************************************************************************ */
-
-  // Destructor
-  // ~QueueLst() specifier;
-
-  /* ************************************************************************ */
-
-  // Copy assignment
-  // type operator=(argument);
-
-  // Move assignment
-  // type operator=(argument);
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Queue)
-
-  // type Head() specifiers; // Override Queue member (constant version; must throw std::length_error when empty)
-  // type Head() specifiers; // Override Queue member (must throw std::length_error when empty)
-  // type Dequeue() specifiers; // Override Queue member (must throw std::length_error when empty)
-  // type HeadNDequeue() specifiers; // Override Queue member (must throw std::length_error when empty)
-  // type Enqueue(argument) specifiers; // Override Queue member (copy of the value)
-  // type Enqueue(argument) specifiers; // Override Queue member (move of the value)
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Container)
-
-  // type Clear() specifiers; // Override Container member
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 
