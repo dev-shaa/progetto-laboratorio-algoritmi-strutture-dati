@@ -25,8 +25,8 @@ namespace lasd
     StackLst() = default;
     StackLst(const LinearContainer<Data> &container);
 
-    StackLst(const StackLst &list);
-    StackLst(StackLst &&list) noexcept;
+    StackLst(const StackLst &other);
+    StackLst(StackLst &&other) noexcept;
 
     virtual ~StackLst() = default;
 

@@ -15,11 +15,25 @@ namespace lasd
     }
 
     template <typename Data>
-    StackLst<Data>::StackLst(StackLst &&other) noexcept : List<Data>(other)
+    StackLst<Data>::StackLst(StackLst &&other) noexcept : List<Data>(std::move(other))
     {
     }
 
     /* ************************************************************************** */
+
+    template <typename Data>
+    StackLst<Data> &StackLst<Data>::operator=(const StackLst &other)
+    {
+        List<Data>::operator=(other);
+        return *this;
+    }
+
+    template <typename Data>
+    StackLst<Data> &StackLst<Data>::operator=(StackLst &&other) noexcept
+    {
+        List<Data>::operator=(std::move(other));
+        return *this;
+    }
 
     template <typename Data>
     bool StackLst<Data>::operator==(const StackLst &other) const noexcept
@@ -71,9 +85,15 @@ namespace lasd
     template <typename Data>
     void StackLst<Data>::Push(Data &&value) noexcept
     {
-        List<Data>::InsertAtFront(value);
+        List<Data>::InsertAtFront(std::move(value));
     }
 
     /* ************************************************************************** */
+
+    template <typename Data>
+    void StackLst<Data>::Clear()
+    {
+        List<Data>::Clear();
+    }
 
 }

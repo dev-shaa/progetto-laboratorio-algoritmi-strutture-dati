@@ -19,8 +19,9 @@ namespace lasd
   {
 
   protected:
-    ulong capacity = 0;
-    ulong size = 0;
+    using Vector<Data>::array;
+    using Vector<Data>::size;
+    ulong top;
 
   public:
     StackVec();
@@ -55,8 +56,8 @@ namespace lasd
     void Clear();
 
   protected:
-    void Expand();
-    void Reduce();
+    void TryExpand();
+    void TryReduce();
   };
 
   /* ************************************************************************** */

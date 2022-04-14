@@ -7,21 +7,64 @@ namespace lasd
     template <typename Data>
     StackVec<Data>::StackVec() : Vector<Data>(8)
     {
+        top = -1;
     }
 
     template <typename Data>
     StackVec<Data>::StackVec(const LinearContainer<Data> &container) : Vector<Data>(container)
     {
+        top = container.Size() - 1;
     }
 
     template <typename Data>
     StackVec<Data>::StackVec(const StackVec &other) : Vector<Data>(other)
     {
+        top = other.top;
     }
 
     template <typename Data>
     StackVec<Data>::StackVec(StackVec &&other) noexcept : Vector<Data>(other)
     {
+        std::swap(top, other.top);
+    }
+
+    /* ************************************************************************** */
+
+    template <typename Data>
+    StackVec<Data> &StackVec<Data>::operator=(const StackVec &other)
+    {
+        Vector<Data>::operator=(other);
+        top = other.top;
+        return *this;
+    }
+
+    template <typename Data>
+    StackVec<Data> &StackVec<Data>::operator=(StackVec &&other) noexcept
+    {
+        Vector<Data>::operator=(std::move(other));
+        std::swap(top, other.top);
+        return *this;
+    }
+
+    template <typename Data>
+    bool StackVec<Data>::operator==(const StackVec &other) const noexcept
+    {
+        if (top != other.top)
+            return false;
+
+        for (ulong i = 0; i <= top; i++)
+        {
+            if (array[i] != other.array[i])
+                return false;
+        }
+
+        return true;
+    }
+
+    template <typename Data>
+    bool StackVec<Data>::operator!=(const StackVec &other) const noexcept
+    {
+        return !(*this == other);
     }
 
     /* ************************************************************************** */
@@ -32,7 +75,7 @@ namespace lasd
         if (Empty())
             throw std::length_error("can't get top because stack is empty");
 
-        return Vector<Data>::operator[](size - 1);
+        return array[top];
     }
 
     template <typename Data>
@@ -41,64 +84,62 @@ namespace lasd
         if (Empty())
             throw std::length_error("can't get top because stack is empty");
 
-        return Vector<Data>::operator[](size - 1);
+        return array[top];
     }
 
     template <typename Data>
     void StackVec<Data>::Pop()
     {
         if (Empty())
-            throw new std::length_error("can't pop because stack is empty");
+            throw std::length_error("can't pop because stack is empty");
 
-        size--; // doesn't actually remove the element
-        Reduce();
+        top--;
+        TryReduce();
     }
 
     template <typename Data>
     Data &StackVec<Data>::TopNPop()
     {
-        Data *top = &Top();
-        Pop();
-        return *top;
+        if (Empty())
+            throw std::length_error("can't pop because stack is empty");
+
+        Data *value = &array[top--];
+        TryReduce();
+
+        return *value;
     }
 
     template <typename Data>
     void StackVec<Data>::Push(const Data &value)
     {
-        if (size + 1 == capacity)
-            Expand();
-
-        Vector<Data>::operator[](size) = value;
-        size++;
+        TryExpand();
+        array[++top] = value;
     }
 
     template <typename Data>
     void StackVec<Data>::Push(Data &&value) noexcept
     {
-        if (size + 1 == capacity)
-            Expand();
-
-        Vector<Data>::operator[](size) = std::move(value);
-        size++;
+        TryExpand();
+        array[++top] = std::move(value);
     }
 
     template <typename Data>
-    void StackVec<Data>::Expand()
+    void StackVec<Data>::TryExpand()
     {
-        Vector<Data>::Resize(2 * capacity);
-        capacity *= 2;
+        // when expanding, double the capacity of the old array
+
+        if (top == size)
+            Vector<Data>::Resize(size * 2);
     }
 
     template <typename Data>
-    void StackVec<Data>::Reduce()
+    void StackVec<Data>::TryReduce()
     {
-        // NOTE: when should we reduce?
+        // the array capacity should be twice the number of elements in it
+        // to reduce, check if the elements are a quarter of the capacity and half it
 
-        if (size > capacity / 4)
-            return;
-
-        Vector<Data>::Resize(capacity / 4);
-        capacity /= 4;
+        if (top < size / 4)
+            Vector<Data>::Resize(size / 2);
     }
 
     /* ************************************************************************** */
@@ -106,21 +147,20 @@ namespace lasd
     template <typename Data>
     inline bool StackVec<Data>::Empty() const noexcept
     {
-        return size == 0;
+        return top == -1;
     }
 
     template <typename Data>
     inline ulong StackVec<Data>::Size() const noexcept
     {
-        return size;
+        return top + 1;
     }
 
     template <typename Data>
     void StackVec<Data>::Clear()
     {
-        Vector<Data>::Clear();
-        size = 0;
-        capacity = 0;
+        top = -1;
+        TryReduce();
     }
 
     /* ************************************************************************** */
