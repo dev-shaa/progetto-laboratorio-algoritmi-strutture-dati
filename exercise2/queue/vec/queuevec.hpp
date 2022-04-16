@@ -20,8 +20,8 @@ namespace lasd
   protected:
     using Vector<Data>::array;
     using Vector<Data>::size;
-    ulong head;
-    ulong tail;
+    ulong head = 1;
+    ulong tail = 0;
 
   public:
     QueueVec();
@@ -56,14 +56,9 @@ namespace lasd
     void Clear();
 
   protected:
-    // Auxiliary member functions
-
-    void Expand();
+    void EnsureCapacity();
     void Reduce();
     bool Full();
-
-    // type Expand() specifiers;
-    // type Reduce() specifiers;
     // type SwapVectors(arguments) specifiers;
   };
 

@@ -2,30 +2,27 @@
 namespace lasd
 {
 
+#define DEFAULT_QUEUE_LENGTH 5
+
     /* ************************************************************************** */
 
     template <typename Data>
-    QueueVec<Data>::QueueVec() : Vector<Data>(5)
+    QueueVec<Data>::QueueVec() : Vector<Data>(DEFAULT_QUEUE_LENGTH)
     {
-        head = 1;
-        tail = 0;
     }
 
     template <typename Data>
-    QueueVec<Data>::QueueVec(const LinearContainer<Data> &container) : Vector<Data>(container.Size() + 1)
+    QueueVec<Data>::QueueVec(const LinearContainer<Data> &container) : Vector<Data>(container.Size() + 1 < DEFAULT_QUEUE_LENGTH ? DEFAULT_QUEUE_LENGTH : container.Size() + 1)
     {
         for (ulong i = 0; i < container.Size(); i++)
-            array[i] = container[i];
-
-        head = 0;
-        tail = container.Size() - 1;
+            Enqueue(container[i]);
     }
 
     template <typename Data>
-    QueueVec<Data>::QueueVec(const QueueVec &other) : Vector<Data>(other.Size() + 1)
+    QueueVec<Data>::QueueVec(const QueueVec &other) : Vector<Data>(other.Size() + 1 < DEFAULT_QUEUE_LENGTH ? DEFAULT_QUEUE_LENGTH : other.Size() + 1)
     {
-        for (ulong i = other.head; i != other.tail; i = (i + 1) % other.size)
-            Enqueue(other.array[i]);
+        for (ulong i = 0; i < other.Size(); i++)
+            Enqueue(other.array[(other.head + i) % other.size]);
     }
 
     template <typename Data>
@@ -40,7 +37,10 @@ namespace lasd
     template <typename Data>
     QueueVec<Data> &QueueVec<Data>::operator=(const QueueVec &other)
     {
-        // TODO: copy implementation
+        Clear();
+
+        for (ulong i = 0; i < other.Size(); i++)
+            Enqueue(other.array[(other.head + i) % other.size]);
 
         return *this;
     }
@@ -58,12 +58,15 @@ namespace lasd
     template <typename Data>
     bool QueueVec<Data>::operator==(const QueueVec &other) const noexcept
     {
-        ulong i = head;
+        if (Size() != other.Size())
+            return false;
 
-        while (i != tail - 1 && array[i] == other.array[i])
-            i = (i + 1) % size;
+        ulong i = 0;
 
-        return i == tail - 1;
+        while (i < Size() && array[(head + i) % size] == other.array[(other.head + i) % other.size])
+            i++;
+
+        return i == Size();
     }
 
     template <typename Data>
@@ -117,7 +120,7 @@ namespace lasd
     template <typename Data>
     void QueueVec<Data>::Enqueue(const Data &value)
     {
-        Expand();
+        EnsureCapacity();
         tail = (tail + 1) % size;
         array[tail] = value;
     }
@@ -125,7 +128,7 @@ namespace lasd
     template <typename Data>
     void QueueVec<Data>::Enqueue(Data &&value)
     {
-        Expand();
+        EnsureCapacity();
         tail = (tail + 1) % size;
         array[tail] = std::move(value);
     }
@@ -147,30 +150,35 @@ namespace lasd
     template <typename Data>
     void QueueVec<Data>::Clear()
     {
+        Vector<Data>::Clear(DEFAULT_QUEUE_LENGTH);
         head = 1;
         tail = 0;
-        Vector<Data>::Resize(5);
     }
 
     /* ************************************************************************** */
 
     template <typename Data>
-    void QueueVec<Data>::Expand()
+    void QueueVec<Data>::EnsureCapacity()
     {
         if (!Full())
             return;
 
-        Data *newArray = new Data[tail * 2 + 1];
+        ulong newTail = 0;
+        ulong newSize = Size() * 2 + 1;
+        Data *newArray = new Data[newSize];
 
-        for (ulong i = head, j = 0; i != tail; i = (i + 1) % size, j++)
-            newArray[j] = array[i];
+        for (ulong i = 0; i < Size(); i++)
+        {
+            newTail++;
+            newArray[newTail] = std::move(array[(head + i) % size]);
+        }
 
         delete[] array;
         array = newArray;
-        size = tail * 2 + 1;
+        size = newSize;
 
-        head = 0;
-        tail = size - 2;
+        head = 1;
+        tail = newTail;
     }
 
     template <typename Data>
