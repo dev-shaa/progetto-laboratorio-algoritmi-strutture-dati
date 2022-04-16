@@ -47,6 +47,7 @@ namespace lasd
 
     void Resize(const ulong size);
     void Clear() override;
+    void Clear(ulong size);
 
     /* ************************************************************************ */
 

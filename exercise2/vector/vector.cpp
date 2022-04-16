@@ -130,6 +130,14 @@ namespace lasd
         array = nullptr;
     }
 
+    template <typename Data>
+    void Vector<Data>::Clear(ulong size)
+    {
+        delete[] array;
+        array = new Data[size];
+        this->size = size;
+    }
+
     /* ************************************************************************** */
 
     template <typename Data>
