@@ -3,7 +3,7 @@
 #include <string>
 #include <random>
 #include <algorithm>
-#include "./utilities.hpp"
+#include "./utilities/utilities.hpp"
 
 #include "../stack/stack.hpp"
 #include "../stack/vec/stackvec.hpp"
