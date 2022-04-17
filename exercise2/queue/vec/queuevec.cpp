@@ -175,7 +175,7 @@ namespace lasd
     template <typename Data>
     inline void QueueVec<Data>::Reduce()
     {
-        if (Size() < size / 4)
+        if (size > DEFAULT_QUEUE_SIZE && Size() < size / 4)
             Resize();
     }
 
