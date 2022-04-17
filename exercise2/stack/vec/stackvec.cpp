@@ -2,10 +2,13 @@
 namespace lasd
 {
 
+#ifndef DEFAULT_STACK_SIZE
+#define DEFAULT_STACK_SIZE 5ul
+
     /* ************************************************************************** */
 
     template <typename Data>
-    StackVec<Data>::StackVec() : Vector<Data>(8)
+    StackVec<Data>::StackVec() : Vector<Data>(DEFAULT_STACK_SIZE)
     {
         top = -1;
     }
@@ -52,13 +55,12 @@ namespace lasd
         if (top != other.top)
             return false;
 
-        for (ulong i = 0; i <= top; i++)
-        {
-            if (array[i] != other.array[i])
-                return false;
-        }
+        ulong i = 0;
 
-        return true;
+        while (i <= top && array[i] == other.array[i])
+            i++;
+
+        return i > top;
     }
 
     template <typename Data>
@@ -81,10 +83,12 @@ namespace lasd
     template <typename Data>
     Data &StackVec<Data>::Top()
     {
-        if (Empty())
-            throw std::length_error("can't get top because stack is empty");
+        return const_cast<Data &>(const_cast<const StackVec<Data> *>(this)->Top());
 
-        return array[top];
+        // if (Empty())
+        //     throw std::length_error("can't get top because stack is empty");
+
+        // return array[top];
     }
 
     template <typename Data>
@@ -126,8 +130,6 @@ namespace lasd
     template <typename Data>
     void StackVec<Data>::TryExpand()
     {
-        // when expanding, double the capacity of the old array
-
         if (top == size)
             Vector<Data>::Resize(size * 2);
     }
@@ -135,9 +137,6 @@ namespace lasd
     template <typename Data>
     void StackVec<Data>::TryReduce()
     {
-        // the array capacity should be twice the number of elements in it
-        // to reduce, check if the elements are a quarter of the capacity and half it
-
         if (top < size / 4)
             Vector<Data>::Resize(size / 2);
     }
@@ -164,5 +163,8 @@ namespace lasd
     }
 
     /* ************************************************************************** */
+
+#undef DEFAULT_STACK_SIZE
+#endif
 
 }

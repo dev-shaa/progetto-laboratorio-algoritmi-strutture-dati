@@ -58,8 +58,8 @@ namespace lasd
   protected:
     void EnsureCapacity();
     void Reduce();
+    void Resize();
     bool Full();
-    // type SwapVectors(arguments) specifiers;
   };
 
   /* ************************************************************************** */
