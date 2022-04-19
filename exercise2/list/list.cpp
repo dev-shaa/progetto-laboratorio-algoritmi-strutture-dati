@@ -77,13 +77,8 @@ namespace lasd
     template <typename Data>
     List<Data>::List(const List &other)
     {
-        Node *current = other.start;
-
-        while (current != nullptr)
-        {
-            InsertAtBack(current->value);
-            current = current->next;
-        }
+        for (Node *temp = other.start; temp != nullptr; temp = temp->next)
+            InsertAtBack(temp->value);
     }
 
     template <typename Data>
@@ -295,13 +290,8 @@ namespace lasd
     template <typename Data>
     void List<Data>::MapPreOrder(MapFunctor functor, void *par)
     {
-        Node *current = start;
-
-        while (current != nullptr)
-        {
-            functor(current->value, par);
-            current = current->next;
-        }
+        for (Node *temp = start; temp != nullptr; temp = temp->next)
+            functor(temp->value, par);
     }
 
     template <typename Data>

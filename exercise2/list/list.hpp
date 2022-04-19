@@ -53,7 +53,6 @@ namespace lasd
   public:
     List() = default;
     List(const LinearContainer<Data> &linearContainer);
-
     List(const List &list);
     List(List &&list) noexcept;
 
@@ -75,7 +74,6 @@ namespace lasd
     void InsertAtFront(Data &&item) noexcept;
     void RemoveFromFront();
     Data &FrontNRemove();
-
     void InsertAtBack(const Data &item);
     void InsertAtBack(Data &&item) noexcept;
 
@@ -83,7 +81,6 @@ namespace lasd
 
     Data &Front() const override;
     Data &Back() const override;
-
     void Clear() override;
 
     /* ************************************************************************ */
@@ -98,9 +95,9 @@ namespace lasd
 
     using typename FoldableContainer<Data>::FoldFunctor;
 
-    void Fold(FoldFunctor functor, const void *, void *accumulator) const override;
-    void FoldPreOrder(FoldFunctor functor, const void *, void *accumulator) const override;
-    void FoldPostOrder(FoldFunctor functor, const void *, void *accumulator) const override;
+    void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
+    void FoldPreOrder(FoldFunctor functor, const void *par, void *accumulator) const override;
+    void FoldPostOrder(FoldFunctor functor, const void *par, void *accumulator) const override;
 
   protected:
     void AuxMapPostOrder(MapFunctor functor, void *par, Node *node);

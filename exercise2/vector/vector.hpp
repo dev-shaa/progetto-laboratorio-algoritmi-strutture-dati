@@ -27,7 +27,6 @@ namespace lasd
     Vector() = default;
     Vector(ulong size);
     Vector(const LinearContainer<Data> &container);
-
     Vector(const Vector &other);
     Vector(Vector &&other) noexcept;
 
@@ -53,7 +52,7 @@ namespace lasd
 
     using typename MappableContainer<Data>::MapFunctor;
 
-    void Map(MapFunctor, void *) override;
+    void Map(MapFunctor functor, void *par) override;
     void MapPreOrder(MapFunctor functor, void *par) override;
     void MapPostOrder(MapFunctor functor, void *par) override;
 

@@ -18,19 +18,15 @@ namespace lasd
     template <typename Data>
     bool LinearContainer<Data>::operator==(const LinearContainer &other) const noexcept
     {
-        if (size != other.size)
+        if (Size() != other.Size())
             return false;
 
         ulong i = 0;
-        bool equals = true;
 
-        while (i < size && equals)
-        {
-            equals = (*this)[i] == other[i];
+        while (i < size && (*this)[i] == other[i])
             i++;
-        }
 
-        return equals;
+        return i == size;
     }
 
     template <typename Data>
@@ -54,7 +50,7 @@ namespace lasd
         if (Empty())
             throw std::length_error("Can't access back item because container is empty");
 
-        return (*this)[size - 1];
+        return (*this)[Size() - 1];
     }
 
     /* ************************************************************************** */

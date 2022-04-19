@@ -43,9 +43,7 @@ namespace lasd
     {
         if (this != &other)
         {
-            delete[] array;
-            array = new Data[other.size];
-            size = other.size;
+            Clear(other.size);
             std::copy(other.array, other.array + size, array);
         }
 
@@ -67,19 +65,7 @@ namespace lasd
     template <typename Data>
     bool Vector<Data>::operator==(const Vector &other) const noexcept
     {
-        if (size != other.size)
-            return false;
-
-        ulong i = 0;
-        bool equals = true;
-
-        while (i < size && equals)
-        {
-            equals = (*this)[i] == other[i];
-            i++;
-        }
-
-        return equals;
+        return LinearContainer<Data>::operator==(other);
     }
 
     template <typename Data>
@@ -111,10 +97,8 @@ namespace lasd
         }
         else
         {
-            ulong elementsToCopyCount = size < this->size ? size : this->size;
-
             Data *newArray = new Data[size]{};
-            std::copy(array, array + elementsToCopyCount, newArray);
+            std::copy(array, array + std::min(this->size, size), newArray);
 
             delete[] array;
             array = newArray;
@@ -133,6 +117,12 @@ namespace lasd
     template <typename Data>
     void Vector<Data>::Clear(ulong size)
     {
+        if (size == 0)
+        {
+            Clear();
+            return;
+        }
+
         delete[] array;
         array = new Data[size];
         this->size = size;
