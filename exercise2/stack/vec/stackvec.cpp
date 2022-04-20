@@ -124,13 +124,13 @@ namespace lasd
     void StackVec<Data>::Push(Data &&value) noexcept
     {
         TryExpand();
-        array[++top] = std::move(value);
+        std::swap(array[++top], value);
     }
 
     template <typename Data>
     void StackVec<Data>::TryExpand()
     {
-        if (top == size)
+        if (top == size - 1)
             Vector<Data>::Resize(size * 2);
     }
 
