@@ -46,8 +46,8 @@ namespace lasd
     {
         if (this != &other)
         {
-            value = std::move(other.value);
-            next = std::move(other.next);
+            std::swap(value, other.value);
+            std::swap(next, other.next);
         }
 
         return *this;
@@ -56,7 +56,7 @@ namespace lasd
     template <typename Data>
     bool List<Data>::Node::operator==(const Node &other) const noexcept
     {
-        return value == other.value && ((next == nullptr && other.next == nullptr) || *next == *(other.next));
+        return value == other.value && ((next == nullptr && other.next == nullptr) || (next != nullptr && other.next != nullptr && *next == *(other.next)));
     }
 
     template <typename Data>
@@ -127,10 +127,7 @@ namespace lasd
     template <typename Data>
     bool List<Data>::operator==(const List &other) const noexcept
     {
-        if (size != other.size)
-            return false;
-
-        return *start == *(other.start);
+        return size == other.size && ((start == nullptr && other.start == nullptr) || *start == *(other.start));
     }
 
     template <typename Data>
@@ -195,6 +192,7 @@ namespace lasd
     void List<Data>::InsertAtFront(const Data &value)
     {
         Node *newStart = new Node(value);
+
         newStart->next = start;
         start = newStart;
 
@@ -208,6 +206,7 @@ namespace lasd
     void List<Data>::InsertAtFront(Data &&value) noexcept
     {
         Node *newStart = new Node(std::move(value));
+
         newStart->next = start;
         start = newStart;
 
@@ -321,13 +320,8 @@ namespace lasd
     template <typename Data>
     void List<Data>::FoldPreOrder(FoldFunctor functor, const void *foo, void *accumulator) const
     {
-        Node *current = start;
-
-        while (current != nullptr)
-        {
-            functor(current->value, foo, accumulator);
-            current = current->next;
-        }
+        for (Node *temp = start; temp != nullptr; temp = temp->next)
+            functor(temp->value, foo, accumulator);
     }
 
     template <typename Data>

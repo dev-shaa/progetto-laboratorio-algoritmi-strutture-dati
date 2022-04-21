@@ -81,14 +81,9 @@ namespace lasd
     }
 
     template <typename Data>
-    Data &StackVec<Data>::Top()
+    inline Data &StackVec<Data>::Top()
     {
         return const_cast<Data &>(const_cast<const StackVec<Data> *>(this)->Top());
-
-        // if (Empty())
-        //     throw std::length_error("can't get top because stack is empty");
-
-        // return array[top];
     }
 
     template <typename Data>

@@ -110,8 +110,8 @@ namespace lasd
     void Vector<Data>::Clear()
     {
         delete[] array;
-        size = 0;
         array = nullptr;
+        size = 0;
     }
 
     template <typename Data>
