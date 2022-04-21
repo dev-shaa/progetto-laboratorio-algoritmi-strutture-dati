@@ -29,7 +29,7 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    virtual const Data &Top() const = 0; // returns top but unmodifiable
+    virtual const Data &Top() const = 0;
     virtual Data &Top() = 0;
     virtual void Pop() = 0;
     virtual Data &TopNPop() = 0;

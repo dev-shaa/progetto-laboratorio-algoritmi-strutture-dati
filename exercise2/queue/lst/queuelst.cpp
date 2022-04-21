@@ -61,9 +61,9 @@ namespace lasd
     }
 
     template <typename Data>
-    Data &QueueLst<Data>::Head()
+    inline Data &QueueLst<Data>::Head()
     {
-        return List<Data>::Front();
+        return const_cast<Data &>(const_cast<const QueueLst<Data> *>(this)->Head());
     }
 
     template <typename Data>

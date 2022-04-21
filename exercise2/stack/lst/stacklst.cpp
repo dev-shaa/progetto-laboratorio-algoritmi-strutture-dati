@@ -61,7 +61,7 @@ namespace lasd
     template <typename Data>
     Data &StackLst<Data>::Top()
     {
-        return List<Data>::Front();
+        return const_cast<Data &>(const_cast<const StackLst<Data> *>(this)->Top());
     }
 
     template <typename Data>
