@@ -6,8 +6,11 @@ namespace lasd
     template <typename Data>
     Vector<Data>::Vector(ulong size)
     {
-        array = new Data[size]{};
-        this->size = size;
+        if (size != 0)
+        {
+            array = new Data[size]{};
+            this->size = size;
+        }
     }
 
     template <typename Data>
@@ -71,7 +74,7 @@ namespace lasd
     template <typename Data>
     bool Vector<Data>::operator!=(const Vector &other) const noexcept
     {
-        return !(*this == other);
+        return LinearContainer<Data>::operator!=(other);
     }
 
     template <typename Data>
