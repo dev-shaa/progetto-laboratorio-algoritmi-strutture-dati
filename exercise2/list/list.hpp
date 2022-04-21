@@ -87,9 +87,9 @@ namespace lasd
 
     using typename MappableContainer<Data>::MapFunctor;
 
-    void Map(MapFunctor, void *) override;
-    void MapPreOrder(MapFunctor functor, void *) override;
-    void MapPostOrder(MapFunctor functor, void *) override;
+    void Map(MapFunctor functor, void *par) override;
+    void MapPreOrder(MapFunctor functor, void *par) override;
+    void MapPostOrder(MapFunctor functor, void *par) override;
 
     /* ************************************************************************ */
 

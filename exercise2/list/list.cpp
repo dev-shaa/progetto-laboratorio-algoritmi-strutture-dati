@@ -133,7 +133,7 @@ namespace lasd
     template <typename Data>
     bool List<Data>::operator!=(const List &other) const noexcept
     {
-        return !(*this == other);
+        return LinearContainer<Data>::operator!=(other);
     }
 
     template <typename Data>
