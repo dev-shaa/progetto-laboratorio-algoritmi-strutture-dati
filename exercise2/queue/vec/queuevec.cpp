@@ -168,7 +168,7 @@ namespace lasd
     template <typename Data>
     inline void QueueVec<Data>::EnsureCapacity()
     {
-        if (Full())
+        if ((tail + 2) % size) == head)
             Resize();
     }
 
@@ -197,12 +197,6 @@ namespace lasd
         array = newArray;
         head = 1;
         tail = newTail;
-    }
-
-    template <typename Data>
-    inline bool QueueVec<Data>::Full()
-    {
-        return ((tail + 2) % size) == head;
     }
 
 #undef DEFAULT_QUEUE_SIZE

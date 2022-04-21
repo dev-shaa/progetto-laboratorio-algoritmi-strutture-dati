@@ -59,7 +59,6 @@ namespace lasd
     void EnsureCapacity();
     void Reduce();
     void Resize();
-    bool Full();
   };
 
   /* ************************************************************************** */
