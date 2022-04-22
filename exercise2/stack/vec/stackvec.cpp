@@ -3,19 +3,21 @@ namespace lasd
 {
 
 #ifndef DEFAULT_STACK_SIZE
-#define DEFAULT_STACK_SIZE 5ul
+#define DEFAULT_STACK_SIZE 4ul
 
     /* ************************************************************************** */
 
     template <typename Data>
     StackVec<Data>::StackVec() : Vector<Data>(DEFAULT_STACK_SIZE)
     {
-        top = -1;
     }
 
     template <typename Data>
-    StackVec<Data>::StackVec(const LinearContainer<Data> &container) : Vector<Data>(container)
+    StackVec<Data>::StackVec(const LinearContainer<Data> &container) : Vector<Data>(std::max(container.Size(), DEFAULT_STACK_SIZE))
     {
+        for (ulong i = 0; i < container.Size(); i++)
+            array[i] = container[i];
+
         top = container.Size() - 1;
     }
 
@@ -132,7 +134,7 @@ namespace lasd
     template <typename Data>
     void StackVec<Data>::Reduce()
     {
-        if (top < size / 4)
+        if (size > DEFAULT_STACK_SIZE && top < size / 4)
             Vector<Data>::Resize(size / 2);
     }
 

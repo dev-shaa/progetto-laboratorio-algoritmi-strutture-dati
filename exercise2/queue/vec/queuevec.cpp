@@ -85,9 +85,6 @@ namespace lasd
 
     /* ************************************************************************** */
 
-    // avoiding duplication of code in const and non-const getter methods
-    // https://stackoverflow.com/a/856839/17731255
-
     template <typename Data>
     const Data &QueueVec<Data>::Head() const
     {

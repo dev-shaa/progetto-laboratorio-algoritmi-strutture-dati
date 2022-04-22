@@ -38,16 +38,13 @@ namespace lasd
     template <typename Data>
     bool StackLst<Data>::operator==(const StackLst &other) const noexcept
     {
-        if (size != other.size)
-            return false;
-
-        return *start == *(other.start);
+        return List<Data>::operator==(other);
     }
 
     template <typename Data>
     bool StackLst<Data>::operator!=(const StackLst &other) const noexcept
     {
-        return !(*this == other);
+        return List<Data>::operator!=(other);
     }
 
     /* ************************************************************************** */

@@ -21,7 +21,7 @@ namespace lasd
   protected:
     using Vector<Data>::array;
     using Vector<Data>::size;
-    ulong top;
+    ulong top = -1;
 
   public:
     StackVec();

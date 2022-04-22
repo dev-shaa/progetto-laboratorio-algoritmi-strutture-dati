@@ -20,7 +20,7 @@ using namespace std;
 enum Implementation
 {
     VECTOR = 0,
-    LIST
+    LIST = 1
 };
 
 void printStackHelp()

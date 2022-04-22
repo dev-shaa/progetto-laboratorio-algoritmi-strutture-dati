@@ -6,11 +6,11 @@ namespace lasd
     template <typename Data>
     Vector<Data>::Vector(ulong size)
     {
-        if (size != 0)
-        {
-            array = new Data[size]{};
-            this->size = size;
-        }
+        if (size == 0)
+            return;
+
+        array = new Data[size]{};
+        this->size = size;
     }
 
     template <typename Data>
@@ -81,7 +81,7 @@ namespace lasd
     Data &Vector<Data>::operator[](const ulong index) const
     {
         if (index >= size)
-            throw std::out_of_range("index " + std::to_string(index) + " out of range (" + std::to_string(size) + ")");
+            throw std::out_of_range("index out of bounds");
 
         return array[index];
     }

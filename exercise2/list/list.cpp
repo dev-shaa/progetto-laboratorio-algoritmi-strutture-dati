@@ -133,14 +133,14 @@ namespace lasd
     template <typename Data>
     bool List<Data>::operator!=(const List &other) const noexcept
     {
-        return LinearContainer<Data>::operator!=(other);
+        return !(*this == other);
     }
 
     template <typename Data>
     Data &List<Data>::operator[](const ulong index) const
     {
         if (index >= size)
-            throw std::out_of_range("index " + std::to_string(index) + " out of range (" + std::to_string(size) + ")");
+            throw std::out_of_range("index out of bounds");
 
         Node *current = start;
 
@@ -156,7 +156,7 @@ namespace lasd
     Data &List<Data>::Front() const
     {
         if (size == 0)
-            throw std::length_error("can't access front value because container is empty");
+            throw std::length_error("can't access front value because list is empty");
 
         return start->value;
     }
@@ -165,7 +165,7 @@ namespace lasd
     Data &List<Data>::Back() const
     {
         if (size == 0)
-            throw std::length_error("can't access back value because container is empty");
+            throw std::length_error("can't access back value because list is empty");
 
         return end->value;
     }
@@ -192,7 +192,6 @@ namespace lasd
     void List<Data>::InsertAtFront(const Data &value)
     {
         Node *newStart = new Node(value);
-
         newStart->next = start;
         start = newStart;
 
@@ -206,7 +205,6 @@ namespace lasd
     void List<Data>::InsertAtFront(Data &&value) noexcept
     {
         Node *newStart = new Node(std::move(value));
-
         newStart->next = start;
         start = newStart;
 
