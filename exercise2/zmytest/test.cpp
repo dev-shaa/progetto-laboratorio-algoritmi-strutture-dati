@@ -3,7 +3,6 @@
 #include <string>
 #include <random>
 #include <algorithm>
-#include "./utilities/utilities.hpp"
 
 #include "../stack/stack.hpp"
 #include "../stack/vec/stackvec.hpp"
@@ -17,6 +16,72 @@
 
 using namespace std;
 
+int getRandomIntRange(int min, int max)
+{
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(min, max);
+
+    return dist(rng);
+}
+
+int getRandomInt()
+{
+    return getRandomIntRange(0, 100);
+}
+
+int getIntFromString(const std::string &value)
+{
+    return std::stoi(value);
+}
+
+float getRandomFloatRange(float min, float max)
+{
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_real_distribution<> dist(min, max);
+
+    return dist(rng);
+}
+
+float getRandomFloat()
+{
+    return getRandomFloatRange(0, 100);
+}
+
+float getFloatFromString(const std::string &value)
+{
+    return std::stof(value);
+}
+
+std::string getRandomStringRange(uint min, uint max)
+{
+    std::random_device rd;
+    std::mt19937 generator(rd());
+
+    std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    std::shuffle(alphabet.begin(), alphabet.end(), generator);
+
+    return alphabet.substr(0, getRandomIntRange(min, max));
+}
+
+std::string getRandomString()
+{
+    return getRandomStringRange(1, 32);
+}
+
+std::string getSameString(const std::string &value)
+{
+    return value;
+}
+
+void flushInputBuffer()
+{
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+/* ************************************************************************** */
+
 enum Implementation
 {
     VECTOR = 0,
@@ -26,6 +91,11 @@ enum Implementation
 void printStackHelp()
 {
     cout << "available commands:\n- cancel\n- help\n- push [value]\n- pop\n- top\n- topnpop\n- empty\n- size\n- clear" << endl;
+}
+
+void printQueueHelp()
+{
+    cout << "available commands:\n- cancel\n- help\n- enqueue [value]\n- dequeue\n- head\n- headdequeue\n- empty\n- size\n- clear" << endl;
 }
 
 template <typename Data>
@@ -52,7 +122,7 @@ void stackTest(Implementation implementation, ulong initialSize, function<Data()
 
     do
     {
-        FlushInputBuffer(); // todo: muovi alla fine
+        flushInputBuffer();
         cout << ">";
         cin >> command;
 
@@ -91,11 +161,6 @@ void stackTest(Implementation implementation, ulong initialSize, function<Data()
     delete stack;
 }
 
-void printQueueHelp()
-{
-    cout << "available commands:\n- cancel\n- help\n- enqueue [value]\n- dequeue\n- head\n- headdequeue\n- empty\n- size\n- clear" << endl;
-}
-
 template <typename Data>
 void queueTest(Implementation implementation, ulong initialSize, function<Data()> getRandomValue, function<Data(const string &)> stringToValue)
 {
@@ -120,7 +185,7 @@ void queueTest(Implementation implementation, ulong initialSize, function<Data()
 
     do
     {
-        FlushInputBuffer();
+        flushInputBuffer();
         cout << ">";
         cin >> command;
 
@@ -154,6 +219,7 @@ void queueTest(Implementation implementation, ulong initialSize, function<Data()
         {
             cerr << "an exception occurred: " << e.what() << endl;
         }
+
     } while (true);
 
     delete queue;
@@ -168,6 +234,8 @@ void manualTest()
 
     do
     {
+        flushInputBuffer();
+
         cin >> command;
 
         if (command == "create")
@@ -179,23 +247,22 @@ void manualTest()
             if (structure == "stack")
             {
                 if (dataType == "int")
-                    stackTest<int>(impl, size, &GetRandomInt, &GetIntFromString);
+                    stackTest<int>(impl, size, &getRandomInt, &getIntFromString);
                 else if (dataType == "float")
-                    stackTest<float>(impl, size, &GetRandomFloat, &GetFloatFromString);
+                    stackTest<float>(impl, size, &getRandomFloat, &getFloatFromString);
                 else if (dataType == "string")
-                    stackTest<string>(impl, size, &GetRandomString, &GetSameString);
+                    stackTest<string>(impl, size, &getRandomString, &getSameString);
             }
             else if (structure == "queue")
             {
                 if (dataType == "int")
-                    queueTest<int>(impl, size, &GetRandomInt, &GetIntFromString);
+                    queueTest<int>(impl, size, &getRandomInt, &getIntFromString);
                 else if (dataType == "float")
-                    queueTest<float>(impl, size, &GetRandomFloat, &GetFloatFromString);
+                    queueTest<float>(impl, size, &getRandomFloat, &getFloatFromString);
                 else if (dataType == "string")
-                    queueTest<string>(impl, size, &GetRandomString, &GetSameString);
+                    queueTest<string>(impl, size, &getRandomString, &getSameString);
             }
         }
 
-        cout << endl;
     } while (command != "exit");
 }

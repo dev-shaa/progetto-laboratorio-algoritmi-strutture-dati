@@ -22,7 +22,6 @@ int main()
               << "- 'manual' to execute a manual test\n"
               << "- 'exit' to close the program\n>";
     std::cin >> command;
-    std::cout << std::endl;
 
     if (command == "default")
       lasdtest();
