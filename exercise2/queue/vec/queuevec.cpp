@@ -168,7 +168,7 @@ namespace lasd
     template <typename Data>
     inline void QueueVec<Data>::EnsureCapacity()
     {
-        if ((tail + 2) % size) == head)
+        if ((tail + 2) % size == head)
             Resize();
     }
 

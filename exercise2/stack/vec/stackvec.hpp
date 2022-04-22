@@ -56,8 +56,8 @@ namespace lasd
     void Clear();
 
   protected:
-    void TryExpand();
-    void TryReduce();
+    void Expand();
+    void Reduce();
   };
 
   /* ************************************************************************** */

@@ -26,7 +26,7 @@ namespace lasd
     }
 
     template <typename Data>
-    StackVec<Data>::StackVec(StackVec &&other) noexcept : Vector<Data>(other)
+    StackVec<Data>::StackVec(StackVec &&other) noexcept : Vector<Data>(std::move(other))
     {
         std::swap(top, other.top);
     }
@@ -93,7 +93,7 @@ namespace lasd
             throw std::length_error("can't pop because stack is empty");
 
         top--;
-        TryReduce();
+        Reduce();
     }
 
     template <typename Data>
@@ -103,7 +103,7 @@ namespace lasd
             throw std::length_error("can't pop because stack is empty");
 
         Data *value = &array[top--];
-        TryReduce();
+        Reduce();
 
         return *value;
     }
@@ -111,26 +111,26 @@ namespace lasd
     template <typename Data>
     void StackVec<Data>::Push(const Data &value)
     {
-        TryExpand();
+        Expand();
         array[++top] = value;
     }
 
     template <typename Data>
     void StackVec<Data>::Push(Data &&value) noexcept
     {
-        TryExpand();
+        Expand();
         std::swap(array[++top], value);
     }
 
     template <typename Data>
-    void StackVec<Data>::TryExpand()
+    void StackVec<Data>::Expand()
     {
         if (top == size - 1)
             Vector<Data>::Resize(size * 2);
     }
 
     template <typename Data>
-    void StackVec<Data>::TryReduce()
+    void StackVec<Data>::Reduce()
     {
         if (top < size / 4)
             Vector<Data>::Resize(size / 2);
@@ -154,7 +154,7 @@ namespace lasd
     void StackVec<Data>::Clear()
     {
         top = -1;
-        TryReduce();
+        Vector<Data>::Clear(DEFAULT_STACK_SIZE);
     }
 
     /* ************************************************************************** */

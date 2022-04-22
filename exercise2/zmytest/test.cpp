@@ -17,11 +17,6 @@
 
 using namespace std;
 
-void customTest()
-{
-    // todo:
-}
-
 enum Implementation
 {
     VECTOR = 0,
@@ -30,7 +25,7 @@ enum Implementation
 
 void printStackHelp()
 {
-    cout << "available commands:\n- cancel\n- help\n- push [value]\n- pop\n- top\n- headpop\n- empty\n- size\n- clear" << endl;
+    cout << "available commands:\n- cancel\n- help\n- push [value]\n- pop\n- top\n- topnpop\n- empty\n- size\n- clear" << endl;
 }
 
 template <typename Data>
@@ -57,53 +52,35 @@ void stackTest(Implementation implementation, ulong initialSize, function<Data()
 
     do
     {
-        FlushInputBuffer();
+        FlushInputBuffer(); // todo: muovi alla fine
         cout << ">";
         cin >> command;
 
         try
         {
             if (command == "cancel")
-            {
                 break;
-            }
             else if (command == "help")
-            {
                 printStackHelp();
-            }
             else if (command == "push")
             {
                 cin >> arg;
                 stack->Push(stringToValue(arg));
             }
             else if (command == "pop")
-            {
                 stack->Pop();
-            }
             else if (command == "top")
-            {
                 cout << stack->Top() << endl;
-            }
-            else if (command == "headpop")
-            {
+            else if (command == "topnpop")
                 cout << stack->TopNPop() << endl;
-            }
             else if (command == "empty")
-            {
                 cout << "stack is" << (stack->Empty() ? " " : " not ") << "empty" << endl;
-            }
             else if (command == "size")
-            {
                 cout << "stack has size " << stack->Size() << endl;
-            }
             else if (command == "clear")
-            {
                 stack->Clear();
-            }
             else
-            {
                 cout << command << ": no command found" << endl;
-            }
         }
         catch (const exception &e)
         {
@@ -150,46 +127,28 @@ void queueTest(Implementation implementation, ulong initialSize, function<Data()
         try
         {
             if (command == "cancel")
-            {
                 break;
-            }
             else if (command == "help")
-            {
                 printStackHelp();
-            }
             else if (command == "enqueue")
             {
                 cin >> arg;
                 queue->Enqueue(stringToValue(arg));
             }
             else if (command == "dequeue")
-            {
                 queue->Dequeue();
-            }
             else if (command == "headdequeue")
-            {
                 cout << queue->HeadNDequeue() << endl;
-            }
             else if (command == "head")
-            {
                 cout << queue->Head() << endl;
-            }
             else if (command == "empty")
-            {
                 cout << "queue is" << (queue->Empty() ? " " : " not ") << "empty" << endl;
-            }
             else if (command == "size")
-            {
                 cout << "queue has size " << queue->Size() << endl;
-            }
             else if (command == "clear")
-            {
                 queue->Clear();
-            }
             else
-            {
                 cout << command << ": no command found" << endl;
-            }
         }
         catch (const exception &e)
         {
@@ -209,7 +168,6 @@ void manualTest()
 
     do
     {
-        // FlushInputBuffer();
         cin >> command;
 
         if (command == "create")
