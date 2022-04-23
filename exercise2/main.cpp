@@ -17,7 +17,7 @@ int main()
 
   do
   {
-    std::cout << "Type one of the following commands:\n"
+    std::cout << "\nType one of the following commands:\n"
               << "- 'default' to execute the standard automated test\n"
               << "- 'manual' to execute a manual test\n"
               << "- 'exit' to close the program\n>";
