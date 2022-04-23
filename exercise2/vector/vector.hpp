@@ -1,4 +1,3 @@
-
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
@@ -8,130 +7,65 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class Vector {
-                // Must extend LinearContainer<Data>,
-                //             PreOrderMappableContainer<Data>,
-                //             PostOrderMappableContainer<Data>,
-                //             PreOrderFoldableContainer<Data>,
-                //             PostOrderFoldableContainer<Data>
+  template <typename Data>
+  class Vector : virtual public LinearContainer<Data>,
+                 virtual public PreOrderMappableContainer<Data>,
+                 virtual public PostOrderMappableContainer<Data>,
+                 virtual public PreOrderFoldableContainer<Data>,
+                 virtual public PostOrderFoldableContainer<Data>
+  {
+  protected:
+    using LinearContainer<Data>::size;
+    Data *array = nullptr;
 
-private:
+  public:
+    Vector() = default;
+    Vector(ulong size);
+    Vector(const LinearContainer<Data> &container);
+    Vector(const Vector &other);
+    Vector(Vector &&other) noexcept;
 
-  // ...
+    virtual ~Vector();
 
-protected:
+    /* ************************************************************************ */
 
-  // using LinearContainer<Data>::???;
+    Vector &operator=(const Vector &other);
+    Vector &operator=(Vector &&other) noexcept;
 
-  // ...
+    bool operator==(const Vector &other) const noexcept;
+    bool operator!=(const Vector &other) const noexcept;
 
-public:
+    Data &operator[](const ulong index) const override;
 
-  // Default constructor
-  // Vector() specifiers;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    void Resize(const ulong size);
+    void Clear() override;
+    void Clear(ulong size);
 
-  // Specific constructors
-  // Vector(argument) specifiers; // A vector with a given initial dimension
-  // Vector(argument) specifiers; // A vector obtained from a LinearContainer
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    using typename MappableContainer<Data>::MapFunctor;
 
-  // Copy constructor
-  // Vector(argument) specifiers;
+    void Map(MapFunctor functor, void *par) override;
+    void MapPreOrder(MapFunctor functor, void *par) override;
+    void MapPostOrder(MapFunctor functor, void *par) override;
 
-  // Move constructor
-  // Vector(argument) specifiers;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    using typename FoldableContainer<Data>::FoldFunctor;
 
-  // Destructor
-  // ~Vector() specifiers;
+    void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
+    void FoldPreOrder(FoldFunctor functor, const void *par, void *accumulator) const override;
+    void FoldPostOrder(FoldFunctor functor, const void *par, void *accumulator) const override;
+  };
 
-  /* ************************************************************************ */
-
-  // Copy assignment
-  // type operator=(argument) specifiers;
-
-  // Move assignment
-  // type operator=(argument) specifiers;
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
-
-  /* ************************************************************************ */
-
-  // Specific member functions
-
-  // type Resize(argument) specifiers; // Resize the vector to a given size
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Container)
-
-  // type Clear() specifiers; // Override Container member
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from LinearContainer)
-
-  // type Front() specifiers; // Override LinearContainer member (must throw std::length_error when empty)
-  // type Back() specifiers; // Override LinearContainer member (must throw std::length_error when empty)
-
-  // type operator[](argument) specifiers; // Override LinearContainer member (must throw std::out_of_range when out of range)
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from MappableContainer)
-
-  // using typename MappableContainer<Data>::MapFunctor;
-
-  // type Map(arguments) specifiers; // Override MappableContainer member
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from PreOrderMappableContainer)
-
-  // type MapPreOrder(arguments) specifiers; // Override PreOrderMappableContainer member
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from PostOrderMappableContainer)
-
-  // type MapPostOrder(arguments) specifiers; // Override PostOrderMappableContainer member
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from FoldableContainer)
-
-  // using typename FoldableContainer<Data>::FoldFunctor;
-
-  // type Fold(arguments) specifiers; // Override FoldableContainer member
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from PreOrderFoldableContainer)
-
-  // type FoldPreOrder(arguments) specifiers; // Override FoldableContainer member
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from PostOrderFoldableContainer)
-
-  // type FoldPostOrder(arguments) specifiers; // Override FoldableContainer member
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 

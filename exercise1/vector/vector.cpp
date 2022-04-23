@@ -11,7 +11,7 @@ namespace lasd
     }
 
     template <typename Data>
-    Vector<Data>::Vector(LinearContainer<Data> &container) : Vector(container.Size())
+    Vector<Data>::Vector(const LinearContainer<Data> &container) : Vector(container.Size())
     {
         for (ulong i = 0; i < size; i++)
             array[i] = container[i];

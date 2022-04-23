@@ -9,82 +9,50 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class StackLst {
-                  // Must extend Stack<Data>,
-                  //             List<Data>
+  template <typename Data>
+  class StackLst : virtual public Stack<Data>, virtual protected List<Data>
+  {
+  protected:
+    using List<Data>::size;
+    using List<Data>::start;
 
-private:
+  public:
+    StackLst() = default;
+    StackLst(const LinearContainer<Data> &container);
 
-  // ...
+    StackLst(const StackLst &other);
+    StackLst(StackLst &&other) noexcept;
 
-protected:
+    virtual ~StackLst() = default;
 
-  // using List<Data>::???;
+    /* ************************************************************************ */
 
-  // ...
+    StackLst &operator=(const StackLst &other);
+    StackLst &operator=(StackLst &&other) noexcept;
 
-public:
+    bool operator==(const StackLst &other) const noexcept;
+    bool operator!=(const StackLst &other) const noexcept;
 
-  // Default constructor
-  // StackLst() specifier;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    const Data &Top() const override; // returns top but unmodifiable
+    Data &Top() override;
+    void Pop() override;
+    Data &TopNPop() override;
+    void Push(const Data &value) override;
+    void Push(Data &&value) noexcept override;
 
-  // Specific constructor
-  // StackLst(argument) specifiers; // A stack obtained from a LinearContainer
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    void Clear() override;
+  };
 
-  // Copy constructor
-  // StackLst(argument);
-
-  // Move constructor
-  // StackLst(argument);
-
-  /* ************************************************************************ */
-
-  // Destructor
-  // ~StackLst() specifier;
-
-  /* ************************************************************************ */
-
-  // Copy assignment
-  // type operator=(argument);
-
-  // Move assignment
-  // type operator=(argument);
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Stack)
-
-  // type Top() specifiers; // Override Stack member (constant version; must throw std::length_error when empty)
-  // type Top() specifiers; // Override Stack member (must throw std::length_error when empty)
-  // type Pop() specifiers; // Override Stack member (must throw std::length_error when empty)
-  // type TopNPop() specifiers; // Override Stack member (must throw std::length_error when empty)
-  // type Push(argument) specifiers; // Override Stack member (copy of the value)
-  // type Push(argument) specifiers; // Override Stack member (move of the value)
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Container)
-
-  // type Clear() specifiers; // Override Container member
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 

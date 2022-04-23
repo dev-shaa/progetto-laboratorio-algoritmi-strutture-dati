@@ -9,94 +9,59 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class QueueVec {
-                  // Must extend Queue<Data>,
-                  //             Vector<Data>
+  template <typename Data>
+  class QueueVec : virtual public Queue<Data>, virtual protected Vector<Data>
+  {
+  protected:
+    using Vector<Data>::array;
+    using Vector<Data>::size;
+    ulong head = 1;
+    ulong tail = 0;
 
-private:
+  public:
+    QueueVec();
+    QueueVec(const LinearContainer<Data> &container);
 
-  // ...
+    QueueVec(const QueueVec &other);
+    QueueVec(QueueVec &&other) noexcept;
 
-protected:
+    virtual ~QueueVec() = default;
 
-  // using Vector<Data>::???;
+    /* ************************************************************************ */
 
-  // ...
+    QueueVec &operator=(const QueueVec &other);
+    QueueVec &operator=(QueueVec &&other) noexcept;
 
-public:
+    bool operator==(const QueueVec &other) const noexcept;
+    bool operator!=(const QueueVec &other) const noexcept;
 
-  // Default constructor
-  // QueueVec() specifier;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    const Data &Head() const override; // returns top but unmodifiable
+    Data &Head() override;
+    void Dequeue() override;
+    Data &HeadNDequeue() override;
+    void Enqueue(const Data &value) override;
+    void Enqueue(Data &&value) override;
 
-  // Specific constructor
-  // QueueVec(argument) specifiers; // A queue obtained from a LinearContainer
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    inline bool Empty() const noexcept override;
+    inline ulong Size() const noexcept override;
+    void Clear();
 
-  // Copy constructor
-  // QueueVec(argument);
+  protected:
+    void EnsureCapacity();
+    void Reduce();
+    void Resize();
+  };
 
-  // Move constructor
-  // QueueVec(argument);
-
-  /* ************************************************************************ */
-
-  // Destructor
-  // ~QueueVec() specifier;
-
-  /* ************************************************************************ */
-
-  // Copy assignment
-  // type operator=(argument);
-
-  // Move assignment
-  // type operator=(argument);
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Queue)
-
-  // type Head() specifiers; // Override Queue member (constant version; must throw std::length_error when empty)
-  // type Head() specifiers; // Override Queue member (must throw std::length_error when empty)
-  // type Dequeue() specifiers; // Override Queue member (must throw std::length_error when empty)
-  // type HeadNDequeue() specifiers; // Override Queue member (must throw std::length_error when empty)
-  // type Enqueue(argument) specifiers; // Override Queue member (copy of the value)
-  // type Enqueue(argument) specifiers; // Override Queue member (move of the value)
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Container)
-
-  // type Empty() specifiers; // Override Container member
-
-  // type Size() specifiers; // Override Container member
-
-  // type Clear() specifiers; // Override Container member
-
-protected:
-
-  // Auxiliary member functions
-
-  // type Expand() specifiers;
-  // type Reduce() specifiers;
-  // type SwapVectors(arguments) specifiers;
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 
