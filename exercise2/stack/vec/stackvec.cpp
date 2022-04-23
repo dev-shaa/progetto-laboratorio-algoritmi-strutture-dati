@@ -104,7 +104,7 @@ namespace lasd
         if (Empty())
             throw std::length_error("can't pop because stack is empty");
 
-        Data *value = &array[top--];
+        Data *value = new Data(std::move(array[top--]));
         Reduce();
 
         return *value;

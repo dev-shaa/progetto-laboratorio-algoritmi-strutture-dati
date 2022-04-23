@@ -116,7 +116,7 @@ namespace lasd
         if (Empty())
             throw std::length_error("can't dequeue because queue is empty");
 
-        Data *value = &(array[head]);
+        Data *value = new Data(std::move(array[head]));
         head = (head + 1) % size;
         Reduce();
         return *value;
