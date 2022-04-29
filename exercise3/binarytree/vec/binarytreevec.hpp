@@ -6,7 +6,7 @@
 
 #include "../binarytree.hpp"
 #include "../../vector/vector.hpp"
-#include "../container/container.hpp"
+#include "../../container/container.hpp"
 
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ namespace lasd
 
     public:
       NodeVec(const Data &value, ulong index);
+      NodeVec(const NodeVec &other);
+      NodeVec(NodeVec &&other) noexcept;
 
       virtual ~NodeVec() = default;
 
@@ -59,7 +61,7 @@ namespace lasd
       Node &RightChild() const override; // same
     };
 
-    Vector<NodeVec *> vector;
+    Vector<NodeVec *> nodes;
 
   public:
     BinaryTreeVec();
@@ -79,29 +81,21 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    // Specific member functions (inherited from BinaryTree)
+    Node &Root() const override; // (throw std::length_error when empty)
 
-    // type Root() specifiers; // Override BinaryTree member (throw std::length_error when empty)
-
-    Node &Root() const override;
+    void Clear() override;
 
     /* ************************************************************************ */
 
-    // Specific member functions (inherited from Container)
+    using typename MappableContainer<Data>::MapFunctor;
 
-    // type Clear() specifiers; // Override Container member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from BreadthMappableContainer)
-
-    // type MapBreadth(arguments) specifiers; // Override BreadthMappableContainer member
+    void MapBreadth(MapFunctor functor, void *par) override;
 
     /* ************************************************************************ */
 
-    // Specific member functions (inherited from BreadthFoldableContainer)
+    using typename FoldableContainer<Data>::FoldFunctor;
 
-    // type FoldBreadth(arguments) specifiers; // Override BreadthFoldableContainer member
+    void FoldBreadth(FoldFunctor functor, const void *par, void *accumulator) const override;
   };
 
   /* ************************************************************************** */

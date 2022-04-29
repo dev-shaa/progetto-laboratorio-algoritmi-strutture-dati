@@ -5,9 +5,7 @@
 /* ************************************************************************** */
 
 #include "../container/container.hpp"
-
 #include "../iterator/iterator.hpp"
-
 #include "../queue/queue.hpp"
 
 // #include "..."
@@ -41,6 +39,10 @@ namespace lasd
   public:
     struct Node
     {
+    protected:
+      bool operator==(const Node &other) const noexcept;
+      bool operator!=(const Node &other) const noexcept;
+
     public:
       friend class BinaryTree<Data>;
 
@@ -53,9 +55,6 @@ namespace lasd
       Node &operator=(const Node &other) = delete;
       Node &operator=(Node &&other) noexcept = delete;
 
-      bool operator==(const Node &other) const noexcept; // Comparison of abstract types is possible, but should not be visible.
-      bool operator!=(const Node &other) const noexcept;
-
       /* ********************************************************************** */
 
       virtual Data &Element() noexcept = 0;
@@ -65,8 +64,8 @@ namespace lasd
       virtual bool HasLeftChild() const noexcept = 0;
       virtual bool HasRightChild() const noexcept = 0;
 
-      virtual Node &LeftChild() const = 0;  // (concrete function must throw std::out_of_range when not existent)
-      virtual Node &RightChild() const = 0; // same
+      virtual Node &LeftChild() const = 0;
+      virtual Node &RightChild() const = 0;
     };
 
     /* ************************************************************************ */
@@ -83,7 +82,7 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    virtual Node &Root() const;
+    virtual Node &Root() const = 0;
 
     /* ************************************************************************ */
 
@@ -106,17 +105,17 @@ namespace lasd
     void FoldBreadth(FoldFunctor functor, const void *par, void *accumulator) const override;
 
   protected:
-    // type MapPreOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-    // type MapPostOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-    // type MapInOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-    // type MapBreadth(arguments) specifiers; // Accessory function executing from one node of the tree
+    void MapPreOrderAux(MapFunctor functor, void *par, Node &node);
+    void MapPostOrderAux(MapFunctor functor, void *par, Node &node);
+    void MapInOrderAux(MapFunctor functor, void *par, Node &node);
+    void MapBreadthAux(MapFunctor functor, void *par, Node &node);
 
     /* ************************************************************************ */
 
-    // type FoldPreOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-    // type FoldPostOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-    // type FoldInOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-    // type FoldBreadth(arguments) specifiers; // Accessory function executing from one node of the tree
+    void FoldPreOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
+    void FoldPostOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
+    void FoldInOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
+    void FoldBreadthAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
   };
 
   /* ************************************************************************** */
@@ -125,12 +124,9 @@ namespace lasd
   class BTPreOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
 
-  private:
+  protected:
     Queue<Data> *elements = nullptr;
     Queue<Data> *temp = nullptr;
-
-  protected:
-    // ...
 
   public:
     BTPreOrderIterator(const BinaryTree<Data> &tree);
@@ -241,7 +237,7 @@ namespace lasd
     // ...
 
   public:
-    BTInOrderIterator(const BinaryTree<Data> &tree);
+    BTBreadthIterator(const BinaryTree<Data> &tree);
     BTBreadthIterator(const BTBreadthIterator &iterator);
     BTBreadthIterator(BTBreadthIterator &&iterator) noexcept;
 

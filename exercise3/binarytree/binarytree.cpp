@@ -7,7 +7,9 @@ namespace lasd
     template <typename Data>
     bool BinaryTree<Data>::Node::operator==(const BinaryTree<Data>::Node &other) const noexcept
     {
-        // todo: implementation
+        return Element() == other.Element() &&
+               ((HasLeftChild() && other.HasLeftChild() && LeftChild() == other.LeftChild()) || (!HasLeftChild() && !other.HasLeftChild())) &&
+               ((HasRightChild() && other.HasRightChild() && RightChild() == other.RightChild()) || (!HasRightChild() && !other.HasRightChild()));
     }
 
     template <typename Data>
@@ -20,6 +22,100 @@ namespace lasd
     inline bool BinaryTree<Data>::Node::IsLeaf() const noexcept
     {
         return !HasLeftChild() && !HasRightChild();
+    }
+
+    /* ************************************************************************** */
+
+    template <typename Data>
+    bool BinaryTree<Data>::operator==(const BinaryTree<Data> &other) const noexcept
+    {
+        return Root() == other.Root();
+    }
+
+    template <typename Data>
+    bool BinaryTree<Data>::operator!=(const BinaryTree<Data> &other) const noexcept
+    {
+        return !(*this == other);
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::Map(MapFunctor functor, void *par)
+    {
+        MapPreOrder(functor, par);
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::MapPreOrder(MapFunctor functor, void *par)
+    {
+        // todo: implementation
+        MapPreOrderAux(functor, par, Root());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::MapPreOrderAux(MapFunctor functor, void *par, Node &node)
+    {
+        // visit node
+
+        // visit left
+        if (node.HasLeftChild())
+            MapPreOrderAux(functor, par, node.LeftChild());
+
+        // visit right
+        if (node.HasRightChild())
+            MapPreOrderAux(functor, par, node.RightChild());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::MapPostOrder(MapFunctor functor, void *par)
+    {
+        // todo: implementation
+        MapPostOrderAux(functor, par, Root());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::MapPostOrderAux(MapFunctor functor, void *par, Node &node)
+    {
+        // visit left
+        if (node.HasLeftChild())
+            MapPostOrderAux(functor, par, node.LeftChild());
+
+        // visit right
+        if (node.HasRightChild())
+            MapPostOrderAux(functor, par, node.RightChild());
+
+        // visit node
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::MapInOrder(MapFunctor functor, void *par)
+    {
+        // todo: implementation
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::MapInOrderAux(MapFunctor functor, void *par, Node &node)
+    {
+        // visit left
+        if (node.HasLeftChild())
+            MapInOrderAux(functor, par, node.LeftChild());
+
+        // visit node
+
+        // visit right
+        if (node.HasRightChild())
+            MapInOrderAux(functor, par, node.RightChild());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::MapBreadth(MapFunctor functor, void *par)
+    {
+        // todo: implementation
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::MapBreadthAux(MapFunctor functor, void *par, Node &node)
+    {
+        // todo: implementation
     }
 
     /* ************************************************************************** */
