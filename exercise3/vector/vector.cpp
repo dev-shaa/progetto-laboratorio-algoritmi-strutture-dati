@@ -46,7 +46,7 @@ namespace lasd
     {
         if (this != &other)
         {
-            Clear(other.size);
+            Clear(other.Size());
             std::copy(other.array, other.array + size, array);
         }
 
@@ -80,7 +80,7 @@ namespace lasd
     template <typename Data>
     Data &Vector<Data>::operator[](const ulong index) const
     {
-        if (index >= size)
+        if (index >= Size())
             throw std::out_of_range("index out of bounds");
 
         return array[index];
@@ -129,6 +129,18 @@ namespace lasd
         delete[] array;
         array = new Data[size];
         this->size = size;
+    }
+
+    template <typename Data>
+    inline bool Vector<Data>::Empty() const noexcept
+    {
+        return LinearContainer<Data>::Empty();
+    }
+
+    template <typename Data>
+    inline ulong Vector<Data>::Size() const noexcept
+    {
+        return LinearContainer<Data>::Size();
     }
 
     /* ************************************************************************** */

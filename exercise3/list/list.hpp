@@ -82,6 +82,8 @@ namespace lasd
     Data &Front() const override;
     Data &Back() const override;
     void Clear() override;
+    bool Empty() const noexcept override;
+    ulong Size() const noexcept override;
 
     /* ************************************************************************ */
 
