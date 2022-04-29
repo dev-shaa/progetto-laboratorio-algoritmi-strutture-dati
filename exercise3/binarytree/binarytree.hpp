@@ -8,6 +8,8 @@
 
 #include "../iterator/iterator.hpp"
 
+#include "../queue/queue.hpp"
+
 // #include "..."
 
 /* ************************************************************************** */
@@ -39,10 +41,6 @@ namespace lasd
   public:
     struct Node
     {
-    protected:
-      Data value;
-      Node *leftChild = nullptr, *rightChild = nullptr;
-
     public:
       friend class BinaryTree<Data>;
 
@@ -60,15 +58,15 @@ namespace lasd
 
       /* ********************************************************************** */
 
-      virtual Data &Element() noexcept;
-      virtual const Data &Element() const noexcept;
+      virtual Data &Element() noexcept = 0;
+      virtual const Data &Element() const noexcept = 0;
 
       virtual bool IsLeaf() const noexcept;
-      virtual bool HasLeftChild() const noexcept;
-      virtual bool HasRightChild() const noexcept;
+      virtual bool HasLeftChild() const noexcept = 0;
+      virtual bool HasRightChild() const noexcept = 0;
 
-      virtual Node &LeftChild() const;  // (concrete function must throw std::out_of_range when not existent)
-      virtual Node &RightChild() const; // same
+      virtual Node &LeftChild() const = 0;  // (concrete function must throw std::out_of_range when not existent)
+      virtual Node &RightChild() const = 0; // same
     };
 
     /* ************************************************************************ */
@@ -108,50 +106,16 @@ namespace lasd
     void FoldBreadth(FoldFunctor functor, const void *par, void *accumulator) const override;
 
   protected:
-    // Auxiliary member functions (for PreOrderMappableContainer)
-
     // type MapPreOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-
-    /* ************************************************************************ */
-
-    // Auxiliary member functions (for PreOrderFoldableContainer)
-
-    // type FoldPreOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-
-    /* ************************************************************************ */
-
-    // Auxiliary member functions (for PostOrderMappableContainer)
-
     // type MapPostOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-
-    /* ************************************************************************ */
-
-    // Auxiliary member functions (for PostOrderFoldableContainer)
-
-    // type FoldPostOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-
-    /* ************************************************************************ */
-
-    // Auxiliary member functions (for InOrderMappableContainer)
-
     // type MapInOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-
-    /* ************************************************************************ */
-
-    // Auxiliary member functions (for InOrderFoldableContainer)
-
-    // type FoldInOrder(arguments) specifiers; // Accessory function executing from one node of the tree
-
-    /* ************************************************************************ */
-
-    // Auxiliary member functions (for BreadthMappableContainer)
-
     // type MapBreadth(arguments) specifiers; // Accessory function executing from one node of the tree
 
     /* ************************************************************************ */
 
-    // Auxiliary member functions (for BreadthFoldableContainer)
-
+    // type FoldPreOrder(arguments) specifiers; // Accessory function executing from one node of the tree
+    // type FoldPostOrder(arguments) specifiers; // Accessory function executing from one node of the tree
+    // type FoldInOrder(arguments) specifiers; // Accessory function executing from one node of the tree
     // type FoldBreadth(arguments) specifiers; // Accessory function executing from one node of the tree
   };
 
@@ -162,7 +126,8 @@ namespace lasd
   {
 
   private:
-    // ...
+    Queue<Data> *elements = nullptr;
+    Queue<Data> *temp = nullptr;
 
   protected:
     // ...
@@ -172,7 +137,7 @@ namespace lasd
     BTPreOrderIterator(const BTPreOrderIterator &iterator);
     BTPreOrderIterator(BTPreOrderIterator &&iterator) noexcept;
 
-    virtual ~BTPreOrderIterator() = default;
+    virtual ~BTPreOrderIterator();
 
     /* ************************************************************************ */
 
