@@ -44,7 +44,7 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    void setFlagIfEqual(const Data &value, const void *otherData, void *flag)
+    void SetFlagIfEqual(const Data &value, const void *otherData, void *flag)
     {
         if (value == *((Data *)otherData))
             *((bool *)flag) = true;
@@ -54,7 +54,7 @@ namespace lasd
     bool FoldableContainer<Data>::Exists(const Data &value) const noexcept
     {
         bool exists = false;
-        Fold(&setFlagIfEqual<Data>, &value, &exists);
+        Fold(&SetFlagIfEqual<Data>, &value, &exists);
         return exists;
     }
 

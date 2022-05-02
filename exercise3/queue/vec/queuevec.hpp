@@ -41,7 +41,7 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    const Data &Head() const override; // returns top but unmodifiable
+    const Data &Head() const override;
     Data &Head() override;
     void Dequeue() override;
     Data &HeadNDequeue() override;

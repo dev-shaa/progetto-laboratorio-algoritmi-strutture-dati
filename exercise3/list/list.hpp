@@ -30,7 +30,6 @@ namespace lasd
       Node() = default;
       Node(const Data &value);
       Node(Data &&value) noexcept;
-
       Node(const Node &node);
       Node(Node &&node) noexcept;
 

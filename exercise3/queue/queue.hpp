@@ -29,7 +29,7 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    virtual const Data &Head() const = 0; // returns top but unmodifiable
+    virtual const Data &Head() const = 0;
     virtual Data &Head() = 0;
     virtual void Dequeue() = 0;
     virtual Data &HeadNDequeue() = 0;

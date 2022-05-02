@@ -33,8 +33,10 @@ namespace lasd
     }
 
     template <typename Data>
-    QueueVec<Data>::QueueVec(QueueVec &&other) noexcept : Vector<Data>(std::move(other))
+    QueueVec<Data>::QueueVec(QueueVec &&other) noexcept : Vector<Data>(DEFAULT_QUEUE_SIZE)
     {
+        std::swap(size, other.size);
+        std::swap(array, other.array);
         std::swap(head, other.head);
         std::swap(tail, other.tail);
     }
@@ -44,8 +46,6 @@ namespace lasd
     template <typename Data>
     QueueVec<Data> &QueueVec<Data>::operator=(const QueueVec &other)
     {
-        // since we still need to copy the elements in the array, place them in the correct order
-
         Clear();
 
         for (ulong i = 0; i < other.Size(); i++)
@@ -149,7 +149,7 @@ namespace lasd
     template <typename Data>
     inline ulong QueueVec<Data>::Size() const noexcept
     {
-        return (tail + size - head + 1) % size;
+        return (tail + size - head + 1ul) % size;
     }
 
     template <typename Data>
