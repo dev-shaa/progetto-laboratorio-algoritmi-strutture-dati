@@ -20,7 +20,7 @@ namespace lasd
                  virtual public PostOrderFoldableContainer<Data>
   {
   protected:
-    using LinearContainer<Data>::size;
+    ulong size = 0;
     Data *array = nullptr;
 
   public:

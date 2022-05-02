@@ -127,7 +127,7 @@ namespace lasd
     template <typename Data>
     bool List<Data>::operator==(const List &other) const noexcept
     {
-        return size == other.size && ((start == nullptr && other.start == nullptr) || *start == *(other.start));
+        return Size() == other.Size() && ((start == nullptr && other.start == nullptr) || *start == *(other.start));
     }
 
     template <typename Data>
@@ -139,7 +139,7 @@ namespace lasd
     template <typename Data>
     Data &List<Data>::operator[](const ulong index) const
     {
-        if (index >= size)
+        if (index >= Size())
             throw std::out_of_range("index out of bounds");
 
         Node *current = start;
@@ -155,7 +155,7 @@ namespace lasd
     template <typename Data>
     Data &List<Data>::Front() const
     {
-        if (size == 0)
+        if (Empty())
             throw std::length_error("can't access front value because list is empty");
 
         return start->value;
@@ -164,7 +164,7 @@ namespace lasd
     template <typename Data>
     Data &List<Data>::Back() const
     {
-        if (size == 0)
+        if (Empty())
             throw std::length_error("can't access back value because list is empty");
 
         return end->value;
@@ -229,7 +229,7 @@ namespace lasd
     template <typename Data>
     void List<Data>::RemoveFromFront()
     {
-        if (size == 0)
+        if (Empty())
             throw std::length_error("can't remove front value because container is empty");
 
         Node *next = start->next;
@@ -242,7 +242,7 @@ namespace lasd
     template <typename Data>
     Data &List<Data>::FrontNRemove()
     {
-        if (size == 0)
+        if (Empty())
             throw std::length_error("can't remove front value because container is empty");
 
         Data *value = new Data(std::move(Front()));
@@ -259,7 +259,7 @@ namespace lasd
     template <typename Data>
     void List<Data>::InsertAtBack(const Data &value)
     {
-        if (size == 0)
+        if (Empty())
         {
             InsertAtFront(value);
         }
@@ -275,7 +275,7 @@ namespace lasd
     template <typename Data>
     void List<Data>::InsertAtBack(Data &&value) noexcept
     {
-        if (size == 0)
+        if (Empty())
         {
             InsertAtFront(std::move(value));
         }

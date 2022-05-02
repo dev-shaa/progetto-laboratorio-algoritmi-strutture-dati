@@ -9,19 +9,19 @@ namespace lasd
         if (size == 0)
             return;
 
-        array = new Data[size]{};
+        array = new Data[size];
         this->size = size;
     }
 
     template <typename Data>
     Vector<Data>::Vector(const LinearContainer<Data> &container) : Vector(container.Size())
     {
-        for (ulong i = 0; i < size; i++)
+        for (ulong i = 0; i < Size(); i++)
             array[i] = container[i];
     }
 
     template <typename Data>
-    Vector<Data>::Vector(const Vector &other) : Vector(other.size)
+    Vector<Data>::Vector(const Vector &other) : Vector(other.Size())
     {
         std::copy(other.array, other.array + size, array);
     }
@@ -38,8 +38,6 @@ namespace lasd
     {
         delete[] array;
     }
-
-    /* ************************************************************************** */
 
     template <typename Data>
     Vector<Data> &Vector<Data>::operator=(const Vector &other)
@@ -86,8 +84,6 @@ namespace lasd
         return array[index];
     }
 
-    /* ************************************************************************** */
-
     template <typename Data>
     void Vector<Data>::Resize(const ulong size)
     {
@@ -100,7 +96,7 @@ namespace lasd
         }
         else
         {
-            Data *newArray = new Data[size]{};
+            Data *newArray = new Data[size];
             std::copy(array, array + std::min(this->size, size), newArray);
 
             delete[] array;
@@ -134,16 +130,14 @@ namespace lasd
     template <typename Data>
     inline bool Vector<Data>::Empty() const noexcept
     {
-        return LinearContainer<Data>::Empty();
+        return size == 0;
     }
 
     template <typename Data>
     inline ulong Vector<Data>::Size() const noexcept
     {
-        return LinearContainer<Data>::Size();
+        return size;
     }
-
-    /* ************************************************************************** */
 
     template <typename Data>
     void Vector<Data>::Map(MapFunctor functor, void *par)

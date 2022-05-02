@@ -3,18 +3,6 @@ namespace lasd
 
     /* ************************************************************************** */
 
-    inline bool Container::Empty() const noexcept
-    {
-        return size == 0;
-    }
-
-    inline ulong Container::Size() const noexcept
-    {
-        return size;
-    }
-
-    /* ************************************************************************** */
-
     template <typename Data>
     bool LinearContainer<Data>::operator==(const LinearContainer &other) const noexcept
     {
@@ -23,10 +11,10 @@ namespace lasd
 
         ulong i = 0;
 
-        while (i < size && (*this)[i] == other[i])
+        while (i < Size() && (*this)[i] == other[i])
             i++;
 
-        return i == size;
+        return i == Size();
     }
 
     template <typename Data>

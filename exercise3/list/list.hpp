@@ -45,8 +45,7 @@ namespace lasd
       bool operator!=(const Node &other) const noexcept;
     };
 
-    using LinearContainer<Data>::size;
-
+    ulong size = 0;
     Node *start = nullptr;
     Node *end = nullptr;
 
