@@ -8,8 +8,6 @@
 #include "../iterator/iterator.hpp"
 #include "../queue/queue.hpp"
 
-// #include "..."
-
 /* ************************************************************************** */
 
 namespace lasd
@@ -27,14 +25,8 @@ namespace lasd
                      virtual public InOrderFoldableContainer<Data>,
                      virtual public BreadthFoldableContainer<Data>
   {
-
-  private:
-    // ...
-
   protected:
     // using InOrder/BreadthMappableContainer<Data>::???;
-
-    // ...
 
   public:
     struct Node
@@ -57,7 +49,7 @@ namespace lasd
 
       /* ********************************************************************** */
 
-      virtual Data &Element() noexcept = 0;
+      virtual Data &Element() noexcept;
       virtual const Data &Element() const noexcept = 0;
 
       virtual bool IsLeaf() const noexcept;
@@ -83,6 +75,7 @@ namespace lasd
     /* ************************************************************************ */
 
     virtual Node &Root() const = 0;
+    bool Exists(const Data &value) const noexcept override;
 
     /* ************************************************************************ */
 
@@ -110,8 +103,6 @@ namespace lasd
     void MapInOrderAux(MapFunctor functor, void *par, Node &node);
     void MapBreadthAux(MapFunctor functor, void *par, Node &node);
 
-    /* ************************************************************************ */
-
     void FoldPreOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
     void FoldPostOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
     void FoldInOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
@@ -123,10 +114,9 @@ namespace lasd
   template <typename Data>
   class BTPreOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
-
   protected:
     Queue<Data> *elements = nullptr;
-    Queue<Data> *temp = nullptr;
+    const BinaryTree<Data> *tree = nullptr;
 
   public:
     BTPreOrderIterator(const BinaryTree<Data> &tree);
@@ -157,19 +147,16 @@ namespace lasd
   template <typename Data>
   class BTPostOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
-
-  private:
-    // ...
-
   protected:
-    // ...
+    Queue<Data> *elements = nullptr;
+    const BinaryTree<Data> *tree = nullptr;
 
   public:
     BTPostOrderIterator(const BinaryTree<Data> &tree);
     BTPostOrderIterator(const BTPostOrderIterator &iterator);
     BTPostOrderIterator(BTPostOrderIterator &&iterator) noexcept;
 
-    virtual ~BTPostOrderIterator() = default;
+    virtual ~BTPostOrderIterator();
 
     /* ************************************************************************ */
 
@@ -193,19 +180,16 @@ namespace lasd
   template <typename Data>
   class BTInOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
-
-  private:
-    // ...
-
   protected:
-    // ...
+    Queue<Data> *elements = nullptr;
+    const BinaryTree<Data> *tree = nullptr;
 
   public:
     BTInOrderIterator(const BinaryTree<Data> &tree);
     BTInOrderIterator(const BTInOrderIterator &iterator);
     BTInOrderIterator(BTInOrderIterator &&iterator) noexcept;
 
-    virtual ~BTInOrderIterator() = default;
+    virtual ~BTInOrderIterator();
 
     /* ************************************************************************ */
 
@@ -229,19 +213,16 @@ namespace lasd
   template <typename Data>
   class BTBreadthIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
-
-  private:
-    // ...
-
   protected:
-    // ...
+    Queue<Data> *elements = nullptr;
+    const BinaryTree<Data> *tree = nullptr;
 
   public:
     BTBreadthIterator(const BinaryTree<Data> &tree);
     BTBreadthIterator(const BTBreadthIterator &iterator);
     BTBreadthIterator(BTBreadthIterator &&iterator) noexcept;
 
-    virtual ~BTBreadthIterator() = default;
+    virtual ~BTBreadthIterator();
 
     /* ************************************************************************ */
 

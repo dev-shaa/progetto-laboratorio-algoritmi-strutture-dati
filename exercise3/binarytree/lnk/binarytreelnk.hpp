@@ -23,19 +23,37 @@ namespace lasd
   protected:
     // using BinaryTree<Data>::???;
 
-    // ...
-
     struct NodeLnk : Node
     {
-
-    private:
-      // ...
-
     protected:
-      // ...
+      Data value;
+      NodeLnk *leftChild = nullptr, *rightChild = nullptr;
 
     public:
-      // ...
+      NodeLnk(const Data &value, NodeLnk *leftChild, NodeLnk *rightChild);
+      NodeLnk(const NodeLnk &other);
+      NodeLnk(NodeLnk &&other) noexcept;
+
+      virtual ~NodeLnk() = default;
+
+      /* ********************************************************************** */
+
+      NodeLnk &operator=(const NodeLnk &other);
+      NodeLnk &operator=(NodeLnk &&other) noexcept;
+
+      bool operator==(const NodeLnk &other) const noexcept;
+      bool operator!=(const NodeLnk &other) const noexcept;
+
+      /* ********************************************************************** */
+
+      Data &Element() noexcept override;
+      const Data &Element() const noexcept override;
+
+      bool HasLeftChild() const noexcept override;
+      bool HasRightChild() const noexcept override;
+
+      Node &LeftChild() const override;  // (concrete function must throw std::out_of_range when not existent)
+      Node &RightChild() const override; // same
     };
 
   public:

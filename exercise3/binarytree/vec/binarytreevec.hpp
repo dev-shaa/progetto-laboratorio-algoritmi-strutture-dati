@@ -18,21 +18,12 @@ namespace lasd
   template <typename Data>
   class BinaryTreeVec : virtual public BinaryTree<Data>
   {
-  private:
-    // ...
-
   protected:
-    // using BinaryTree<Data>::???;
-
-    struct NodeVec : Node
+    struct NodeVec : BinaryTree<Data>::Node
     {
-
-    private:
+    protected:
       Data value;
       ulong index;
-
-    protected:
-      // ...
 
     public:
       NodeVec(const Data &value, ulong index);
@@ -57,14 +48,15 @@ namespace lasd
       bool HasLeftChild() const noexcept override;
       bool HasRightChild() const noexcept override;
 
-      Node &LeftChild() const override;  // (concrete function must throw std::out_of_range when not existent)
-      Node &RightChild() const override; // same
+      typename BinaryTree<Data>::Node &LeftChild() const override;
+      typename BinaryTree<Data>::Node &RightChild() const override;
     };
 
-    Vector<NodeVec *> nodes;
+    Vector<NodeVec *> *nodes = nullptr;
+    ulong nodesCount = 0;
 
   public:
-    BinaryTreeVec();
+    BinaryTreeVec() = default;
     BinaryTreeVec(const LinearContainer<Data> &container);
     BinaryTreeVec(const BinaryTreeVec &other);
     BinaryTreeVec(BinaryTreeVec &&other) noexcept;
@@ -81,8 +73,10 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    Node &Root() const override; // (throw std::length_error when empty)
+    typename BinaryTree<Data>::Node &Root() const override;
 
+    bool Empty() const noexcept override;
+    ulong Size() const noexcept override;
     void Clear() override;
 
     /* ************************************************************************ */
