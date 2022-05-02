@@ -23,7 +23,7 @@ namespace lasd
   protected:
     // using BinaryTree<Data>::???;
 
-    struct NodeLnk : Node
+    struct NodeLnk : BinaryTree<Data>::Node
     {
     protected:
       Data value;
@@ -34,7 +34,7 @@ namespace lasd
       NodeLnk(const NodeLnk &other);
       NodeLnk(NodeLnk &&other) noexcept;
 
-      virtual ~NodeLnk() = default;
+      virtual ~NodeLnk();
 
       /* ********************************************************************** */
 
@@ -52,56 +52,36 @@ namespace lasd
       bool HasLeftChild() const noexcept override;
       bool HasRightChild() const noexcept override;
 
-      Node &LeftChild() const override;  // (concrete function must throw std::out_of_range when not existent)
-      Node &RightChild() const override; // same
+      typename BinaryTree<Data>::Node &LeftChild() const override;  // (concrete function must throw std::out_of_range when not existent)
+      typename BinaryTree<Data>::Node &RightChild() const override; // same
     };
 
+    NodeLnk *root = nullptr;
+    ulong nodesCount = 0;
+
   public:
-    // Default constructor
-    // BinaryTreeLnk() specifiers;
+    BinaryTreeLnk() = default;
+    BinaryTreeLnk(const LinearContainer<Data> &container);
+    BinaryTreeLnk(const BinaryTreeLnk &other);
+    BinaryTreeLnk(BinaryTreeLnk &&other) noexcept;
+
+    virtual ~BinaryTreeLnk();
 
     /* ************************************************************************ */
 
-    // Specific constructors
-    // BinaryTreeLnk(argument) specifiers; // A binary tree obtained from a LinearContainer
+    BinaryTreeLnk &operator=(const BinaryTreeLnk &other);
+    BinaryTreeLnk &operator=(BinaryTreeLnk &&other) noexcept;
+
+    bool operator==(const BinaryTreeLnk &other) const noexcept;
+    bool operator!=(const BinaryTreeLnk &other) const noexcept;
 
     /* ************************************************************************ */
 
-    // Copy constructor
-    // BinaryTreeLnk(argument) specifiers;
+    typename BinaryTree<Data>::Node &Root() const override;
 
-    // Move constructor
-    // BinaryTreeLnk(argument) specifiers;
-
-    /* ************************************************************************ */
-
-    virtual ~BinaryTreeLnk() = default;
-
-    /* ************************************************************************ */
-
-    // Copy assignment
-    // type operator=(argument) specifiers;
-
-    // Move assignment
-    // type operator=(argument) specifiers;
-
-    /* ************************************************************************ */
-
-    // Comparison operators
-    // type operator==(argument) specifiers;
-    // type operator!=(argument) specifiers;
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from BinaryTree)
-
-    // type Root() specifiers; // Override BinaryTree member (throw std::length_error when empty)
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from Container)
-
-    // type Clear() specifiers; // Override Container member
+    bool Empty() const noexcept override;
+    ulong Size() const noexcept override;
+    void Clear() override;
   };
 
   /* ************************************************************************** */

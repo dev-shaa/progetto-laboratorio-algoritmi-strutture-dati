@@ -45,21 +45,20 @@ namespace lasd
     }
 
     template <typename Data>
-    void BinaryTree<Data>::Map(MapFunctor functor, void *par)
-    {
-        MapPreOrder(functor, par);
-    }
-
-    template <typename Data>
     bool BinaryTree<Data>::Exists(const Data &value) const noexcept
     {
         return PreOrderFoldableContainer<Data>::Exists(value);
     }
 
     template <typename Data>
+    void BinaryTree<Data>::Map(MapFunctor functor, void *par)
+    {
+        MapPreOrder(functor, par);
+    }
+
+    template <typename Data>
     void BinaryTree<Data>::MapPreOrder(MapFunctor functor, void *par)
     {
-        // todo: implementation
         MapPreOrderAux(functor, par, Root());
     }
 
@@ -339,13 +338,15 @@ namespace lasd
     template <typename Data>
     BTInOrderIterator<Data>::BTInOrderIterator(const BTInOrderIterator &other)
     {
-        elements = other.elements;
+        elements = new QueueLst<Data>(other.elements);
+        tree = other.tree;
     }
 
     template <typename Data>
     BTInOrderIterator<Data>::BTInOrderIterator(BTInOrderIterator &&other) noexcept
     {
         std::swap(elements, other.elements);
+        std::swap(tree, other.tree);
     }
 
     template <typename Data>
@@ -394,7 +395,7 @@ namespace lasd
     Data &BTInOrderIterator<Data>::operator*()
     {
         if (Terminated())
-            throw std::length_error("terminated");
+            throw std::length_error("can't access iterator because it has terminated");
 
         return elements->Head();
     }

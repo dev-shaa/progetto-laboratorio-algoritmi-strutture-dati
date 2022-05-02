@@ -26,7 +26,6 @@ namespace lasd
   public:
     QueueVec();
     QueueVec(const LinearContainer<Data> &container);
-
     QueueVec(const QueueVec &other);
     QueueVec(QueueVec &&other) noexcept;
 

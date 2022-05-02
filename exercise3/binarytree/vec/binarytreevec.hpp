@@ -6,7 +6,6 @@
 
 #include "../binarytree.hpp"
 #include "../../vector/vector.hpp"
-#include "../../container/container.hpp"
 
 /* ************************************************************************** */
 
@@ -24,9 +23,10 @@ namespace lasd
     protected:
       Data value;
       ulong index;
+      Vector<NodeVec *> *nodes;
 
     public:
-      NodeVec(const Data &value, ulong index);
+      NodeVec(const Data &value, ulong index, Vector<NodeVec *> *nodes);
       NodeVec(const NodeVec &other);
       NodeVec(NodeVec &&other) noexcept;
 
@@ -52,7 +52,7 @@ namespace lasd
       typename BinaryTree<Data>::Node &RightChild() const override;
     };
 
-    Vector<NodeVec *> *nodes = nullptr;
+    Vector<NodeVec *> nodes;
     ulong nodesCount = 0;
 
   public:

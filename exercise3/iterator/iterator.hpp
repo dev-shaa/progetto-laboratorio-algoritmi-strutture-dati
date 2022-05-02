@@ -86,7 +86,10 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    virtual bool Terminated() const noexcept override; // ForwardTerminated() || BackwardTerminated()
+    virtual bool Terminated() const noexcept override
+    {
+      return ForwardTerminated() || BackwardTerminated();
+    };
     virtual bool ForwardTerminated() const noexcept = 0;
     virtual bool BackwardTerminated() const noexcept = 0;
   };
