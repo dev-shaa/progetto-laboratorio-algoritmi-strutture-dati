@@ -132,35 +132,27 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    void EnqueueData(const Data &value, const void *_, void *queue)
-    {
-        ((Queue<Data> *)queue)->Enqueue(value);
-    }
-
-    template <typename Data>
     BTPreOrderIterator<Data>::BTPreOrderIterator(const BinaryTree<Data> &tree)
     {
-        this->tree = &tree;
-        elements = new QueueLst<Data>();
-        tree.FoldPreOrder(&EnqueueData<Data>, nullptr, elements);
+        if (tree.Empty())
+            return;
+
+        root = &(tree.Root());
+        elements.Push(*root);
     }
 
     template <typename Data>
     BTPreOrderIterator<Data>::BTPreOrderIterator(const BTPreOrderIterator &other)
     {
+        root = other.root;
         elements = other.elements;
     }
 
     template <typename Data>
     BTPreOrderIterator<Data>::BTPreOrderIterator(BTPreOrderIterator &&other) noexcept
     {
+        std::swap(root, other.root);
         std::swap(elements, other.elements);
-    }
-
-    template <typename Data>
-    BTPreOrderIterator<Data>::~BTPreOrderIterator()
-    {
-        delete elements;
     }
 
     template <typename Data>
@@ -168,8 +160,8 @@ namespace lasd
     {
         if (this != &other)
         {
+            root = other.root;
             elements = other.elements;
-            tree = other.tree;
         }
 
         return *this;
@@ -180,8 +172,8 @@ namespace lasd
     {
         if (this != &other)
         {
+            std::swap(root, other.root);
             std::swap(elements, other.elements);
-            std::swap(tree, other.tree);
         }
 
         return *this;
@@ -203,9 +195,9 @@ namespace lasd
     Data &BTPreOrderIterator<Data>::operator*()
     {
         if (Terminated())
-            throw std::length_error("terminated");
+            throw std::out_of_range("terminated");
 
-        return elements->Head();
+        return elements.Top().Element();
     }
 
     template <typename Data>
@@ -214,20 +206,28 @@ namespace lasd
         if (Terminated())
             throw std::length_error("can't progess iterator because it has terminated");
 
-        elements->Dequeue();
+        typename BinaryTree<Data>::Node &current = elements.TopNPop();
+
+        if (current.HasLeftChild())
+            elements.Push(current.LeftChild());
+
+        if (current.HasRightChild())
+            elements.Push(current.RightChild());
     }
 
     template <typename Data>
     bool BTPreOrderIterator<Data>::Terminated() const noexcept
     {
-        return elements->Empty();
+        return elements.Empty();
     }
 
     template <typename Data>
     void BTPreOrderIterator<Data>::Reset() noexcept
     {
-        elements->Clear();
-        tree->FoldPreOrder(&EnqueueData<Data>, nullptr, nullptr);
+        elements.Clear();
+
+        if (root != nullptr)
+            elements.Push(*root);
     }
 
     /* ************************************************************************** */
