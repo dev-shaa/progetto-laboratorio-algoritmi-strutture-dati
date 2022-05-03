@@ -49,6 +49,8 @@ namespace lasd
 
     /* ************************************************************************ */
 
+    inline virtual bool Empty() const noexcept override;
+    inline virtual ulong Size() const noexcept override;
     void Clear() override;
   };
 
