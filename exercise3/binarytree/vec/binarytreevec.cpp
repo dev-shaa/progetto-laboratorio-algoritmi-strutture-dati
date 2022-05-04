@@ -16,6 +16,7 @@ namespace lasd
     {
         value = other.value;
         index = other.index;
+        nodes = other.nodes;
     }
 
     template <typename Data>
@@ -201,6 +202,7 @@ namespace lasd
     void BinaryTreeVec<Data>::Clear()
     {
         nodes.Clear();
+        nodesCount = 0;
     };
 
     template <typename Data>
