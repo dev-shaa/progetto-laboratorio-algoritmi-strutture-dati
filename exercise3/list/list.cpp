@@ -189,13 +189,14 @@ namespace lasd
     template <typename Data>
     inline bool List<Data>::Empty() const noexcept
     {
-        return LinearContainer<Data>::Empty();
+        return Size() == 0;
+        // return LinearContainer<Data>::Empty();
     }
 
     template <typename Data>
     inline ulong List<Data>::Size() const noexcept
     {
-        return LinearContainer<Data>::Size();
+        return size;
     }
 
     /* ************************************************************************** */

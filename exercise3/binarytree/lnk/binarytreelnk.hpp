@@ -41,6 +41,7 @@ namespace lasd
 
       /* ********************************************************************** */
 
+      Data &Element() noexcept override;
       const Data &Element() const noexcept override;
 
       bool HasLeftChild() const noexcept override;

@@ -63,6 +63,12 @@ namespace lasd
     }
 
     template <typename Data>
+    Data &BinaryTreeVec<Data>::NodeVec::Element() noexcept
+    {
+        return const_cast<Data &>(const_cast<const BinaryTreeVec<Data>::NodeVec *>(this)->Element());
+    }
+
+    template <typename Data>
     const Data &BinaryTreeVec<Data>::NodeVec::Element() const noexcept
     {
         return value;

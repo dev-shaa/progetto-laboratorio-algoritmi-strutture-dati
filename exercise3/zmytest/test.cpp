@@ -4,13 +4,14 @@
 // #include <random>
 // #include <algorithm>
 
+// #include "../vector/vector.hpp"
+// #include "../queue/vec/queuevec.hpp"
 // #include "../binarytree/binarytree.hpp"
 // #include "../binarytree/vec/binarytreevec.hpp"
-// #include "../binarytree/lnk/binarytreelnk.hpp"
-
-// /* ************************************************************************** */
 
 // using namespace std;
+
+// /* ************************************************************************** */
 
 // int getRandomIntRange(int min, int max)
 // {
@@ -78,132 +79,97 @@
 
 // /* ************************************************************************** */
 
-// enum Implementation
+// void foldInt(const int &value, const void *n, void *product)
 // {
-//     VECTOR,
-//     LIST
-// };
-
-// std::istream &operator>>(std::istream &input, Implementation &implementation)
-// {
-//     std::string stringInput;
-//     input >> stringInput;
-
-//     if (stringInput == "vector")
-//         implementation = VECTOR;
-//     else if (stringInput == "list")
-//         implementation = LIST;
-//     else
-//         throw std::istream::failure("invalid Implementation read");
-
-//     return input;
+//     if (value < *((int *)n))
+//         *((int *)product) *= value;
 // }
 
-// enum Structure
+// void mapInt(int &value, void *_)
 // {
-//     STACK,
-//     QUEUE
-// };
-
-// std::istream &operator>>(std::istream &input, Structure &structure)
-// {
-//     std::string stringInput;
-//     input >> stringInput;
-
-//     if (stringInput == "stack")
-//         structure = STACK;
-//     else if (stringInput == "queue")
-//         structure = QUEUE;
-//     else
-//         throw std::istream::failure("invalid Structure read");
-
-//     return input;
+//     value *= 3;
 // }
 
-// enum DataType
+// void foldFloat(const float &value, const void *n, void *sum)
 // {
-//     INT,
-//     FLOAT,
-//     STRING
-// };
+//     if (value > *((ulong *)n))
+//         *((float *)sum) += value;
+// }
 
-// std::istream &operator>>(std::istream &input, DataType &dataType)
+// void mapFloat(float &value, void *_)
 // {
-//     std::string stringInput;
-//     input >> stringInput;
+//     value *= value * value;
+// }
 
-//     if (stringInput == "int")
-//         dataType = INT;
-//     else if (stringInput == "float")
-//         dataType = FLOAT;
-//     else if (stringInput == "string")
-//         dataType = STRING;
-//     else
-//         throw std::istream::failure("invalid Datatype read");
+// void foldString(const string &value, const void *n, void *concatenation)
+// {
+//     if (value.size() <= *((uint *)n))
+//         (*(string *)concatenation) += value;
+// }
 
-//     return input;
+// void mapString(string &value, void *prefix)
+// {
+//     value = (*(string *)prefix) + value;
 // }
 
 // /* ************************************************************************** */
 
-// #define MANUAL_TEST_HELP "\navailable commands:\n- exit\n- create ['vector'/'list'] ['int'/'float'/'string'] [size]\n"
-
-// void printManualTestHelp()
+// template <typename Data>
+// void printMap(const Data &value, void *_)
 // {
-//     cout << MANUAL_TEST_HELP;
+//     cout << value << " ";
 // }
 
 // template <typename Data>
-// void treeTest(lasd::BinaryTree<Data> &tree)
+// void printTree(lasd::BinaryTree<Data> &tree)
 // {
-//     string command, arg;
-
-//     do
-//     {
-//         flushInputBuffer();
-//         cout << ">";
-//         cin >> command;
-
-//         try
-//         {
-//             if (command == "cancel")
-//                 break;
-//             else if (command == "help")
-//                 printStackHelp();
-//             else if (command == "print")
-//             {
-//                 cin >> arg;
-//                 // visualizzazione in ampiezza/pre-ordine/ordine/post-ordine di tutti gli elementi (effettuata per mezzo dell’opportuna funzione map)
-//             }
-//             else if (command == "exists")
-//             {
-//                 cin >> arg;
-//                 // check existance
-//             }
-//             else if (command == "fold")
-//             {
-//             }
-//             else if (command == "map")
-//             {
-//             }
-//             else
-//                 cout << command << ": no command found" << endl;
-//         }
-//         catch (const exception &e)
-//         {
-//             cerr << "an exception occurred: " << e.what() << endl;
-//         }
-//     } while (true);
-
-//     // delete stack;
+//     tree.Map(&printMap<int>, nullptr);
+//     tree.MapPreOrder(&printMap<int>, nullptr);
+//     tree.MapPostOrder(&printMap<int>, nullptr);
+//     tree.MapInOrder(&printMap<int>, nullptr);
+//     tree.MapBreadth(&printMap<int>, nullptr);
 // }
+
+// template <typename Data>
+// lasd::BinaryTree<Data> *generateTree(ulong size, function<Data()> getRandomValue)
+// {
+//     lasd::Vector<Data> vec(size);
+
+//     for (ulong i = 0; i < size; i++)
+//         vec[i] = getRandomValue();
+
+//     return new lasd::BinaryTreeVec<Data>(vec);
+// }
+
+// /* ************************************************************************** */
+
+// void foo()
+// {
+//     lasd::BinaryTreeVec<int> tree;
+
+//     cout << tree.Size() << endl;
+//     cout << tree.Empty() << endl;
+
+//     lasd::BinaryTreeVec cop(tree);
+
+//     printTree<int>(cop);
+
+//     lasd::BinaryTree<float> *f = generateTree<float>(10, &getRandomFloat);
+
+//     cout << f->Exists(2) << endl;
+// }
+
+// #define EXIT_COMMAND 0
+// #define VEC_INT 1
+// #define VEC_FLT 2
+// #define VEC_STR 3
+// #define LNK_INT 4
+// #define LNK_FLT 5
+// #define LNK_STR 6
 
 // void manualTest()
 // {
-//     string command, stringSize;
-//     Structure structure;
-//     DataType dataType;
-//     Implementation implementation;
+//     int command;
 //     ulong size;
 
 //     do
@@ -212,67 +178,56 @@
 //         {
 //             flushInputBuffer();
 
-//             printManualTestHelp();
+//             // printManualTestHelp();
 //             cout << ">";
 //             cin >> command;
 
-//             if (command == "create")
+//             if (command != EXIT_COMMAND)
 //             {
-//                 cin >> structure >> implementation >> dataType >> stringSize;
-//                 size = std::stoul(stringSize);
+//                 cin >> size;
+//                 // cin >> structure >> implementation >> dataType >> stringSize;
+//                 // size = std::stoul(stringSize);
 
-//                 switch (structure)
-//                 {
-//                 case Structure::STACK:
-//                     switch (dataType)
-//                     {
-//                     case DataType::INT:
-//                         stackTest<int>(implementation, size, &getRandomInt, &getIntFromString);
-//                         break;
+//                 // switch (structure)
+//                 // {
+//                 // case Structure::STACK:
+//                 //     switch (dataType)
+//                 //     {
+//                 //     case DataType::INT:
+//                 //         stackTest<int>(implementation, size, &getRandomInt, &getIntFromString);
+//                 //         break;
 
-//                     case DataType::FLOAT:
-//                         stackTest<float>(implementation, size, &getRandomFloat, &getFloatFromString);
-//                         break;
+//                 //     case DataType::FLOAT:
+//                 //         stackTest<float>(implementation, size, &getRandomFloat, &getFloatFromString);
+//                 //         break;
 
-//                     case DataType::STRING:
-//                         stackTest<string>(implementation, size, &getRandomString, &getSameString);
-//                         break;
-//                     }
-//                     break;
+//                 //     case DataType::STRING:
+//                 //         stackTest<string>(implementation, size, &getRandomString, &getSameString);
+//                 //         break;
+//                 //     }
+//                 //     break;
 
-//                 case Structure::QUEUE:
-//                     switch (dataType)
-//                     {
-//                     case DataType::INT:
-//                         queueTest<int>(implementation, size, &getRandomInt, &getIntFromString);
-//                         break;
+//                 // case Structure::QUEUE:
+//                 //     switch (dataType)
+//                 //     {
+//                 //     case DataType::INT:
+//                 //         queueTest<int>(implementation, size, &getRandomInt, &getIntFromString);
+//                 //         break;
 
-//                     case DataType::FLOAT:
-//                         queueTest<float>(implementation, size, &getRandomFloat, &getFloatFromString);
-//                         break;
+//                 //     case DataType::FLOAT:
+//                 //         queueTest<float>(implementation, size, &getRandomFloat, &getFloatFromString);
+//                 //         break;
 
-//                     case DataType::STRING:
-//                         queueTest<string>(implementation, size, &getRandomString, &getSameString);
-//                         break;
-//                     }
-//                     break;
-//                 }
+//                 //     case DataType::STRING:
+//                 //         queueTest<string>(implementation, size, &getRandomString, &getSameString);
+//                 //         break;
+//                 //     }
+//                 //     break;
+//                 // }
 //             }
 //         }
 //         catch (...)
 //         {
 //         }
-//     } while (command != "exit");
+//     } while (command != EXIT_COMMAND);
 // }
-
-#include "../queue/vec/queuevec.hpp"
-
-void foo()
-{
-    lasd::QueueVec<float> *que = new lasd::QueueVec<float>();
-
-    que->Enqueue(10.1f);
-    que->Enqueue(1.2f);
-
-    lasd::QueueVec<float> cop(std::move(*que));
-}

@@ -17,12 +17,6 @@ namespace lasd
     }
 
     template <typename Data>
-    Data &BinaryTree<Data>::Node::Element() noexcept
-    {
-        return const_cast<Data &>(const_cast<const BinaryTree<Data>::Node *>(this)->Element());
-    }
-
-    template <typename Data>
     inline bool BinaryTree<Data>::Node::IsLeaf() const noexcept
     {
         return !(HasLeftChild() || HasRightChild());
@@ -128,6 +122,90 @@ namespace lasd
 
     template <typename Data>
     void BinaryTree<Data>::MapBreadthAux(MapFunctor functor, void *par, Node &node)
+    {
+        // todo: implementation
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::Fold(FoldFunctor functor, const void *par, void *accumulator) const
+    {
+        FoldPreOrder(functor, par, accumulator);
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::FoldPreOrder(FoldFunctor functor, const void *par, void *accumulator) const
+    {
+        if (!Empty())
+            FoldPreOrderAux(functor, par, accumulator, Root());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::FoldPreOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const
+    {
+        // visit node
+        functor(node.Element(), par, accumulator);
+
+        // visit left
+        if (node.HasLeftChild())
+            FoldPreOrderAux(functor, par, accumulator, node.LeftChild());
+
+        // visit right
+        if (node.HasRightChild())
+            FoldPreOrderAux(functor, par, accumulator, node.RightChild());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::FoldPostOrder(FoldFunctor functor, const void *par, void *accumulator) const
+    {
+        if (!Empty())
+            FoldPostOrderAux(functor, par, accumulator, Root());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::FoldPostOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const
+    {
+        // visit left
+        if (node.HasLeftChild())
+            FoldPostOrderAux(functor, par, accumulator, node.LeftChild());
+
+        // visit right
+        if (node.HasRightChild())
+            FoldPostOrderAux(functor, par, accumulator, node.RightChild());
+
+        // visit node
+        functor(node.Element(), par, accumulator);
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::FoldInOrder(FoldFunctor functor, const void *par, void *accumulator) const
+    {
+        if (!Empty())
+            FoldInOrderAux(functor, par, accumulator, Root());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::FoldInOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const
+    {
+        // visit left
+        if (node.HasLeftChild())
+            FoldInOrderAux(functor, par, accumulator, node.LeftChild());
+
+        // visit node
+        functor(node.Element(), par, accumulator);
+
+        // visit right
+        if (node.HasRightChild())
+            FoldInOrderAux(functor, par, accumulator, node.RightChild());
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::FoldBreadth(FoldFunctor functor, const void *par, void *accumulator) const
+    {
+        // todo: implementation
+    }
+
+    template <typename Data>
+    void BinaryTree<Data>::FoldBreadthAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const
     {
         // todo: implementation
     }

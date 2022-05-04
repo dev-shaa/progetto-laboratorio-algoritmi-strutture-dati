@@ -278,7 +278,7 @@ namespace lasd
   /* ************************************************************************** */
 
   template <typename Data>
-  class BreadthMappableContainer : MappableContainer<Data>
+  class BreadthMappableContainer : virtual public MappableContainer<Data>
   {
   public:
     virtual ~BreadthMappableContainer() = default;
@@ -302,7 +302,7 @@ namespace lasd
   /* ************************************************************************** */
 
   template <typename Data>
-  class BreadthFoldableContainer : FoldableContainer<Data>
+  class BreadthFoldableContainer : virtual public FoldableContainer<Data>
   {
   public:
     virtual ~BreadthFoldableContainer() = default;

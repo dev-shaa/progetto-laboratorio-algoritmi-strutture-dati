@@ -47,7 +47,7 @@ namespace lasd
 
       /* ********************************************************************** */
 
-      virtual Data &Element() noexcept;
+      virtual Data &Element() noexcept = 0;
       virtual const Data &Element() const noexcept = 0;
 
       virtual bool IsLeaf() const noexcept;
@@ -75,9 +75,9 @@ namespace lasd
     virtual Node &Root() const = 0;
 
     bool Exists(const Data &value) const noexcept override;
-    bool Empty() const noexcept override;
-    ulong Size() const noexcept override;
-    void Clear() override;
+    bool Empty() const noexcept = 0;
+    ulong Size() const noexcept = 0;
+    void Clear() = 0;
 
     /* ************************************************************************ */
 

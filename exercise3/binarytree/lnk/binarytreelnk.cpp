@@ -85,6 +85,12 @@ namespace lasd
     }
 
     template <typename Data>
+    Data &BinaryTreeLnk<Data>::NodeLnk::Element() noexcept
+    {
+        return const_cast<Data &>(const_cast<const BinaryTreeLnk<Data>::NodeLnk *>(this)->Element());
+    }
+
+    template <typename Data>
     const Data &BinaryTreeLnk<Data>::NodeLnk::Element() const noexcept
     {
         return value;
