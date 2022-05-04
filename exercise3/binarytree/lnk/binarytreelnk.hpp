@@ -16,21 +16,16 @@ namespace lasd
   template <typename Data>
   class BinaryTreeLnk : virtual public BinaryTree<Data>
   {
-
-  private:
-    // ...
-
   protected:
-    // using BinaryTree<Data>::???;
-
     struct NodeLnk : BinaryTree<Data>::Node
     {
     protected:
       Data value;
-      NodeLnk *leftChild = nullptr, *rightChild = nullptr;
 
     public:
-      NodeLnk(const Data &value, NodeLnk *leftChild, NodeLnk *rightChild);
+      NodeLnk *leftChild = nullptr, *rightChild = nullptr;
+
+      NodeLnk(const Data &value);
       NodeLnk(const NodeLnk &other);
       NodeLnk(NodeLnk &&other) noexcept;
 
@@ -46,14 +41,13 @@ namespace lasd
 
       /* ********************************************************************** */
 
-      Data &Element() noexcept override;
       const Data &Element() const noexcept override;
 
       bool HasLeftChild() const noexcept override;
       bool HasRightChild() const noexcept override;
 
-      typename BinaryTree<Data>::Node &LeftChild() const override;  // (concrete function must throw std::out_of_range when not existent)
-      typename BinaryTree<Data>::Node &RightChild() const override; // same
+      NodeLnk &LeftChild() const override;
+      NodeLnk &RightChild() const override;
     };
 
     NodeLnk *root = nullptr;
