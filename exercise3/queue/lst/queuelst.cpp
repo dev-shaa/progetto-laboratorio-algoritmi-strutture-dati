@@ -93,6 +93,18 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
+    inline bool QueueLst<Data>::Empty() const noexcept
+    {
+        return List<Data>::Empty();
+    }
+
+    template <typename Data>
+    inline ulong QueueLst<Data>::Size() const noexcept
+    {
+        return List<Data>::Size();
+    }
+
+    template <typename Data>
     void QueueLst<Data>::Clear()
     {
         List<Data>::Clear();
