@@ -1,4 +1,6 @@
 
+#include "../queue/lst/queuelst.hpp"
+
 namespace lasd
 {
 
@@ -117,13 +119,24 @@ namespace lasd
     template <typename Data>
     void BinaryTree<Data>::MapBreadth(MapFunctor functor, void *par)
     {
-        // todo: implementation
-    }
+        if (Empty())
+            return;
 
-    template <typename Data>
-    void BinaryTree<Data>::MapBreadthAux(MapFunctor functor, void *par, Node &node)
-    {
-        // todo: implementation
+        QueueLst<Node *> queue;
+        queue.Enqueue(&(Root()));
+
+        while (!queue.Empty())
+        {
+            Node *n = queue.HeadNDequeue();
+
+            functor(n->Element(), par);
+
+            if (n->HasLeftChild())
+                queue.Enqueue(&(n->LeftChild()));
+
+            if (n->HasRightChild())
+                queue.Enqueue(&(n->RightChild()));
+        }
     }
 
     template <typename Data>
@@ -201,13 +214,24 @@ namespace lasd
     template <typename Data>
     void BinaryTree<Data>::FoldBreadth(FoldFunctor functor, const void *par, void *accumulator) const
     {
-        // todo: implementation
-    }
+        if (Empty())
+            return;
 
-    template <typename Data>
-    void BinaryTree<Data>::FoldBreadthAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const
-    {
-        // todo: implementation
+        QueueLst<Node *> queue;
+        queue.Enqueue(&(Root()));
+
+        while (!queue.Empty())
+        {
+            Node *n = queue.HeadNDequeue();
+
+            functor(n->Element(), par, accumulator);
+
+            if (n->HasLeftChild())
+                queue.Enqueue(&(n->LeftChild()));
+
+            if (n->HasRightChild())
+                queue.Enqueue(&(n->RightChild()));
+        }
     }
 
     /* ************************************************************************** */
@@ -289,11 +313,11 @@ namespace lasd
 
         typename BinaryTree<Data>::Node *current = nodes.TopNPop();
 
-        if (current->HasLeftChild())
-            nodes.Push(&(current->LeftChild()));
-
         if (current->HasRightChild())
             nodes.Push(&(current->RightChild()));
+
+        if (current->HasLeftChild())
+            nodes.Push(&(current->LeftChild()));
     }
 
     template <typename Data>
@@ -523,8 +547,8 @@ namespace lasd
 
         typename BinaryTree<Data>::Node *current = nodes.TopNPop();
 
-        if (current->HasLeftChild())
-            PushLeftSubTree(&(current->LeftChild()));
+        if (current->HasRightChild())
+            PushLeftSubTree(&(current->RightChild()));
     }
 
     template <typename Data>

@@ -103,12 +103,10 @@ namespace lasd
     void MapPreOrderAux(MapFunctor functor, void *par, Node &node);
     void MapPostOrderAux(MapFunctor functor, void *par, Node &node);
     void MapInOrderAux(MapFunctor functor, void *par, Node &node);
-    void MapBreadthAux(MapFunctor functor, void *par, Node &node);
 
     void FoldPreOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
     void FoldPostOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
     void FoldInOrderAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
-    void FoldBreadthAux(FoldFunctor functor, const void *par, void *accumulator, Node &node) const;
   };
 
   /* ************************************************************************** */
