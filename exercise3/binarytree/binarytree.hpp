@@ -117,13 +117,13 @@ namespace lasd
   class BTPreOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
-    StackLst<typename BinaryTree<Data>::Node> elements;
+    StackLst<typename BinaryTree<Data>::Node *> nodes;
     typename BinaryTree<Data>::Node *root = nullptr;
 
   public:
     BTPreOrderIterator(const BinaryTree<Data> &tree);
-    BTPreOrderIterator(const BTPreOrderIterator &iterator);
-    BTPreOrderIterator(BTPreOrderIterator &&iterator) noexcept;
+    BTPreOrderIterator(const BTPreOrderIterator &other);
+    BTPreOrderIterator(BTPreOrderIterator &&other) noexcept;
 
     virtual ~BTPreOrderIterator() = default;
 
@@ -150,7 +150,8 @@ namespace lasd
   class BTPostOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
-    StackLst<typename BinaryTree<Data>::Node> elements;
+    StackLst<typename BinaryTree<Data>::Node *> nodes;
+    StackLst<bool> expanded;
     typename BinaryTree<Data>::Node *root = nullptr;
 
   public:
@@ -183,8 +184,10 @@ namespace lasd
   class BTInOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
-    StackLst<typename BinaryTree<Data>::Node> elements;
+    StackLst<typename BinaryTree<Data>::Node *> nodes;
     typename BinaryTree<Data>::Node *root = nullptr;
+
+    void PushLeftSubTree(typename BinaryTree<Data>::Node *root);
 
   public:
     BTInOrderIterator(const BinaryTree<Data> &tree);
@@ -216,13 +219,13 @@ namespace lasd
   class BTBreadthIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
-    QueueLst<typename BinaryTree<Data>::Node> elements;
+    QueueLst<typename BinaryTree<Data>::Node *> nodes;
     typename BinaryTree<Data>::Node *root = nullptr;
 
   public:
     BTBreadthIterator(const BinaryTree<Data> &tree);
-    BTBreadthIterator(const BTBreadthIterator &iterator);
-    BTBreadthIterator(BTBreadthIterator &&iterator) noexcept;
+    BTBreadthIterator(const BTBreadthIterator &other);
+    BTBreadthIterator(BTBreadthIterator &&other) noexcept;
 
     virtual ~BTBreadthIterator() = default;
 
