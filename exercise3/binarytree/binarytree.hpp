@@ -135,7 +135,7 @@ namespace lasd
     bool operator==(const BTPreOrderIterator &other) const noexcept;
     bool operator!=(const BTPreOrderIterator &other) const noexcept;
 
-    Data &operator*() override;
+    Data &operator*() const override;
     void operator++() override;
 
     /* ************************************************************************ */
@@ -169,7 +169,7 @@ namespace lasd
     bool operator==(const BTPostOrderIterator &other) const noexcept;
     bool operator!=(const BTPostOrderIterator &other) const noexcept;
 
-    Data &operator*() override;
+    Data &operator*() const override;
     void operator++() override;
 
     /* ************************************************************************ */
@@ -204,7 +204,7 @@ namespace lasd
     bool operator==(const BTInOrderIterator &other) const noexcept;
     bool operator!=(const BTInOrderIterator &other) const noexcept;
 
-    Data &operator*() override;
+    Data &operator*() const override;
     void operator++() override;
 
     /* ************************************************************************ */
@@ -237,7 +237,7 @@ namespace lasd
     bool operator==(const BTBreadthIterator &other) const noexcept;
     bool operator!=(const BTBreadthIterator &other) const noexcept;
 
-    Data &operator*() override;
+    Data &operator*() const override;
     void operator++() override;
 
     /* ************************************************************************ */

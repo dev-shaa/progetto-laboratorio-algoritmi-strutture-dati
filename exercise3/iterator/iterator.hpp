@@ -23,7 +23,7 @@ namespace lasd
     bool operator==(const Iterator &other) const noexcept = delete;
     bool operator!=(const Iterator &other) const noexcept = delete;
 
-    virtual Data &operator*() = 0;
+    virtual Data &operator*() const = 0;
 
     /* ************************************************************************ */
 

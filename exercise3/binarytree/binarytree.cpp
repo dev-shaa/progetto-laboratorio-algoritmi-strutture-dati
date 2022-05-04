@@ -57,13 +57,15 @@ namespace lasd
     template <typename Data>
     void BinaryTree<Data>::MapPreOrder(MapFunctor functor, void *par)
     {
-        MapPreOrderAux(functor, par, Root());
+        if (!Empty())
+            MapPreOrderAux(functor, par, Root());
     }
 
     template <typename Data>
     void BinaryTree<Data>::MapPreOrderAux(MapFunctor functor, void *par, Node &node)
     {
         // visit node
+        functor(node.Element(), par);
 
         // visit left
         if (node.HasLeftChild())
@@ -77,8 +79,8 @@ namespace lasd
     template <typename Data>
     void BinaryTree<Data>::MapPostOrder(MapFunctor functor, void *par)
     {
-        // todo: implementation
-        MapPostOrderAux(functor, par, Root());
+        if (!Empty())
+            MapPostOrderAux(functor, par, Root());
     }
 
     template <typename Data>
@@ -93,12 +95,14 @@ namespace lasd
             MapPostOrderAux(functor, par, node.RightChild());
 
         // visit node
+        functor(node.Element(), par);
     }
 
     template <typename Data>
     void BinaryTree<Data>::MapInOrder(MapFunctor functor, void *par)
     {
-        // todo: implementation
+        if (!Empty())
+            MapInOrderAux(functor, par, Root());
     }
 
     template <typename Data>
@@ -109,6 +113,7 @@ namespace lasd
             MapInOrderAux(functor, par, node.LeftChild());
 
         // visit node
+        functor(node.Element(), par);
 
         // visit right
         if (node.HasRightChild())
@@ -190,7 +195,7 @@ namespace lasd
     }
 
     template <typename Data>
-    Data &BTPreOrderIterator<Data>::operator*()
+    Data &BTPreOrderIterator<Data>::operator*() const
     {
         if (Terminated())
             throw std::out_of_range("terminated");
@@ -292,7 +297,7 @@ namespace lasd
     }
 
     template <typename Data>
-    Data &BTPostOrderIterator<Data>::operator*()
+    Data &BTPostOrderIterator<Data>::operator*() const
     {
         if (Terminated())
             throw std::length_error("terminated");
@@ -424,7 +429,7 @@ namespace lasd
     }
 
     template <typename Data>
-    Data &BTInOrderIterator<Data>::operator*()
+    Data &BTInOrderIterator<Data>::operator*() const
     {
         if (Terminated())
             throw std::out_of_range("terminated");
@@ -520,7 +525,7 @@ namespace lasd
     }
 
     template <typename Data>
-    Data &BTBreadthIterator<Data>::operator*()
+    Data &BTBreadthIterator<Data>::operator*() const
     {
         if (Terminated())
             throw std::length_error("terminated");
