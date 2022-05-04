@@ -42,7 +42,7 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    const Data &Top() const override; // returns top but unmodifiable
+    const Data &Top() const override;
     Data &Top() override;
     void Pop() override;
     Data &TopNPop() override;
@@ -51,8 +51,8 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    inline virtual bool Empty() const noexcept override;
-    inline virtual ulong Size() const noexcept override;
+    bool Empty() const noexcept override;
+    ulong Size() const noexcept override;
     void Clear();
 
   protected:
