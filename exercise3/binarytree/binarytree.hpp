@@ -6,7 +6,7 @@
 
 #include "../container/container.hpp"
 #include "../iterator/iterator.hpp"
-#include "../queue/queue.hpp"
+#include "../queue/lst/queuelst.hpp"
 #include "../stack/lst/stacklst.hpp"
 
 /* ************************************************************************** */
@@ -26,9 +26,6 @@ namespace lasd
                      virtual public InOrderFoldableContainer<Data>,
                      virtual public BreadthFoldableContainer<Data>
   {
-  protected:
-    // using InOrder/BreadthMappableContainer<Data>::???;
-
   public:
     struct Node
     {
@@ -76,7 +73,11 @@ namespace lasd
     /* ************************************************************************ */
 
     virtual Node &Root() const = 0;
+
     bool Exists(const Data &value) const noexcept override;
+    bool Empty() const noexcept override;
+    ulong Size() const noexcept override;
+    void Clear() override;
 
     /* ************************************************************************ */
 
@@ -116,7 +117,7 @@ namespace lasd
   class BTPreOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
-    StackLst<typename BinaryTree<Data>::Node &> elements;
+    StackLst<typename BinaryTree<Data>::Node> elements;
     typename BinaryTree<Data>::Node *root = nullptr;
 
   public:
@@ -149,15 +150,15 @@ namespace lasd
   class BTPostOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
-    Queue<Data> *elements = nullptr;
-    const BinaryTree<Data> *tree = nullptr;
+    StackLst<typename BinaryTree<Data>::Node> elements;
+    typename BinaryTree<Data>::Node *root = nullptr;
 
   public:
     BTPostOrderIterator(const BinaryTree<Data> &tree);
     BTPostOrderIterator(const BTPostOrderIterator &other);
     BTPostOrderIterator(BTPostOrderIterator &&other) noexcept;
 
-    virtual ~BTPostOrderIterator();
+    virtual ~BTPostOrderIterator() = default;
 
     /* ************************************************************************ */
 
@@ -182,15 +183,15 @@ namespace lasd
   class BTInOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
-    Queue<Data> *elements = nullptr;
-    const BinaryTree<Data> *tree = nullptr;
+    StackLst<typename BinaryTree<Data>::Node> elements;
+    typename BinaryTree<Data>::Node *root = nullptr;
 
   public:
     BTInOrderIterator(const BinaryTree<Data> &tree);
     BTInOrderIterator(const BTInOrderIterator &iterator);
     BTInOrderIterator(BTInOrderIterator &&iterator) noexcept;
 
-    virtual ~BTInOrderIterator();
+    virtual ~BTInOrderIterator() = default;
 
     /* ************************************************************************ */
 
@@ -215,15 +216,15 @@ namespace lasd
   class BTBreadthIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
-    Queue<Data> *elements = nullptr;
-    const BinaryTree<Data> *tree = nullptr;
+    QueueLst<typename BinaryTree<Data>::Node> elements;
+    typename BinaryTree<Data>::Node *root = nullptr;
 
   public:
     BTBreadthIterator(const BinaryTree<Data> &tree);
     BTBreadthIterator(const BTBreadthIterator &iterator);
     BTBreadthIterator(BTBreadthIterator &&iterator) noexcept;
 
-    virtual ~BTBreadthIterator();
+    virtual ~BTBreadthIterator() = default;
 
     /* ************************************************************************ */
 

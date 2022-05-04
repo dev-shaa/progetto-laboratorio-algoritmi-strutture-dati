@@ -1,6 +1,4 @@
 
-#include "../queue/lst/queuelst.hpp"
-
 namespace lasd
 {
 
@@ -35,7 +33,7 @@ namespace lasd
     template <typename Data>
     bool BinaryTree<Data>::operator==(const BinaryTree<Data> &other) const noexcept
     {
-        return Root() == other.Root();
+        return (Empty() && other.Empty()) || (!Empty() && !other.Empty() && Root() == other.Root());
     }
 
     template <typename Data>
@@ -235,27 +233,20 @@ namespace lasd
     template <typename Data>
     BTPostOrderIterator<Data>::BTPostOrderIterator(const BinaryTree<Data> &tree)
     {
-        this->tree = &tree;
-        elements = new QueueLst<Data>();
-        tree.FoldPostOrder(&EnqueueData<Data>, nullptr, elements);
     }
 
     template <typename Data>
     BTPostOrderIterator<Data>::BTPostOrderIterator(const BTPostOrderIterator &other)
     {
         elements = other.elements;
+        root = other.root;
     }
 
     template <typename Data>
     BTPostOrderIterator<Data>::BTPostOrderIterator(BTPostOrderIterator &&other) noexcept
     {
         std::swap(elements, other.elements);
-    }
-
-    template <typename Data>
-    BTPostOrderIterator<Data>::~BTPostOrderIterator()
-    {
-        delete elements;
+        std::swap(root, other.root);
     }
 
     template <typename Data>
@@ -264,7 +255,7 @@ namespace lasd
         if (this != &other)
         {
             elements = other.elements;
-            tree = other.tree;
+            root = other.root;
         }
 
         return *this;
@@ -275,8 +266,8 @@ namespace lasd
     {
         if (this != &other)
         {
+            std::swap(root, other.root);
             std::swap(elements, other.elements);
-            std::swap(tree, other.tree);
         }
 
         return *this;
@@ -300,7 +291,7 @@ namespace lasd
         if (Terminated())
             throw std::length_error("terminated");
 
-        return elements->Head();
+        return elements.Top().Element();
     }
 
     template <typename Data>
@@ -309,50 +300,60 @@ namespace lasd
         if (Terminated())
             throw std::length_error("can't progess iterator because it has terminated");
 
-        elements->Dequeue();
+        // ++
     }
 
     template <typename Data>
     bool BTPostOrderIterator<Data>::Terminated() const noexcept
     {
-        return elements->Empty();
+        return true;
     }
 
     template <typename Data>
     void BTPostOrderIterator<Data>::Reset() noexcept
     {
-        elements->Clear();
-        tree->FoldPostOrder(&EnqueueData<Data>, nullptr, nullptr);
+        elements.Clear();
     }
 
     /* ************************************************************************** */
 
     template <typename Data>
+    void PushLeftSubTree(typename BinaryTree<Data>::Node *root, StackLst<typename BinaryTree<Data>::Node> stack)
+    {
+        if (root == nullptr)
+            return;
+
+        stack.Push(*root);
+
+        while (root->HasLeftChild())
+        {
+            root = &(root->LeftChild());
+            stack.Push(*root);
+        }
+    }
+
+    template <typename Data>
     BTInOrderIterator<Data>::BTInOrderIterator(const BinaryTree<Data> &tree)
     {
-        this->tree = &tree;
-        elements = new QueueLst<Data>();
-        tree.FoldPostOrder(&EnqueueData<Data>, nullptr, elements);
+        if (tree.Empty())
+            return;
+
+        root = &(tree.Root());
+        PushLeftSubTree<Data>(root, elements);
     }
 
     template <typename Data>
     BTInOrderIterator<Data>::BTInOrderIterator(const BTInOrderIterator &other)
     {
-        elements = new QueueLst<Data>(other.elements);
-        tree = other.tree;
+        root = other.root;
+        elements = other.elements;
     }
 
     template <typename Data>
     BTInOrderIterator<Data>::BTInOrderIterator(BTInOrderIterator &&other) noexcept
     {
+        std::swap(root, other.root);
         std::swap(elements, other.elements);
-        std::swap(tree, other.tree);
-    }
-
-    template <typename Data>
-    BTInOrderIterator<Data>::~BTInOrderIterator()
-    {
-        delete elements;
     }
 
     template <typename Data>
@@ -360,8 +361,8 @@ namespace lasd
     {
         if (this != &other)
         {
+            root = other.root;
             elements = other.elements;
-            tree = other.tree;
         }
 
         return *this;
@@ -372,8 +373,8 @@ namespace lasd
     {
         if (this != &other)
         {
+            std::swap(root, other.root);
             std::swap(elements, other.elements);
-            std::swap(tree, other.tree);
         }
 
         return *this;
@@ -395,9 +396,9 @@ namespace lasd
     Data &BTInOrderIterator<Data>::operator*()
     {
         if (Terminated())
-            throw std::length_error("can't access iterator because it has terminated");
+            throw std::out_of_range("terminated");
 
-        return elements->Head();
+        return elements.Top().Element();
     }
 
     template <typename Data>
@@ -406,20 +407,23 @@ namespace lasd
         if (Terminated())
             throw std::length_error("can't progess iterator because it has terminated");
 
-        elements->Dequeue();
+        typename BinaryTree<Data>::Node *current = &(elements.TopNPop());
+
+        if (current->HasLeftChild())
+            PushLeftSubTree<Data>(&(current->LeftChild()), elements);
     }
 
     template <typename Data>
     bool BTInOrderIterator<Data>::Terminated() const noexcept
     {
-        return elements->Empty();
+        return elements.Empty();
     }
 
     template <typename Data>
     void BTInOrderIterator<Data>::Reset() noexcept
     {
-        elements->Clear();
-        tree->FoldPostOrder(&EnqueueData<Data>, nullptr, nullptr);
+        elements.Clear();
+        PushLeftSubTree<Data>(root, elements);
     }
 
     /* ************************************************************************** */
@@ -427,27 +431,25 @@ namespace lasd
     template <typename Data>
     BTBreadthIterator<Data>::BTBreadthIterator(const BinaryTree<Data> &tree)
     {
-        this->tree = &tree;
-        elements = new QueueLst<Data>();
-        tree.FoldPostOrder(&EnqueueData<Data>, nullptr, elements);
+        if (tree.Empty())
+            return;
+
+        root = &(tree.Root());
+        elements.Enqueue(*root);
     }
 
     template <typename Data>
     BTBreadthIterator<Data>::BTBreadthIterator(const BTBreadthIterator &other)
     {
         elements = other.elements;
+        root = other.root;
     }
 
     template <typename Data>
     BTBreadthIterator<Data>::BTBreadthIterator(BTBreadthIterator &&other) noexcept
     {
         std::swap(elements, other.elements);
-    }
-
-    template <typename Data>
-    BTBreadthIterator<Data>::~BTBreadthIterator()
-    {
-        delete elements;
+        std::swap(root, other.root);
     }
 
     template <typename Data>
@@ -456,7 +458,7 @@ namespace lasd
         if (this != &other)
         {
             elements = other.elements;
-            tree = other.tree;
+            root = other.root;
         }
 
         return *this;
@@ -468,7 +470,7 @@ namespace lasd
         if (this != &other)
         {
             std::swap(elements, other.elements);
-            std::swap(tree, other.tree);
+            std::swap(root, other.root);
         }
 
         return *this;
@@ -492,7 +494,7 @@ namespace lasd
         if (Terminated())
             throw std::length_error("terminated");
 
-        return elements->Head();
+        return elements.Head().Element();
     }
 
     template <typename Data>
@@ -501,20 +503,28 @@ namespace lasd
         if (Terminated())
             throw std::length_error("can't progess iterator because it has terminated");
 
-        elements->Dequeue();
+        typename BinaryTree<Data>::Node *current = &(elements.HeadNDequeue());
+
+        if (current->HasLeftChild())
+            elements.Enqueue(current->LeftChild());
+
+        if (current->HasRightChild())
+            elements.Enqueue(current->RightChild());
     }
 
     template <typename Data>
     bool BTBreadthIterator<Data>::Terminated() const noexcept
     {
-        return elements->Empty();
+        return elements.Empty();
     }
 
     template <typename Data>
     void BTBreadthIterator<Data>::Reset() noexcept
     {
-        elements->Clear();
-        tree->FoldPostOrder(&EnqueueData<Data>, nullptr, nullptr);
+        elements.Clear();
+
+        if (root != nullptr)
+            elements.Enqueue(*root);
     }
 
 }
