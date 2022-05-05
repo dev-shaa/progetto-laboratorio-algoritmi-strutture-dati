@@ -99,6 +99,10 @@ namespace lasd
     void FoldPreOrder(FoldFunctor functor, const void *par, void *accumulator) const override;
     void FoldPostOrder(FoldFunctor functor, const void *par, void *accumulator) const override;
 
+  private:
+    void InsertNodeAtFront(Node *node) noexcept;
+    void InsertNodeAtBack(Node *node) noexcept;
+
   protected:
     void AuxMapPostOrder(MapFunctor functor, void *par, Node *node);
     void AuxFoldPostOrder(FoldFunctor functor, const void *par, void *accumulator, Node *node) const;

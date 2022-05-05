@@ -53,7 +53,7 @@ namespace lasd
 
     bool Empty() const noexcept override;
     ulong Size() const noexcept override;
-    void Clear();
+    void Clear() override;
 
   protected:
     void Expand();

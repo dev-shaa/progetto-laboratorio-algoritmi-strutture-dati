@@ -190,7 +190,6 @@ namespace lasd
     inline bool List<Data>::Empty() const noexcept
     {
         return Size() == 0;
-        // return LinearContainer<Data>::Empty();
     }
 
     template <typename Data>
@@ -202,11 +201,10 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    void List<Data>::InsertAtFront(const Data &value)
+    void List<Data>::InsertNodeAtFront(Node *node) noexcept
     {
-        Node *newStart = new Node(value);
-        newStart->next = start;
-        start = newStart;
+        node->next = start;
+        start = node;
 
         if (start->next == nullptr)
             end = start;
@@ -215,16 +213,15 @@ namespace lasd
     }
 
     template <typename Data>
+    void List<Data>::InsertAtFront(const Data &value)
+    {
+        InsertNodeAtFront(new Node(value));
+    }
+
+    template <typename Data>
     void List<Data>::InsertAtFront(Data &&value) noexcept
     {
-        Node *newStart = new Node(std::move(value));
-        newStart->next = start;
-        start = newStart;
-
-        if (start->next == nullptr)
-            end = start;
-
-        size++;
+        InsertNodeAtFront(new Node(std::move(value)));
     }
 
     template <typename Data>
@@ -258,35 +255,29 @@ namespace lasd
     }
 
     template <typename Data>
+    void List<Data>::InsertNodeAtBack(Node *node) noexcept
+    {
+        end->next = node;
+        end = node;
+        size++;
+    }
+
+    template <typename Data>
     void List<Data>::InsertAtBack(const Data &value)
     {
         if (Empty())
-        {
             InsertAtFront(value);
-        }
         else
-        {
-            Node *newNode = new Node(value);
-            end->next = newNode;
-            end = newNode;
-            size++;
-        }
+            InsertNodeAtBack(new Node(value));
     }
 
     template <typename Data>
     void List<Data>::InsertAtBack(Data &&value) noexcept
     {
         if (Empty())
-        {
             InsertAtFront(std::move(value));
-        }
         else
-        {
-            Node *newNode = new Node(std::move(value));
-            end->next = newNode;
-            end = newNode;
-            size++;
-        }
+            InsertNodeAtBack(new Node(std::move(value)));
     }
 
     /* ************************************************************************** */
