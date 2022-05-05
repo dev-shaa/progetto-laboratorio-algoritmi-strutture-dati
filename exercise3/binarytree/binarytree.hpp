@@ -152,6 +152,8 @@ namespace lasd
     StackLst<bool> expanded;
     typename BinaryTree<Data>::Node *root = nullptr;
 
+    void PushElements();
+
   public:
     BTPostOrderIterator(const BinaryTree<Data> &tree);
     BTPostOrderIterator(const BTPostOrderIterator &other);

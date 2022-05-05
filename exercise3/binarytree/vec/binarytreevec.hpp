@@ -28,14 +28,14 @@ namespace lasd
     public:
       NodeVec(const Data &value, ulong index, Vector<NodeVec *> *nodes);
       NodeVec(const NodeVec &other);
-      NodeVec(NodeVec &&other) noexcept;
+      NodeVec(NodeVec &&other) noexcept = delete;
 
       virtual ~NodeVec() = default;
 
       /* ********************************************************************** */
 
       NodeVec &operator=(const NodeVec &other);
-      NodeVec &operator=(NodeVec &&other) noexcept;
+      NodeVec &operator=(NodeVec &&other) noexcept = delete;
 
       bool operator==(const NodeVec &other) const noexcept;
       bool operator!=(const NodeVec &other) const noexcept;

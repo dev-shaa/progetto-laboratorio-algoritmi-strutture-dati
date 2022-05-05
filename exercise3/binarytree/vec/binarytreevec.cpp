@@ -20,31 +20,13 @@ namespace lasd
     }
 
     template <typename Data>
-    BinaryTreeVec<Data>::NodeVec::NodeVec(BinaryTreeVec<Data>::NodeVec &&other) noexcept
-    {
-        std::swap(value, other.value);
-        std::swap(index, other.index);
-    }
-
-    template <typename Data>
     typename BinaryTreeVec<Data>::NodeVec &BinaryTreeVec<Data>::NodeVec::operator=(const BinaryTreeVec<Data>::NodeVec &other)
     {
         if (this != &other)
         {
             value = other.value;
             index = other.index;
-        }
-
-        return *this;
-    }
-
-    template <typename Data>
-    typename BinaryTreeVec<Data>::NodeVec &BinaryTreeVec<Data>::NodeVec::operator=(BinaryTreeVec<Data>::NodeVec &&other) noexcept
-    {
-        if (this != &other)
-        {
-            std::swap(value, other.value);
-            std::swap(index, other.index);
+            nodes = other.nodes;
         }
 
         return *this;
@@ -75,14 +57,14 @@ namespace lasd
     }
 
     template <typename Data>
-    inline bool BinaryTreeVec<Data>::NodeVec::HasLeftChild() const noexcept
+    bool BinaryTreeVec<Data>::NodeVec::HasLeftChild() const noexcept
     {
         ulong i = 2 * index + 1;
         return i < nodes->Size() && (*nodes)[i] != nullptr;
     }
 
     template <typename Data>
-    inline bool BinaryTreeVec<Data>::NodeVec::HasRightChild() const noexcept
+    bool BinaryTreeVec<Data>::NodeVec::HasRightChild() const noexcept
     {
         ulong i = 2 * index + 2;
         return i < nodes->Size() && (*nodes)[i] != nullptr;
@@ -92,7 +74,7 @@ namespace lasd
     typename BinaryTree<Data>::Node &BinaryTreeVec<Data>::NodeVec::LeftChild() const
     {
         if (!HasLeftChild())
-            throw std::out_of_range("accessing non-existant child");
+            throw std::out_of_range("trying to access non-existant left child");
 
         return *((*nodes)[2 * index + 1]);
     }
@@ -101,7 +83,7 @@ namespace lasd
     typename BinaryTree<Data>::Node &BinaryTreeVec<Data>::NodeVec::RightChild() const
     {
         if (!HasRightChild())
-            throw std::out_of_range("accessing non-existant child");
+            throw std::out_of_range("trying to access non-existant right child");
 
         return *((*nodes)[2 * index + 2]);
     }

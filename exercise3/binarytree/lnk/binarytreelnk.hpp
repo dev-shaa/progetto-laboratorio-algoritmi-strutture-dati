@@ -27,14 +27,14 @@ namespace lasd
 
       NodeLnk(const Data &value);
       NodeLnk(const NodeLnk &other);
-      NodeLnk(NodeLnk &&other) noexcept;
+      NodeLnk(NodeLnk &&other) noexcept = delete;
 
       virtual ~NodeLnk();
 
       /* ********************************************************************** */
 
       NodeLnk &operator=(const NodeLnk &other);
-      NodeLnk &operator=(NodeLnk &&other) noexcept;
+      NodeLnk &operator=(NodeLnk &&other) noexcept = delete;
 
       bool operator==(const NodeLnk &other) const noexcept;
       bool operator!=(const NodeLnk &other) const noexcept;

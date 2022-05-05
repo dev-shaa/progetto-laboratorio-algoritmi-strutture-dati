@@ -127,15 +127,15 @@ namespace lasd
 
         while (!queue.Empty())
         {
-            Node *n = queue.HeadNDequeue();
+            Node *node = queue.HeadNDequeue();
 
-            functor(n->Element(), par);
+            functor(node->Element(), par);
 
-            if (n->HasLeftChild())
-                queue.Enqueue(&(n->LeftChild()));
+            if (node->HasLeftChild())
+                queue.Enqueue(&(node->LeftChild()));
 
-            if (n->HasRightChild())
-                queue.Enqueue(&(n->RightChild()));
+            if (node->HasRightChild())
+                queue.Enqueue(&(node->RightChild()));
         }
     }
 
@@ -222,15 +222,15 @@ namespace lasd
 
         while (!queue.Empty())
         {
-            Node *n = queue.HeadNDequeue();
+            Node *node = queue.HeadNDequeue();
 
-            functor(n->Element(), par, accumulator);
+            functor(node->Element(), par, accumulator);
 
-            if (n->HasLeftChild())
-                queue.Enqueue(&(n->LeftChild()));
+            if (node->HasLeftChild())
+                queue.Enqueue(&(node->LeftChild()));
 
-            if (n->HasRightChild())
-                queue.Enqueue(&(n->RightChild()));
+            if (node->HasRightChild())
+                queue.Enqueue(&(node->RightChild()));
         }
     }
 
@@ -338,6 +338,30 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
+    void BTPostOrderIterator<Data>::PushElements()
+    {
+        while (!expanded.Top())
+        {
+            expanded.Pop();
+            expanded.Push(true);
+
+            typename BinaryTree<Data>::Node *current = nodes.Top();
+
+            if (current->HasRightChild())
+            {
+                nodes.Push(&(current->RightChild()));
+                expanded.Push(false);
+            }
+
+            if (current->HasLeftChild())
+            {
+                nodes.Push(&(current->LeftChild()));
+                expanded.Push(false);
+            }
+        }
+    }
+
+    template <typename Data>
     BTPostOrderIterator<Data>::BTPostOrderIterator(const BinaryTree<Data> &tree)
     {
         if (tree.Empty())
@@ -346,20 +370,24 @@ namespace lasd
         root = &(tree.Root());
         nodes.Push(root);
         expanded.Push(false);
+
+        PushElements();
     }
 
     template <typename Data>
     BTPostOrderIterator<Data>::BTPostOrderIterator(const BTPostOrderIterator &other)
     {
-        nodes = other.nodes;
         root = other.root;
+        nodes = other.nodes;
+        expanded = other.expanded;
     }
 
     template <typename Data>
     BTPostOrderIterator<Data>::BTPostOrderIterator(BTPostOrderIterator &&other) noexcept
     {
-        std::swap(nodes, other.nodes);
         std::swap(root, other.root);
+        std::swap(nodes, other.nodes);
+        std::swap(expanded, other.expanded);
     }
 
     template <typename Data>
@@ -367,8 +395,9 @@ namespace lasd
     {
         if (this != &other)
         {
-            nodes = other.nodes;
             root = other.root;
+            nodes = other.nodes;
+            expanded = other.expanded;
         }
 
         return *this;
@@ -381,6 +410,7 @@ namespace lasd
         {
             std::swap(root, other.root);
             std::swap(nodes, other.nodes);
+            std::swap(expanded, other.expanded);
         }
 
         return *this;
@@ -413,26 +443,7 @@ namespace lasd
         if (Terminated())
             throw std::length_error("can't progess iterator because it has terminated");
 
-        while (!expanded.Top())
-        {
-            expanded.Pop();
-            expanded.Push(true);
-
-            typename BinaryTree<Data>::Node *current = nodes.Top();
-
-            if (current->HasRightChild())
-            {
-                nodes.Push(&(current->RightChild()));
-                expanded.Push(false);
-            }
-
-            if (current->HasLeftChild())
-            {
-                nodes.Push(&(current->LeftChild()));
-                expanded.Push(false);
-            }
-        }
-
+        PushElements();
         expanded.Pop();
         nodes.Pop();
     }

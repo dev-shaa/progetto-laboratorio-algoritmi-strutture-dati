@@ -25,14 +25,6 @@ namespace lasd
     }
 
     template <typename Data>
-    BinaryTreeLnk<Data>::NodeLnk::NodeLnk(BinaryTreeLnk<Data>::NodeLnk &&other) noexcept
-    {
-        std::swap(value, other.value);
-        std::swap(leftChild, other.leftChild);
-        std::swap(rightChild, other.rightChild);
-    }
-
-    template <typename Data>
     BinaryTreeLnk<Data>::NodeLnk::~NodeLnk()
     {
         delete leftChild;
@@ -54,19 +46,6 @@ namespace lasd
 
             if (other.HasRightChild())
                 rightChild = new NodeLnk(other.RightChild());
-        }
-
-        return *this;
-    }
-
-    template <typename Data>
-    typename BinaryTreeLnk<Data>::NodeLnk &BinaryTreeLnk<Data>::NodeLnk::operator=(BinaryTreeLnk<Data>::NodeLnk &&other) noexcept
-    {
-        if (this != &other)
-        {
-            std::swap(value, other.value);
-            std::swap(leftChild, other.leftChild);
-            std::swap(rightChild, other.rightChild);
         }
 
         return *this;
@@ -112,7 +91,7 @@ namespace lasd
     typename BinaryTreeLnk<Data>::NodeLnk &BinaryTreeLnk<Data>::NodeLnk::LeftChild() const
     {
         if (!HasLeftChild())
-            throw std::out_of_range("node doesn't have a left child");
+            throw std::out_of_range("trying to access non-existant left child");
 
         return *leftChild;
     }
@@ -121,7 +100,7 @@ namespace lasd
     typename BinaryTreeLnk<Data>::NodeLnk &BinaryTreeLnk<Data>::NodeLnk::RightChild() const
     {
         if (!HasRightChild())
-            throw std::out_of_range("node doesn't have a right child");
+            throw std::out_of_range("trying to access non-existant right child");
 
         return *rightChild;
     }
@@ -188,7 +167,7 @@ namespace lasd
     template <typename Data>
     BinaryTreeLnk<Data> &BinaryTreeLnk<Data>::operator=(const BinaryTreeLnk<Data> &other)
     {
-        if (this != &other && !other.Empty())
+        if (this != &other)
         {
             delete root;
             root = other.Empty() ? nullptr : new NodeLnk(*(other.root));
