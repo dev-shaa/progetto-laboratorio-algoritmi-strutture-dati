@@ -18,10 +18,10 @@ namespace lasd
         value = other.value;
 
         if (other.HasLeftChild())
-            leftChild = new NodeLnk(*(other.leftChild));
+            leftChild = new NodeLnk(other.LeftChild());
 
         if (other.HasRightChild())
-            rightChild = new NodeLnk(*(other.rightChild));
+            rightChild = new NodeLnk(other.RightChild());
     }
 
     template <typename Data>
@@ -50,10 +50,10 @@ namespace lasd
             value = other.value;
 
             if (other.HasLeftChild())
-                leftChild = new NodeLnk(*(other.leftChild));
+                leftChild = new NodeLnk(other.LeftChild());
 
             if (other.HasRightChild())
-                rightChild = new NodeLnk(*(other.rightChild));
+                rightChild = new NodeLnk(other.RightChild());
         }
 
         return *this;
@@ -157,8 +157,6 @@ namespace lasd
 
             parent->leftChild = leftChild;
             parent->rightChild = rightChild;
-
-            queue.Dequeue();
         }
 
         nodesCount = container.Size();
@@ -190,9 +188,10 @@ namespace lasd
     template <typename Data>
     BinaryTreeLnk<Data> &BinaryTreeLnk<Data>::operator=(const BinaryTreeLnk<Data> &other)
     {
-        if (this != &other && other.Empty())
+        if (this != &other && !other.Empty())
         {
-            root = new NodeLnk(*(other.root));
+            delete root;
+            root = other.Empty() ? nullptr : new NodeLnk(*(other.root));
             nodesCount = other.nodesCount;
         }
 
