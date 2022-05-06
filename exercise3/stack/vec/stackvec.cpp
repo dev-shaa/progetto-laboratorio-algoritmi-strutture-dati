@@ -128,7 +128,7 @@ namespace lasd
     void StackVec<Data>::Expand()
     {
         if (top == size - 1)
-            Vector<Data>::Resize(size * 2);
+            Vector<Data>::Resize(std::max(size * 2, DEFAULT_STACK_SIZE));
     }
 
     template <typename Data>
