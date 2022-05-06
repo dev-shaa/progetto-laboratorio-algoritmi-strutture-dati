@@ -49,7 +49,7 @@ namespace lasd
     template <typename Data>
     bool QueueLst<Data>::operator!=(const QueueLst &other) const noexcept
     {
-        return !(*this == other);
+        return List<Data>::operator!=(other);
     }
 
     /* ************************************************************************** */
@@ -61,9 +61,9 @@ namespace lasd
     }
 
     template <typename Data>
-    inline Data &QueueLst<Data>::Head()
+    Data &QueueLst<Data>::Head()
     {
-        return const_cast<Data &>(const_cast<const QueueLst<Data> *>(this)->Head());
+        return List<Data>::Front();
     }
 
     template <typename Data>

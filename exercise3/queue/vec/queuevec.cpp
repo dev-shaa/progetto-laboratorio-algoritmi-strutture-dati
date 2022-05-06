@@ -16,27 +16,19 @@ namespace lasd
     QueueVec<Data>::QueueVec(const LinearContainer<Data> &container) : Vector<Data>(std::max(container.Size() + 1, DEFAULT_QUEUE_SIZE))
     {
         for (ulong i = 0; i < container.Size(); i++)
-        {
-            tail = (tail + 1) % size;
-            array[tail] = container[i];
-        }
+            array[++tail] = container[i];
     }
 
     template <typename Data>
     QueueVec<Data>::QueueVec(const QueueVec &other) : Vector<Data>(std::max(other.Size() + 1, DEFAULT_QUEUE_SIZE))
     {
         for (ulong i = 0; i < other.Size(); i++)
-        {
-            tail = (tail + 1) % size;
-            array[tail] = other.array[(other.head + i) % other.size];
-        }
+            array[++tail] = other.array[(other.head + i) % other.size];
     }
 
     template <typename Data>
-    QueueVec<Data>::QueueVec(QueueVec &&other) noexcept : Vector<Data>(DEFAULT_QUEUE_SIZE)
+    QueueVec<Data>::QueueVec(QueueVec &&other) noexcept : Vector<Data>(std::move(other))
     {
-        std::swap(size, other.size);
-        std::swap(array, other.array);
         std::swap(head, other.head);
         std::swap(tail, other.tail);
     }
@@ -46,10 +38,15 @@ namespace lasd
     template <typename Data>
     QueueVec<Data> &QueueVec<Data>::operator=(const QueueVec &other)
     {
-        Clear();
+        if (this != &other)
+        {
+            Vector<Data>::Clear(std::max(other.Size() + 1, DEFAULT_QUEUE_SIZE));
+            head = 1;
+            tail = 0;
 
-        for (ulong i = 0; i < other.Size(); i++)
-            Enqueue(other.array[(other.head + i) % other.size]);
+            for (ulong i = 0; i < other.Size(); i++)
+                array[++tail] = other.array[(other.head + i) % other.size];
+        }
 
         return *this;
     }
@@ -57,9 +54,13 @@ namespace lasd
     template <typename Data>
     QueueVec<Data> &QueueVec<Data>::operator=(QueueVec &&other) noexcept
     {
-        Vector<Data>::operator=(std::move(other));
-        std::swap(head, other.head);
-        std::swap(tail, other.tail);
+        if (this != &other)
+        {
+            Vector<Data>::operator=(std::move(other));
+            std::swap(head, other.head);
+            std::swap(tail, other.tail);
+        }
+
         return *this;
     }
 
@@ -143,7 +144,7 @@ namespace lasd
     template <typename Data>
     inline bool QueueVec<Data>::Empty() const noexcept
     {
-        return tail == head - 1;
+        return (tail + 1ul) % size == head;
     }
 
     template <typename Data>
@@ -165,7 +166,7 @@ namespace lasd
     template <typename Data>
     inline void QueueVec<Data>::EnsureCapacity()
     {
-        if ((tail + 2) % size == head)
+        if (size == 0 || (tail + 2) % size == head)
             Resize();
     }
 
@@ -184,10 +185,7 @@ namespace lasd
         ulong newTail = 0;
 
         for (ulong i = 0; i < Size(); i++)
-        {
-            newTail++; // we know there's enough space so that it won't loop around, the modulo operator is not needed
-            std::swap(newArray[newTail], array[(head + i) % size]);
-        }
+            std::swap(newArray[++newTail], array[(head + i) % size]);
 
         delete[] array;
         size = newSize;
