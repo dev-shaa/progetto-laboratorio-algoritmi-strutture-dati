@@ -47,6 +47,12 @@ void printMap(const Data &value, void *_)
 template <typename Data>
 void printTree(lasd::BinaryTree<Data> &tree, TraverseType type)
 {
+    if (tree.Empty())
+    {
+        cout << "tree is empty\n";
+        return;
+    }
+
     switch (type)
     {
     case PreOrder:
@@ -63,7 +69,7 @@ void printTree(lasd::BinaryTree<Data> &tree, TraverseType type)
         break;
     }
 
-    cout << endl;
+    cout << "\n";
 }
 
 /* ************************************************************************** */
@@ -175,10 +181,8 @@ void iteratorMenu(lasd::ForwardIterator<Data> &iterator)
                 if (iterator.Terminated())
                     std::cout << "can't access because iterator has terminated\n";
                 else
-                {
-                    ++iterator;
-                    std::cout << "progressed to next element\n";
-                }
+                    std::cout << "iterator's value: " << *iterator << "\n";
+
                 break;
             case 3:
                 if (iterator.Terminated())
@@ -191,6 +195,7 @@ void iteratorMenu(lasd::ForwardIterator<Data> &iterator)
                 break;
             case 4:
                 ((lasd::ResettableIterator<Data> &)iterator).Reset();
+                std::cout << "iterator has been reset\n";
                 break;
             default:
                 std::cerr << "invalid input\n";
@@ -305,18 +310,29 @@ void treeMenu(lasd::BinaryTree<Data> &tree)
                 printTreeCommands();
                 break;
             case CMD_EMPTY:
-                cout << "tree is" << (tree.Empty() ? "" : " not ") << "empty" << endl;
+                cout << "tree is" << (tree.Empty() ? " " : " not ") << "empty\n";
                 break;
             case CMD_SIZE:
-                cout << "tree has " << tree.Size() << " node(s)" << endl;
+                cout << "tree has " << tree.Size() << " node(s)\n";
                 break;
             case CMD_PRINT:
-                break;
-            case CMD_ROOT:
-                if (tree.Empty())
-                    cout << "can't access node menu because tree is empty" << endl;
+                TraverseType mode;
+
+                if (cin >> mode)
+                    printTree(tree, mode);
                 else
-                    nodeMenu<Data>(&(tree.Root()));
+                    std::cerr << "invalid input\n";
+
+                break;
+            case CMD_CLEAR:
+                tree.Clear();
+                cout << "tree has been cleared\n";
+                break;
+            case CMD_MAP:
+                // map
+                break;
+            case CMD_FOLD:
+                // fold
                 break;
             case CMD_ITERATOR:
                 TraverseType traverse;
@@ -327,28 +343,46 @@ void treeMenu(lasd::BinaryTree<Data> &tree)
                     std::cerr << "invalid input\n";
 
                 break;
+            case CMD_ROOT:
+                if (tree.Empty())
+                    cout << "can't access node menu because tree is empty\n";
+                else
+                    nodeMenu<Data>(&(tree.Root()));
+
+                break;
             default:
                 std::cerr << "invalid input\n";
                 break;
             }
         }
     }
-
-    // empty
-    // size
-    // root
-    // left/right
-    // map
-    // fold
-    // clear
-    // iterator
-    // exists
 }
 
 /* ************************************************************************** */
 
 void customTest()
 {
+    lasd::BinaryTree<int> *tree = generateTree<int>(Implementation::Vector, 10, &getRandomInt);
+    printTree(*tree, TraverseType::Breadth);
+
+    lasd::ForwardIterator<int> *it = generateIterator<int>(*tree, TraverseType::Breadth);
+    // lasd::BTBreadthIterator<int> it(*tree);
+
+    for (int i = 0; i < 5; i++)
+    {
+        cout << **it << " ";
+        ++(*it);
+    }
+    cout << endl;
+
+    ((lasd::ResettableIterator<int> *)it)->Reset();
+
+    while (!it->Terminated())
+    {
+        cout << **it << " ";
+        ++(*it);
+    }
+    cout << endl;
 }
 
 void manualTest()
