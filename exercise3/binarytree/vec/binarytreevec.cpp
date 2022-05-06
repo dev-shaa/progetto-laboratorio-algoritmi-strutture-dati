@@ -47,7 +47,7 @@ namespace lasd
     template <typename Data>
     Data &BinaryTreeVec<Data>::NodeVec::Element() noexcept
     {
-        return const_cast<Data &>(const_cast<const BinaryTreeVec<Data>::NodeVec *>(this)->Element());
+        return value;
     }
 
     template <typename Data>
@@ -116,6 +116,10 @@ namespace lasd
     {
         std::swap(nodes, other.nodes);
         std::swap(nodesCount, other.nodesCount);
+
+        for (ulong i = 0; i < nodes.Size(); i++)
+            if (nodes[i] != nullptr)
+                nodes[i]->nodes = &nodes;
     }
 
     template <typename Data>
@@ -148,6 +152,14 @@ namespace lasd
         {
             std::swap(nodes, other.nodes);
             std::swap(nodesCount, other.nodesCount);
+
+            for (ulong i = 0; i < nodes.Size(); i++)
+                if (nodes[i] != nullptr)
+                    nodes[i]->nodes = &nodes;
+
+            for (ulong i = 0; i < other.nodes.Size(); i++)
+                if (other.nodes[i] != nullptr)
+                    other.nodes[i]->nodes = &(other.nodes);
         }
 
         return *this;

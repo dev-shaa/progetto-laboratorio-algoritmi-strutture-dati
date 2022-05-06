@@ -23,9 +23,10 @@ namespace lasd
     protected:
       Data value;
       ulong index;
-      Vector<NodeVec *> *nodes;
 
     public:
+      Vector<NodeVec *> *nodes;
+
       NodeVec(const Data &value, ulong index, Vector<NodeVec *> *nodes);
       NodeVec(const NodeVec &other);
       NodeVec(NodeVec &&other) noexcept = delete;
