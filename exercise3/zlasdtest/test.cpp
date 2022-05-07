@@ -17,8 +17,10 @@ using namespace std;
 
 /* ************************************************************************** */
 
-void lasdtest() {
-  cout << endl << "~*~#~*~ Welcome to the LASD Test Suite ~*~#~*~ " << endl;
+void lasdtest()
+{
+  cout << endl
+       << "~*~#~*~ Welcome to the LASD Test Suite ~*~#~*~ " << endl;
   testSimpleExercise1();
   testFullExercise1();
   testSimpleExercise2();
@@ -29,5 +31,6 @@ void lasdtest() {
   // testFullExercise4();
   // testSimpleExercise5();
   // testFullExercise5();
-  cout << endl << "Goodbye!" << endl;
+  cout << endl
+       << "Goodbye!" << endl;
 }

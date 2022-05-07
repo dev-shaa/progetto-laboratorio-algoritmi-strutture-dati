@@ -23,11 +23,6 @@ int getRandomInt()
     return getRandomIntRange(0, 100);
 }
 
-int getIntFromString(const std::string &value)
-{
-    return std::stoi(value);
-}
-
 float getRandomFloatRange(float min, float max)
 {
     std::random_device dev;
@@ -40,11 +35,6 @@ float getRandomFloatRange(float min, float max)
 float getRandomFloat()
 {
     return getRandomFloatRange(0, 100);
-}
-
-float getFloatFromString(const std::string &value)
-{
-    return std::stof(value);
 }
 
 std::string getRandomStringRange(uint min, uint max)
@@ -61,11 +51,6 @@ std::string getRandomStringRange(uint min, uint max)
 std::string getRandomString()
 {
     return getRandomStringRange(1, 8);
-}
-
-std::string getSameString(const std::string &value)
-{
-    return value;
 }
 
 /* ************************************************************************** */
@@ -99,7 +84,7 @@ void foldFloat(const float &value, const void *n, void *sum)
 
 void foldString(const std::string &value, const void *n, void *concatenation)
 {
-    if (value.size() <= *((uint *)n))
+    if (value.size() <= *((int *)n))
         (*(std::string *)concatenation) += value;
 }
 

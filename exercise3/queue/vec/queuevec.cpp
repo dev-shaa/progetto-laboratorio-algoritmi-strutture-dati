@@ -144,13 +144,13 @@ namespace lasd
     template <typename Data>
     inline bool QueueVec<Data>::Empty() const noexcept
     {
-        return (tail + 1ul) % size == head;
+        return size == 0 || (tail + 1ul) % size == head;
     }
 
     template <typename Data>
     inline ulong QueueVec<Data>::Size() const noexcept
     {
-        return (tail + size - head + 1ul) % size;
+        return size == 0 ? 0 : (tail + size - head + 1ul) % size;
     }
 
     template <typename Data>
