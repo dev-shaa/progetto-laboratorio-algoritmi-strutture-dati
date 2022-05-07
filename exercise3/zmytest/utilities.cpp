@@ -5,6 +5,8 @@
 #include <algorithm>
 #include "utilities.hpp"
 
+#define INVALID_INPUT_MSG "invalid input\n"
+
 /* ************************************************************************** */
 
 int getRandomIntRange(int min, int max)
@@ -50,7 +52,7 @@ std::string getRandomStringRange(uint min, uint max)
     std::random_device rd;
     std::mt19937 generator(rd());
 
-    std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
     std::shuffle(alphabet.begin(), alphabet.end(), generator);
 
     return alphabet.substr(0, getRandomIntRange(min, max));
@@ -58,7 +60,7 @@ std::string getRandomStringRange(uint min, uint max)
 
 std::string getRandomString()
 {
-    return getRandomStringRange(1, 32);
+    return getRandomStringRange(1, 8);
 }
 
 std::string getSameString(const std::string &value)
@@ -68,26 +70,31 @@ std::string getSameString(const std::string &value)
 
 /* ************************************************************************** */
 
+void mapInt(int &value, void *_)
+{
+    value *= 3;
+}
+
+void mapFloat(float &value, void *_)
+{
+    value *= value * value;
+}
+
+void mapString(std::string &value, void *prefix)
+{
+    value = (*(std::string *)prefix) + value;
+}
+
 void foldInt(const int &value, const void *n, void *product)
 {
     if (value < *((int *)n))
         *((int *)product) *= value;
 }
 
-void mapInt(int &value, void *_)
-{
-    value *= 3;
-}
-
 void foldFloat(const float &value, const void *n, void *sum)
 {
-    if (value > *((ulong *)n))
+    if (value > *((int *)n))
         *((float *)sum) += value;
-}
-
-void mapFloat(float &value, void *_)
-{
-    value *= value * value;
 }
 
 void foldString(const std::string &value, const void *n, void *concatenation)
@@ -96,16 +103,18 @@ void foldString(const std::string &value, const void *n, void *concatenation)
         (*(std::string *)concatenation) += value;
 }
 
-void mapString(std::string &value, void *prefix)
-{
-    value = (*(std::string *)prefix) + value;
-}
-
 /* ************************************************************************** */
 
-void ignoreLine()
+void flushLine()
 {
+    std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+void handleInvalidInput()
+{
+    flushLine();
+    std::cerr << INVALID_INPUT_MSG;
 }
 
 std::istream &operator>>(std::istream &input, Implementation &implementation)
@@ -113,9 +122,9 @@ std::istream &operator>>(std::istream &input, Implementation &implementation)
     std::string stringInput;
     input >> stringInput;
 
-    if (stringInput == "v")
+    if (stringInput == "v" || stringInput == "vector")
         implementation = Vector;
-    else if (stringInput == "l")
+    else if (stringInput == "l" || stringInput == "linked")
         implementation = Link;
     else
         input.setstate(std::ios::failbit);
@@ -128,11 +137,11 @@ std::istream &operator>>(std::istream &input, DataType &dataType)
     std::string stringInput;
     input >> stringInput;
 
-    if (stringInput == "i")
+    if (stringInput == "i" || stringInput == "int")
         dataType = Int;
-    else if (stringInput == "f")
+    else if (stringInput == "f" || stringInput == "float")
         dataType = Float;
-    else if (stringInput == "s")
+    else if (stringInput == "s" || stringInput == "string")
         dataType = String;
     else
         input.setstate(std::ios::failbit);
@@ -145,13 +154,13 @@ std::istream &operator>>(std::istream &input, TraverseType &traverseType)
     std::string stringInput;
     input >> stringInput;
 
-    if (stringInput == "pr")
+    if (stringInput == "pr" || stringInput == "preorder")
         traverseType = PreOrder;
-    else if (stringInput == "po")
+    else if (stringInput == "po" || stringInput == "postorder")
         traverseType = PostOrder;
-    else if (stringInput == "in")
+    else if (stringInput == "in" || stringInput == "inorder")
         traverseType = InOrder;
-    else if (stringInput == "br")
+    else if (stringInput == "br" || stringInput == "breadth")
         traverseType = Breadth;
     else
         input.setstate(std::ios::failbit);

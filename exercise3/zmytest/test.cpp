@@ -1,40 +1,40 @@
 #include <iostream>
 #include <functional>
 #include <string>
-#include <algorithm>
 
 #include "./utilities.hpp"
-
-#include "../vector/vector.hpp"
-#include "../list/list.hpp"
-#include "../queue/vec/queuevec.hpp"
 #include "../binarytree/binarytree.hpp"
 #include "../binarytree/vec/binarytreevec.hpp"
 #include "../binarytree/lnk/binarytreelnk.hpp"
-#include "../stack/vec/stackvec.hpp"
 #include "../iterator/iterator.hpp"
 
 using namespace std;
 
-#define CMD_QUIT 0
-#define CMD_HELP 1
-#define CMD_EMPTY 2
-#define CMD_SIZE 3
-#define CMD_PRINT 4
-#define CMD_CLEAR 5
-#define CMD_MAP 6
-#define CMD_FOLD 7
-#define CMD_ITERATOR 8
-#define CMD_ROOT 9
+#define CMD_QUIT 'q'
+#define CMD_HELP 'h'
+#define CMD_EMPTY 'e'
+#define CMD_SIZE 's'
+#define CMD_PRINT 'p'
+#define CMD_CLEAR 'c'
+#define CMD_MAP 'm'
+#define CMD_FOLD 'f'
+#define CMD_ITERATOR 'i'
+#define CMD_ROOT 'r'
 
-#define CMD_NODE_Q 0
-#define CMD_NODE_H 1
-#define CMD_NODE_R 2
-#define CMD_NODE_W 3
+#define CMD_NODE_Q 'q'
+#define CMD_NODE_H 'h'
+#define CMD_NODE_R 'r'
+#define CMD_NODE_W 'w'
 #define CMD_NODE_L_C 4
 #define CMD_NODE_R_C 5
-#define CMD_NODE_LEFT 6
-#define CMD_NODE_RIGHT 7
+#define CMD_NODE_LEFT 'l'
+#define CMD_NODE_RIGHT 'r'
+
+#define CMD_ITERATOR_QUIT 'q'
+#define CMD_ITERATOR_HELP 'h'
+#define CMD_ITERATOR_TERMINATED 't'
+#define CMD_ITERATOR_NEXT 'n'
+#define CMD_ITERATOR_ELEMENT 'e'
 
 /* ************************************************************************** */
 
@@ -75,6 +75,78 @@ void printTree(lasd::BinaryTree<Data> &tree, TraverseType type)
 /* ************************************************************************** */
 
 template <typename Data>
+void mapTreeOp(lasd::BinaryTree<Data> &tree, TraverseType type, function<void(Data &, void *)> foldFunctor, void *par)
+{
+    switch (type)
+    {
+    case PreOrder:
+        tree.MapPreOrder(foldFunctor, par);
+        break;
+    case PostOrder:
+        tree.MapPostOrder(foldFunctor, par);
+        break;
+    case InOrder:
+        tree.MapInOrder(foldFunctor, par);
+        break;
+    case Breadth:
+        tree.MapBreadth(foldFunctor, par);
+        break;
+    }
+}
+
+void intMapOp(lasd::BinaryTree<int> &tree, TraverseType type)
+{
+    mapTreeOp<int>(tree, type, &mapInt, nullptr);
+}
+
+void floatMapOp(lasd::BinaryTree<float> &tree, TraverseType type)
+{
+    mapTreeOp<float>(tree, type, &mapFloat, nullptr);
+}
+
+void stringMapOp(lasd::BinaryTree<string> &tree, TraverseType type)
+{
+    string prefix;
+    cin >> prefix;
+    mapTreeOp<string>(tree, type, &mapString, (void *)&prefix);
+}
+
+template <typename Data>
+void foldTreeOp(lasd::BinaryTree<Data> &tree, TraverseType type, function<void(const Data &, const void *, void *)> foldFunctor)
+{
+    int n;
+
+    if (cin >> n)
+    {
+        Data result;
+
+        switch (type)
+        {
+        case PreOrder:
+            tree.FoldPreOrder(foldFunctor, (void *)&n, (void *)&result);
+            break;
+        case PostOrder:
+            tree.FoldPostOrder(foldFunctor, (void *)&n, (void *)&result);
+            break;
+        case InOrder:
+            tree.FoldInOrder(foldFunctor, (void *)&n, (void *)&result);
+            break;
+        case Breadth:
+            tree.FoldBreadth(foldFunctor, (void *)&n, (void *)&result);
+            break;
+        }
+
+        cout << "result is: " << result << endl;
+    }
+    else
+    {
+        handleInvalidInput();
+    }
+}
+
+/* ************************************************************************** */
+
+template <typename Data>
 lasd::BinaryTree<Data> *generateTree(const Implementation implementation, const ulong size, const function<Data()> getRandomValue)
 {
     lasd::Vector<Data> vec(size);
@@ -107,26 +179,74 @@ lasd::ForwardIterator<Data> *generateIterator(const lasd::BinaryTree<Data> &tree
     }
 }
 
-void printInfo()
-{
-    cout << "manual test menu placeholder" << endl;
-}
+/* ************************************************************************** */
 
-void printTreeCommands()
+void printIteratorCommands()
 {
-    cout << "available tree commands:\n"
-         << "- " << CMD_QUIT << " to return to main menu\n"
-         << "- " << CMD_HELP << " to print this helper\n"
-         << "- " << CMD_EMPTY << " to check if tree is empty\n"
-         << "- " << CMD_SIZE << " to print tree size\n"
-         << "- " << CMD_PRINT << " to print all elements of the tree\n"
-         << "- " << CMD_CLEAR << " to clear the tree\n"
-         << "- " << CMD_MAP << " to apply a map function\n"
-         << "- " << CMD_FOLD << " to apply a fold function\n"
-         << "- " << CMD_ITERATOR << " to traverse via iterator\n"
-         << "- " << CMD_ROOT << " to access the root"
+    cout << "available iterator commands:\n"
+         << "- " << CMD_ITERATOR_QUIT << " to return to tree menu\n"
+         << "- " << CMD_ITERATOR_HELP << " to print this helper\n"
+         << "- " << CMD_ITERATOR_TERMINATED << " to check if iterator has terminated\n"
+         << "- " << CMD_ITERATOR_ELEMENT << " to print iterator's value\n"
+         << "- " << CMD_ITERATOR_NEXT << " to progress the iterator"
          << endl;
 }
+
+template <typename Data>
+void iteratorMenu(lasd::ForwardIterator<Data> &iterator)
+{
+    printIteratorCommands();
+
+    char command;
+    bool exitRequest = false;
+
+    do
+    {
+        cout << ">";
+
+        if (cin >> command)
+        {
+            switch (command)
+            {
+            case CMD_ITERATOR_QUIT:
+                exitRequest = true;
+                std::cout << "returned to tree menu\n";
+                break;
+            case CMD_ITERATOR_HELP:
+                printIteratorCommands();
+                break;
+            case CMD_ITERATOR_TERMINATED:
+                std::cout << "iterator has" << (iterator.Terminated() ? "" : " not ") << "terminated\n";
+                break;
+            case CMD_ITERATOR_ELEMENT:
+                if (iterator.Terminated())
+                    std::cout << "can't access because iterator has terminated\n";
+                else
+                    std::cout << "iterator's value: " << *iterator << "\n";
+
+                break;
+            case CMD_ITERATOR_NEXT:
+                if (iterator.Terminated())
+                    std::cout << "can't progess further because iterator has terminated\n";
+                else
+                {
+                    ++iterator;
+                    std::cout << "progressed to next element\n";
+                }
+                break;
+            default:
+                std::cerr << "invalid input\n";
+                break;
+            }
+        }
+        else
+        {
+            handleInvalidInput();
+        }
+    } while (!exitRequest);
+}
+
+/* ************************************************************************** */
 
 void printNodeCommands()
 {
@@ -140,69 +260,6 @@ void printNodeCommands()
          << "- " << CMD_NODE_LEFT << " to access left child\n"
          << "- " << CMD_NODE_RIGHT << " to access right child"
          << endl;
-}
-
-void printIteratorCommands()
-{
-    std::cout << "iterator menu placeholder" << std::endl;
-}
-
-template <typename Data>
-void iteratorMenu(lasd::ForwardIterator<Data> &iterator)
-{
-    printIteratorCommands();
-
-    bool exitRequest = false;
-    int command;
-
-    while (!exitRequest)
-    {
-        cout << ">";
-        cin >> command;
-
-        if (!std::cin)
-        {
-            std::cin.clear();
-            ignoreLine();
-            std::cerr << "invalid input\n";
-        }
-        else
-        {
-            switch (command)
-            {
-            case 0:
-                exitRequest = true;
-                std::cout << "returning to tree menu\n";
-                break;
-            case 1:
-                std::cout << "iterator has" << (iterator.Terminated() ? "" : " not ") << "terminated\n";
-                break;
-            case 2:
-                if (iterator.Terminated())
-                    std::cout << "can't access because iterator has terminated\n";
-                else
-                    std::cout << "iterator's value: " << *iterator << "\n";
-
-                break;
-            case 3:
-                if (iterator.Terminated())
-                    std::cout << "can't progess further because iterator has terminated\n";
-                else
-                {
-                    ++iterator;
-                    std::cout << "progressed to next element\n";
-                }
-                break;
-            case 4:
-                ((lasd::ResettableIterator<Data> &)iterator).Reset();
-                std::cout << "iterator has been reset\n";
-                break;
-            default:
-                std::cerr << "invalid input\n";
-                break;
-            }
-        }
-    }
 }
 
 template <typename Data>
@@ -280,26 +337,38 @@ void nodeMenu(typename lasd::BinaryTree<Data>::Node *node)
     // }
 }
 
-template <typename Data>
-void treeMenu(lasd::BinaryTree<Data> &tree)
+/* ************************************************************************** */
+
+void printTreeCommands(string mapDescription, string foldDescription)
 {
-    printTreeCommands();
+    cout << "available tree commands:\n"
+         << "- " << CMD_QUIT << " to return to main menu\n"
+         << "- " << CMD_HELP << " to print this helper\n"
+         << "- " << CMD_EMPTY << " to check if tree is empty\n"
+         << "- " << CMD_SIZE << " to print tree size\n"
+         << "- " << CMD_CLEAR << " to clear the tree\n"
+         << "- " << CMD_ROOT << " to access the root\n"
+         << "- " << CMD_PRINT << " ['pr'eorder/'po'storder/'in'order/'br'eadth] to print all elements of the tree\n"
+         << "- " << CMD_MAP << " ['pr'eorder/'po'storder/'in'order/'br'eadth] " << mapDescription << "\n"
+         << "- " << CMD_FOLD << " ['pr'eorder/'po'storder/'in'order/'br'eadth] [n] " << foldDescription << "\n"
+         << "- " << CMD_ITERATOR << " ['pr'eorder/'po'storder/'in'order/'br'eadth] to traverse via iterator"
+         << endl;
+}
 
+template <typename Data>
+void treeMenu(lasd::BinaryTree<Data> &tree, function<void(lasd::BinaryTree<Data> &, TraverseType)> mapFunctor, string mapDescription, function<void(const Data &, const void *, void *)> foldFunctor, string foldDescription)
+{
+    char command;
+    TraverseType traverseMode;
     bool exitRequest = false;
-    int command = -1;
 
-    while (!exitRequest)
+    printTreeCommands(mapDescription, foldDescription);
+
+    do
     {
         cout << ">";
-        cin >> command;
 
-        if (!std::cin)
-        {
-            std::cin.clear();
-            ignoreLine();
-            std::cerr << "invalid input\n";
-        }
-        else
+        if (cin >> command)
         {
             switch (command)
             {
@@ -307,7 +376,7 @@ void treeMenu(lasd::BinaryTree<Data> &tree)
                 exitRequest = true;
                 break;
             case CMD_HELP:
-                printTreeCommands();
+                printTreeCommands(mapDescription, foldDescription);
                 break;
             case CMD_EMPTY:
                 cout << "tree is" << (tree.Empty() ? " " : " not ") << "empty\n";
@@ -315,32 +384,36 @@ void treeMenu(lasd::BinaryTree<Data> &tree)
             case CMD_SIZE:
                 cout << "tree has " << tree.Size() << " node(s)\n";
                 break;
-            case CMD_PRINT:
-                TraverseType mode;
-
-                if (cin >> mode)
-                    printTree(tree, mode);
-                else
-                    std::cerr << "invalid input\n";
-
-                break;
             case CMD_CLEAR:
                 tree.Clear();
                 cout << "tree has been cleared\n";
                 break;
+            case CMD_PRINT:
+                if (cin >> traverseMode)
+                    printTree(tree, traverseMode);
+                else
+                    handleInvalidInput();
+
+                break;
             case CMD_MAP:
-                // map
+                if (cin >> traverseMode)
+                    mapFunctor(tree, traverseMode);
+                else
+                    handleInvalidInput();
+
                 break;
             case CMD_FOLD:
-                // fold
+                if (cin >> traverseMode)
+                    foldTreeOp(tree, traverseMode, foldFunctor);
+                else
+                    handleInvalidInput();
+
                 break;
             case CMD_ITERATOR:
-                TraverseType traverse;
-
-                if (cin >> traverse)
-                    iteratorMenu<Data>(*generateIterator<Data>(tree, traverse));
+                if (cin >> traverseMode)
+                    iteratorMenu<Data>(*generateIterator<Data>(tree, traverseMode));
                 else
-                    std::cerr << "invalid input\n";
+                    handleInvalidInput();
 
                 break;
             case CMD_ROOT:
@@ -351,38 +424,22 @@ void treeMenu(lasd::BinaryTree<Data> &tree)
 
                 break;
             default:
-                std::cerr << "invalid input\n";
+                std::cerr << "no command found\n";
                 break;
             }
         }
-    }
+        else
+        {
+            handleInvalidInput();
+        }
+    } while (!exitRequest);
 }
 
 /* ************************************************************************** */
 
-void customTest()
+void printInfo()
 {
-    lasd::BinaryTree<int> *tree = generateTree<int>(Implementation::Vector, 10, &getRandomInt);
-    printTree(*tree, TraverseType::Breadth);
-
-    lasd::ForwardIterator<int> *it = generateIterator<int>(*tree, TraverseType::Breadth);
-    // lasd::BTBreadthIterator<int> it(*tree);
-
-    for (int i = 0; i < 5; i++)
-    {
-        cout << **it << " ";
-        ++(*it);
-    }
-    cout << endl;
-
-    ((lasd::ResettableIterator<int> *)it)->Reset();
-
-    while (!it->Terminated())
-    {
-        cout << **it << " ";
-        ++(*it);
-    }
-    cout << endl;
+    cout << "type tree structure to work on: ['v'ector/'l'inked] ['i'nt/'f'loat/'s'tring] [size]\n";
 }
 
 void manualTest()
@@ -396,28 +453,27 @@ void manualTest()
     {
         printInfo();
         cout << ">";
-        cin >> implementation >> datatype >> size;
 
-        if (!std::cin)
+        if (cin >> implementation >> datatype >> size)
         {
-            std::cin.clear();
-            ignoreLine();
-            std::cerr << "invalid input\n";
-        }
-        else
-        {
+            flushLine();
+
             switch (datatype)
             {
             case DataType::Int:
-                treeMenu<int>(*generateTree<int>(implementation, size, &getRandomInt));
+                treeMenu<int>(*generateTree<int>(implementation, size, &getRandomInt), &intMapOp, "to apply a map function (3*n)", &foldInt, "product of int < n");
                 break;
             case DataType::Float:
-                treeMenu<float>(*generateTree<float>(implementation, size, &getRandomFloat));
+                treeMenu<float>(*generateTree<float>(implementation, size, &getRandomFloat), &floatMapOp, "to apply a map function (n^3 for float)", &foldFloat, "sum of float > n");
                 break;
             case DataType::String:
-                treeMenu<string>(*generateTree<string>(implementation, size, &getRandomString));
+                treeMenu<string>(*generateTree<string>(implementation, size, &getRandomString), &stringMapOp, "[prefix] to apply prefix to all strings", &foldString, "concat of string shorter than n");
                 break;
             }
+        }
+        else
+        {
+            handleInvalidInput();
         }
     } while (!exitRequest);
 }

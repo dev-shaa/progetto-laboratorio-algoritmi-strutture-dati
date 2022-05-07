@@ -15,17 +15,18 @@ std::string getRandomString();
 /* ************************************************************************** */
 
 void foldInt(const int &value, const void *n, void *product);
-void mapInt(int &value, void *_);
-
 void foldFloat(const float &value, const void *n, void *sum);
-void mapFloat(float &value, void *_);
-
 void foldString(const std::string &value, const void *n, void *concatenation);
+
+void mapInt(int &value, void *_);
+void mapFloat(float &value, void *_);
 void mapString(std::string &value, void *prefix);
 
 /* ************************************************************************** */
 
-void ignoreLine();
+void flushLine();
+
+void handleInvalidInput();
 
 enum Implementation
 {
