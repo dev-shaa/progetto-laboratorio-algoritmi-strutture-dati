@@ -41,7 +41,7 @@ namespace lasd
     template <typename Data>
     bool BinaryTree<Data>::Exists(const Data &value) const noexcept
     {
-        return PreOrderFoldableContainer<Data>::Exists(value);
+        return BreadthFoldableContainer<Data>::Exists(value);
     }
 
     template <typename Data>

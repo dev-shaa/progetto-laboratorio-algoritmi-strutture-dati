@@ -35,13 +35,13 @@ namespace lasd
     template <typename Data>
     bool BinaryTreeVec<Data>::NodeVec::operator==(const BinaryTreeVec<Data>::NodeVec &other) const noexcept
     {
-        return BinaryTree<Data>::operator==(other);
+        return value == other.value;
     }
 
     template <typename Data>
     bool BinaryTreeVec<Data>::NodeVec::operator!=(const BinaryTreeVec<Data>::NodeVec &other) const noexcept
     {
-        return BinaryTree<Data>::operator!=(other);
+        return !(*this == other);
     }
 
     template <typename Data>
@@ -168,13 +168,13 @@ namespace lasd
     template <typename Data>
     bool BinaryTreeVec<Data>::operator==(const BinaryTreeVec<Data> &other) const noexcept
     {
-        return BinaryTree<Data>::operator==(other);
+        return Size() == other.Size() && nodes == other.nodes;
     }
 
     template <typename Data>
     bool BinaryTreeVec<Data>::operator!=(const BinaryTreeVec<Data> &other) const noexcept
     {
-        return BinaryTree<Data>::operator!=(other);
+        return !(*this == other);
     }
 
     template <typename Data>

@@ -75,9 +75,9 @@ namespace lasd
     virtual Node &Root() const = 0;
 
     bool Exists(const Data &value) const noexcept override;
-    bool Empty() const noexcept = 0;
-    ulong Size() const noexcept = 0;
-    void Clear() = 0;
+    virtual bool Empty() const noexcept = 0;
+    virtual ulong Size() const noexcept = 0;
+    virtual void Clear() = 0;
 
     /* ************************************************************************ */
 
