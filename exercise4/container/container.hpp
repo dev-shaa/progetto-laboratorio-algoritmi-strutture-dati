@@ -78,6 +78,29 @@ namespace lasd
   /* ************************************************************************** */
 
   template <typename Data>
+  class DictionaryContainer : virtual public TestableContainer<Data>
+  {
+  public:
+    virtual ~DictionaryContainer() = default;
+
+    /* ************************************************************************ */
+
+    DictionaryContainer &operator=(const DictionaryContainer &other) = delete;
+    DictionaryContainer &operator=(DictionaryContainer &&other) noexcept = delete;
+
+    bool operator==(const DictionaryContainer &other) const noexcept = delete;
+    bool operator!=(const DictionaryContainer &other) const noexcept = delete;
+
+    /* ************************************************************************ */
+
+    void Insert(const Data &value);
+    void Insert(Data &&value);
+    void Remove(const Data &value);
+  };
+
+  /* ************************************************************************** */
+
+  template <typename Data>
   class MappableContainer : virtual public Container
   {
   public:
