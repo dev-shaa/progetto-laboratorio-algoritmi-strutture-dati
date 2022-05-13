@@ -93,9 +93,9 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    void Insert(const Data &value);
-    void Insert(Data &&value);
-    void Remove(const Data &value);
+    virtual void Insert(const Data &value) = 0;
+    virtual void Insert(Data &&value) = 0;
+    virtual void Remove(const Data &value) = 0;
   };
 
   /* ************************************************************************** */

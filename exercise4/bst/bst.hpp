@@ -16,57 +16,46 @@ namespace lasd
   template <typename Data>
   class BST : virtual public BinaryTreeLnk<Data>, virtual public DictionaryContainer<Data>
   {
-
-  private:
-    // ...
-
   protected:
-    // using BinaryTreeLnk<Data>::???;
-
-    // ...
+    using BinaryTreeLnk<Data>::NodeLnk;
+    using BinaryTreeLnk<Data>::root;
+    using BinaryTreeLnk<Data>::nodesCount;
 
   public:
-    // Default constructor
-    // BST() specifiers;
+    BST();
+    BST(const LinearContainer<Data> &container);
+    BST(const BST &other);
+    BST(BST &&other)
+    noexcept;
 
-    /* ************************************************************************ */
-
-    // Specific constructors
-    // BST(argument) specifiers; // A bst obtained from a LinearContainer
-
-    /* ************************************************************************ */
-
-    // Copy constructor
-    // BST(argument) specifiers;
-
-    // Move constructor
-    // BST(argument) specifiers;
-
-    /* ************************************************************************ */
-
-    // Destructor
-    // ~BST() specifiers;
     virtual ~BST() = default;
 
     /* ************************************************************************ */
 
-    // Copy assignment
-    // type operator=(argument) specifiers;
+    BST &operator=(const BST &other);
+    BST &operator=(BST &&other) noexcept;
 
-    // Move assignment
-    // type operator=(argument) specifiers;
-
-    /* ************************************************************************ */
-
-    // Comparison operators
-    // type operator==(argument) specifiers;
-    // type operator!=(argument) specifiers;
+    bool operator==(const BST &other) const noexcept;
+    bool operator!=(const BST &other) const noexcept;
 
     /* ************************************************************************ */
 
-    // Specific member functions
+    const Data &Min() const;
+    Data &MinNRemove();
+    void RemoveMin();
 
-    Data &Min() const;
+    const Data &Max() const;
+    Data &MaxNRemove();
+    void RemoveMax();
+
+    const Data &Predecessor(const Data &value) const;
+    Data &PredecessorNRemove(const Data &value);
+    void RemovePredecessor(const Data &value);
+
+    const Data &Successor(const Data &value) const;
+    Data &SuccessorNRemove(const Data &value);
+    void RemoveSuccessor(const Data &value);
+
     // type Min(argument) specifiers; // (concrete function must throw std::length_error when empty)
     // type MinNRemove(argument) specifiers; // (concrete function must throw std::length_error when empty)
     // type RemoveMin(argument) specifiers; // (concrete function must throw std::length_error when empty)
@@ -85,17 +74,11 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    // Specific member functions (inherited from DictionaryContainer)
+    void Insert(const Data &value) override;
+    void Insert(Data &&value) override;
+    void Remove(const Data &value) override;
 
-    // type Insert(argument) specifiers; // Override DictionaryContainer member (Copy of the value)
-    // type Insert(argument) specifiers; // Override DictionaryContainer member (Move of the value)
-    // type Remove(argument) specifiers; // Override DictionaryContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from TestableContainer)
-
-    // type Exists(argument) specifiers; // Override TestableContainer member
+    bool Exists(const Data &value) const noexcept override;
 
   protected:
     // Auxiliary member functions
@@ -109,6 +92,9 @@ namespace lasd
 
     // type Skip2Left(argument) specifiers;
     // type Skip2Left(argument) specifiers;
+
+    NodeLnk *FindPointerToMin(NodeLnk *node) const noexcept;
+    NodeLnk *FindPointerToMax(NodeLnk *node) const noexcept;
 
     // type FindPointerToMin(argument) specifiers; // Both mutable & unmutable versions
     // type FindPointerToMax(argument) specifiers; // Both mutable & unmutable versions
