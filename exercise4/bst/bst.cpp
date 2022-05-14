@@ -5,7 +5,7 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    bool BST::Exists(const Data &value) const noexcept
+    bool BST<Data>::Exists(const Data &value) const noexcept
     {
         NodeLnk *node = root;
 
