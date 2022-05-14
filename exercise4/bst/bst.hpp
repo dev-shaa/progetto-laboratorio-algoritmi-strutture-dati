@@ -40,6 +40,8 @@ namespace lasd
 
     /* ************************************************************************ */
 
+    // throw std::length_error when empty
+
     const Data &Min() const;
     Data &MinNRemove();
     void RemoveMin();
@@ -47,6 +49,8 @@ namespace lasd
     const Data &Max() const;
     Data &MaxNRemove();
     void RemoveMax();
+
+    // throw std::length_error when not found
 
     const Data &Predecessor(const Data &value) const;
     Data &PredecessorNRemove(const Data &value);
@@ -56,28 +60,11 @@ namespace lasd
     Data &SuccessorNRemove(const Data &value);
     void RemoveSuccessor(const Data &value);
 
-    // type Min(argument) specifiers; // (concrete function must throw std::length_error when empty)
-    // type MinNRemove(argument) specifiers; // (concrete function must throw std::length_error when empty)
-    // type RemoveMin(argument) specifiers; // (concrete function must throw std::length_error when empty)
-
-    // type Max(argument) specifiers; // (concrete function must throw std::length_error when empty)
-    // type MaxNRemove(argument) specifiers; // (concrete function must throw std::length_error when empty)
-    // type RemoveMax(argument) specifiers; // (concrete function must throw std::length_error when empty)
-
-    // type Predecessor(argument) specifiers; // (concrete function must throw std::length_error when not found)
-    // type PredecessorNRemove(argument) specifiers; // (concrete function must throw std::length_error when not found)
-    // type RemovePredecessor(argument) specifiers; // (concrete function must throw std::length_error when not found)
-
-    // type Successor(argument) specifiers; // (concrete function must throw std::length_error when not found)
-    // type SuccessorNRemove(argument) specifiers; // (concrete function must throw std::length_error when not found)
-    // type RemoveSuccessor(argument) specifiers; // (concrete function must throw std::length_error when not found)
-
     /* ************************************************************************ */
 
     void Insert(const Data &value) override;
     void Insert(Data &&value) override;
     void Remove(const Data &value) override;
-
     bool Exists(const Data &value) const noexcept override;
 
   protected:

@@ -59,6 +59,25 @@ namespace lasd
         return !(*this == other);
     }
 
+    /* ************************************************************************** */
+    template <typename Data>
+    void BST<Data>::Insert(const Data &value)
+    {
+        // todo: implementation
+    }
+
+    template <typename Data>
+    void BST<Data>::Insert(Data &&value)
+    {
+        // todo: implementation
+    }
+
+    template <typename Data>
+    void BST<Data>::Remove(const Data &value)
+    {
+        // todo: implementation
+    }
+
     template <typename Data>
     bool BST<Data>::Exists(const Data &value) const noexcept
     {
