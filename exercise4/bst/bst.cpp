@@ -12,15 +12,13 @@ namespace lasd
     }
 
     template <typename Data>
-    BST<Data>::BST(const BST<Data> &other)
+    BST<Data>::BST(const BST<Data> &other) : BinaryTreeLnk<Data>(other)
     {
-        // todo: implementation
     }
 
     template <typename Data>
-    BST<Data>::BST(BST<Data> &&other) noexcept
+    BST<Data>::BST(BST<Data> &&other) noexcept : BinaryTreeLnk<Data>(std::move(other))
     {
-        // todo: implementation
     }
 
     template <typename Data>
