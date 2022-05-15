@@ -60,6 +60,36 @@ namespace lasd
     }
 
     /* ************************************************************************** */
+
+    template <typename Data>
+    const Data &BST<Data>::Min() const
+    {
+        if (Empty())
+            throw std::length_error("can't access min because tree is empty");
+
+        return FindPointerToMin()->Element();
+    }
+
+    template <typename Data>
+    Data &BST<Data>::MinNRemove()
+    {
+        if (Empty())
+            throw std::length_error("can't access min because tree is empty");
+
+        // todo:implementation
+    }
+
+    template <typename Data>
+    void BST<Data>::RemoveMin()
+    {
+        if (Empty())
+            throw std::length_error("can't remove min because tree is empty");
+
+        // todo:implementation
+    }
+
+    /* ************************************************************************** */
+
     template <typename Data>
     void BST<Data>::Insert(const Data &value)
     {
@@ -90,5 +120,16 @@ namespace lasd
     }
 
     /* ************************************************************************** */
+
+    template <typename Data>
+    typename BinaryTreeLnk<Data>::NodeLnk *BST<Data>::FindPointerToMin(typename BinaryTreeLnk<Data>::NodeLnk *node) const noexcept
+    {
+        NodeLnk *node = root;
+
+        while (node != nullptr && node->HasLeftChild())
+            node = node->leftChild;
+
+        return node;
+    }
 
 }
