@@ -81,16 +81,20 @@ namespace lasd
     // type DetachMax(argument) specifiers;
 
     // type Skip2Left(argument) specifiers;
-    // type Skip2Left(argument) specifiers;
+    // type Skip2Right(argument) specifiers;
 
-    void DetachMin(NodeLnk *node, NodeLnk *parent) noexcept;
+    NodeLnk *Skip2Left(NodeLnk *&node) noexcept;
+    NodeLnk *Skip2Right(NodeLnk *&node) noexcept;
 
-    NodeLnk *FindPointerToMin(NodeLnk *node) const noexcept;
-    NodeLnk *FindPointerToMax(NodeLnk *node) const noexcept;
+    // NodeLnk *Detach(NodeLnk *&root) noexcept;
+    // NodeLnk *DetachMin(NodeLnk *&root) noexcept;
+
+    NodeLnk *FindPointerToMin(NodeLnk *root) const noexcept;
+    NodeLnk *FindPointerToMax(NodeLnk *root) const noexcept;
+    NodeLnk *FindPointerTo(NodeLnk *root, const Data &value) const noexcept;
 
     // type FindPointerToMin(argument) specifiers; // Both mutable & unmutable versions
     // type FindPointerToMax(argument) specifiers; // Both mutable & unmutable versions
-
     // type FindPointerTo(argument) specifiers; // Both mutable & unmutable versions
 
     // type FindPointerToPredecessor(argument) specifiers; // Both mutable & unmutable versions
