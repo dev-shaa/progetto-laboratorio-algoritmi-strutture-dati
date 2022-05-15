@@ -3,9 +3,8 @@
 #include <string>
 
 #include "./utilities.hpp"
+#include "../bst/bst.hpp"
 #include "../binarytree/binarytree.hpp"
-#include "../binarytree/vec/binarytreevec.hpp"
-#include "../binarytree/lnk/binarytreelnk.hpp"
 #include "../iterator/iterator.hpp"
 
 using namespace std;
@@ -16,18 +15,9 @@ using namespace std;
 #define CMD_SIZE 's'
 #define CMD_PRINT 'p'
 #define CMD_CLEAR 'c'
-#define CMD_MAP 'm'
 #define CMD_FOLD 'f'
 #define CMD_ITERATOR 'i'
 #define CMD_ROOT 'r'
-
-#define CMD_NODE_QUIT 'q'
-#define CMD_NODE_HELP 'h'
-#define CMD_NODE_PRINT 'p'
-#define CMD_NODE_WRITE 'w'
-#define CMD_NODE_CHECK 'c'
-#define CMD_NODE_LEFT 'l'
-#define CMD_NODE_RIGHT 'r'
 
 #define CMD_ITERATOR_QUIT 'q'
 #define CMD_ITERATOR_HELP 'h'
@@ -71,42 +61,42 @@ void printTree(lasd::BinaryTree<Data> &tree, TraverseType type)
     cout << "\n";
 }
 
-template <typename Data>
-void applyMapToTree(lasd::BinaryTree<Data> &tree, TraverseType type, function<void(Data &, void *)> foldFunctor, void *par)
-{
-    switch (type)
-    {
-    case PreOrder:
-        tree.MapPreOrder(foldFunctor, par);
-        break;
-    case PostOrder:
-        tree.MapPostOrder(foldFunctor, par);
-        break;
-    case InOrder:
-        tree.MapInOrder(foldFunctor, par);
-        break;
-    case Breadth:
-        tree.MapBreadth(foldFunctor, par);
-        break;
-    }
-}
+// template <typename Data>
+// void applyMapToTree(lasd::BinaryTree<Data> &tree, TraverseType type, function<void(Data &, void *)> foldFunctor, void *par)
+// {
+//     switch (type)
+//     {
+//     case PreOrder:
+//         tree.MapPreOrder(foldFunctor, par);
+//         break;
+//     case PostOrder:
+//         tree.MapPostOrder(foldFunctor, par);
+//         break;
+//     case InOrder:
+//         tree.MapInOrder(foldFunctor, par);
+//         break;
+//     case Breadth:
+//         tree.MapBreadth(foldFunctor, par);
+//         break;
+//     }
+// }
 
-void treeMapInt(lasd::BinaryTree<int> &tree, TraverseType type)
-{
-    applyMapToTree<int>(tree, type, &mapInt, nullptr);
-}
+// void treeMapInt(lasd::BinaryTree<int> &tree, TraverseType type)
+// {
+//     applyMapToTree<int>(tree, type, &mapInt, nullptr);
+// }
 
-void treeMapFloat(lasd::BinaryTree<float> &tree, TraverseType type)
-{
-    applyMapToTree<float>(tree, type, &mapFloat, nullptr);
-}
+// void treeMapFloat(lasd::BinaryTree<float> &tree, TraverseType type)
+// {
+//     applyMapToTree<float>(tree, type, &mapFloat, nullptr);
+// }
 
-void treeMapString(lasd::BinaryTree<string> &tree, TraverseType type)
-{
-    string prefix;
-    cin >> prefix;
-    applyMapToTree<string>(tree, type, &mapString, (void *)&prefix);
-}
+// void treeMapString(lasd::BinaryTree<string> &tree, TraverseType type)
+// {
+//     string prefix;
+//     cin >> prefix;
+//     applyMapToTree<string>(tree, type, &mapString, (void *)&prefix);
+// }
 
 template <typename Data>
 void foldTreeOp(lasd::BinaryTree<Data> &tree, TraverseType type, function<void(const Data &, const void *, void *)> foldFunctor, Data &result)
@@ -224,129 +214,123 @@ void iteratorMenu(lasd::ForwardIterator<Data> &iterator)
 
 /* ************************************************************************** */
 
-void printNodeCommands()
-{
-    cout << "available node commands:\n"
-         << "- " << CMD_NODE_QUIT << " to return to tree's menu\n"
-         << "- " << CMD_NODE_HELP << " to print this helper\n"
-         << "- " << CMD_NODE_PRINT << " to print the node's value\n"
-         << "- " << CMD_NODE_WRITE << " [value] to write the node's value\n"
-         << "- " << CMD_NODE_CHECK << "['l'eft/'r'ight] to check if left or right child exists\n"
-         << "- " << CMD_NODE_LEFT << " to access left child\n"
-         << "- " << CMD_NODE_RIGHT << " to access right child"
-         << endl;
-}
+// void printNodeCommands()
+// {
+//     cout << "available node commands:\n"
+//          << "- " << CMD_NODE_QUIT << " to return to tree's menu\n"
+//          << "- " << CMD_NODE_HELP << " to print this helper\n"
+//          << "- " << CMD_NODE_PRINT << " to print the node's value\n"
+//          << "- " << CMD_NODE_WRITE << " [value] to write the node's value\n"
+//          << "- " << CMD_NODE_CHECK << "['l'eft/'r'ight] to check if left or right child exists\n"
+//          << "- " << CMD_NODE_LEFT << " to access left child\n"
+//          << "- " << CMD_NODE_RIGHT << " to access right child"
+//          << endl;
+// }
 
-template <typename Data>
-void nodeMenu(typename lasd::BinaryTree<Data>::Node *node)
-{
-    printNodeCommands();
+// template <typename Data>
+// void nodeMenu(typename lasd::BinaryTree<Data>::Node *node)
+// {
+//     printNodeCommands();
 
-    char command;
-    bool exitRequest = false;
+//     char command;
+//     bool exitRequest = false;
 
-    do
-    {
-        cout << ">";
+//     do
+//     {
+//         cout << ">";
 
-        if (cin >> command)
-        {
-            switch (command)
-            {
-            case CMD_NODE_QUIT:
-                exitRequest = true;
-                cout << "returning to tree menu\n";
-                break;
-            case CMD_NODE_HELP:
-                printNodeCommands();
-                break;
-            case CMD_NODE_PRINT:
-                cout << "node's value is: " << node->Element() << "\n";
-                break;
-            case CMD_NODE_WRITE:
-            {
-                Data value;
+//         if (cin >> command)
+//         {
+//             switch (command)
+//             {
+//             case CMD_NODE_QUIT:
+//                 exitRequest = true;
+//                 cout << "returning to tree menu\n";
+//                 break;
+//             case CMD_NODE_HELP:
+//                 printNodeCommands();
+//                 break;
+//             case CMD_NODE_PRINT:
+//                 cout << "node's value is: " << node->Element() << "\n";
+//                 break;
+//             case CMD_NODE_WRITE:
+//             {
+//                 Data value;
 
-                if (cin >> value)
-                {
-                    node->Element() = value;
-                    cout << "node's value has been updated to " << value << "\n";
-                }
-                else
-                    handleInvalidInput();
+//                 if (cin >> value)
+//                 {
+//                     node->Element() = value;
+//                     cout << "node's value has been updated to " << value << "\n";
+//                 }
+//                 else
+//                     handleInvalidInput();
 
-                break;
-            }
-            case CMD_NODE_CHECK:
-            {
-                string child;
-                cin >> child;
+//                 break;
+//             }
+//             case CMD_NODE_CHECK:
+//             {
+//                 string child;
+//                 cin >> child;
 
-                if (child == "l")
-                    cout << (node->HasLeftChild() ? "node doesn't have a left child" : "node has a left child") << "\n";
-                else if (child == "r")
-                    cout << (node->HasRightChild() ? "node doesn't have a right child" : "node has a right child") << "\n";
-                else
-                    cout << "type 'l' or 'r'\n";
+//                 if (child == "l")
+//                     cout << (node->HasLeftChild() ? "node doesn't have a left child" : "node has a left child") << "\n";
+//                 else if (child == "r")
+//                     cout << (node->HasRightChild() ? "node doesn't have a right child" : "node has a right child") << "\n";
+//                 else
+//                     cout << "type 'l' or 'r'\n";
 
-                flushLine();
+//                 flushLine();
 
-                break;
-            }
-            case CMD_NODE_LEFT:
-                if (node->HasLeftChild())
-                {
-                    node = &(node->LeftChild());
-                    cout << "descended to left child\n";
-                }
-                else
-                {
-                    cout << "node doesn't have a left child\n";
-                }
+//                 break;
+//             }
+//             case CMD_NODE_LEFT:
+//                 if (node->HasLeftChild())
+//                 {
+//                     node = &(node->LeftChild());
+//                     cout << "descended to left child\n";
+//                 }
+//                 else
+//                 {
+//                     cout << "node doesn't have a left child\n";
+//                 }
 
-                break;
-            case CMD_NODE_RIGHT:
-                if (node->HasRightChild())
-                {
-                    node = &(node->RightChild());
-                    cout << "descended to right child\n";
-                }
-                else
-                {
-                    cout << "node doesn't have a right child\n";
-                }
+//                 break;
+//             case CMD_NODE_RIGHT:
+//                 if (node->HasRightChild())
+//                 {
+//                     node = &(node->RightChild());
+//                     cout << "descended to right child\n";
+//                 }
+//                 else
+//                 {
+//                     cout << "node doesn't have a right child\n";
+//                 }
 
-                break;
-            default:
-                std::cerr << "no command found\n";
-                break;
-            }
-        }
-        else
-        {
-            handleInvalidInput();
-        }
+//                 break;
+//             default:
+//                 std::cerr << "no command found\n";
+//                 break;
+//             }
+//         }
+//         else
+//         {
+//             handleInvalidInput();
+//         }
 
-    } while (!exitRequest);
-}
+//     } while (!exitRequest);
+// }
 
 /* ************************************************************************** */
 
 template <typename Data>
-lasd::BinaryTree<Data> *generateTree(const Implementation implementation, const ulong size, const function<Data()> getRandomValue)
+lasd::BST<Data> generateTree(ulong size, function<Data()> getRandomValue)
 {
-    lasd::Vector<Data> vec(size);
+    lasd::BST<Data> tree;
 
     for (ulong i = 0; i < size; i++)
-        vec[i] = getRandomValue();
+        tree.Insert(getRandomValue());
 
-    switch (implementation)
-    {
-    case Implementation::Link:
-        return new lasd::BinaryTreeLnk<Data>(vec);
-    default:
-        return new lasd::BinaryTreeVec<Data>(vec);
-    }
+    return tree;
 }
 
 void printTreeCommands(string mapDescription, string foldDescription)
@@ -366,7 +350,7 @@ void printTreeCommands(string mapDescription, string foldDescription)
 }
 
 template <typename Data>
-void treeMenu(lasd::BinaryTree<Data> &tree, function<void(lasd::BinaryTree<Data> &, TraverseType)> mapFunctor, string mapDescription, function<void(const Data &, const void *, void *)> foldFunctor, string foldDescription, Data &result)
+void treeMenu(lasd::BST<Data> &tree, function<void(const Data &, const void *, void *)> foldFunctor, string foldDescription, Data &result)
 {
     char command;
     TraverseType traverseMode;
@@ -455,7 +439,6 @@ void printInfo()
 void manualTest()
 {
     char command;
-    Implementation implementation;
     DataType datatype;
     ulong size;
     bool exitRequest = false;
@@ -469,7 +452,7 @@ void manualTest()
         {
             if (command == 'q')
                 break;
-            else if (command == 'c' && cin >> implementation >> datatype >> size)
+            else if (command == 'c' && cin >> datatype >> size)
             {
                 flushLine();
 
@@ -478,19 +461,19 @@ void manualTest()
                 case DataType::Int:
                 {
                     int prod = 1;
-                    treeMenu<int>(*generateTree<int>(implementation, size, &getRandomInt), &treeMapInt, "to apply a map function (3*n)", &foldInt, "product of int < n", prod);
+                    treeMenu<int>(generateTree<int>(size, &getRandomInt), "to apply a map function (3*n)", &foldInt, "product of int < n", prod);
                     break;
                 }
                 case DataType::Float:
                 {
                     float sum = 0;
-                    treeMenu<float>(*generateTree<float>(implementation, size, &getRandomFloat), &treeMapFloat, "to apply a map function (n^3 for float)", &foldFloat, "sum of float > n", sum);
+                    treeMenu<float>(generateTree<float>(size, &getRandomFloat), "to apply a map function (n^3 for float)", &foldFloat, "sum of float > n", sum);
                     break;
                 }
                 case DataType::String:
                 {
                     string concat;
-                    treeMenu<string>(*generateTree<string>(implementation, size, &getRandomString), &treeMapString, "[prefix] to apply prefix to all strings", &foldString, "concat of string shorter than n", concat);
+                    treeMenu<string>(generateTree<string>(size, &getRandomString), "[prefix] to apply prefix to all strings", &foldString, "concat of string shorter than n", concat);
                     break;
                 }
                 }

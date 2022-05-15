@@ -74,6 +74,7 @@ namespace lasd
     void Remove(NodeLnk *node) noexcept;
 
     // type DataNDelete(argument) specifiers;
+    Data &DataNDelete(NodeLnk *node);
 
     // type Detach(argument) specifiers;
 
@@ -86,11 +87,11 @@ namespace lasd
     NodeLnk *Skip2Left(NodeLnk *&node) noexcept;
     NodeLnk *Skip2Right(NodeLnk *&node) noexcept;
 
-    // NodeLnk *Detach(NodeLnk *&root) noexcept;
-    // NodeLnk *DetachMin(NodeLnk *&root) noexcept;
+    NodeLnk *&Detach(NodeLnk *&root) noexcept;
+    NodeLnk *&DetachMin(NodeLnk *&root) noexcept;
 
-    NodeLnk *FindPointerToMin(NodeLnk *root) const noexcept;
-    NodeLnk *FindPointerToMax(NodeLnk *root) const noexcept;
+    NodeLnk *&FindPointerToMin(NodeLnk *&root) const noexcept;
+    NodeLnk *&FindPointerToMax(NodeLnk *&root) const noexcept;
     NodeLnk *FindPointerTo(NodeLnk *root, const Data &value) const noexcept;
 
     // type FindPointerToMin(argument) specifiers; // Both mutable & unmutable versions
