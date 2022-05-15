@@ -67,7 +67,12 @@ namespace lasd
         if (Empty())
             throw std::length_error("can't access min because tree is empty");
 
-        return FindPointerToMin()->Element();
+        NodeLnk *node = root;
+
+        while (node->HasLeftChild())
+            node = node->leftChild;
+
+        return node->Element();
     }
 
     template <typename Data>
@@ -76,7 +81,7 @@ namespace lasd
         if (Empty())
             throw std::length_error("can't access min because tree is empty");
 
-        // todo:implementation
+        // todo: implementation
     }
 
     template <typename Data>
@@ -85,7 +90,110 @@ namespace lasd
         if (Empty())
             throw std::length_error("can't remove min because tree is empty");
 
+        // what if min has right child?
+
+        // NodeLnk *parent = nullptr;
+        // NodeLnk *current = root;
+
+        // while (current->HasLeftChild())
+        // {
+        //     parent = current;
+        //     current = current->leftChild;
+        // }
+
+        // if (parent == nullptr)
+        //     root = nullptr;
+        // else
+        //     parent->leftChild = nullptr;
+
+        // delete current;
+        // nodesCount--;
+    }
+
+    template <typename Data>
+    const Data &BST<Data>::Max() const
+    {
+        if (Empty())
+            throw std::length_error("can't access max because tree is empty");
+
+        NodeLnk *node = root;
+
+        while (node->HasRightChild())
+            node = node->rightChild;
+
+        return node->Element();
+    }
+
+    template <typename Data>
+    Data &BST<Data>::MaxNRemove()
+    {
+        if (Empty())
+            throw std::length_error("can't access max because tree is empty");
+
         // todo:implementation
+    }
+
+    template <typename Data>
+    void BST<Data>::RemoveMax()
+    {
+        if (Empty())
+            throw std::length_error("can't remove max because tree is empty");
+
+        // todo:implementation
+    }
+
+    template <typename Data>
+    const Data &BST<Data>::Predecessor(const Data &value) const
+    {
+        if (Empty())
+            throw std::length_error("can't access predecessor because tree is empty");
+
+        // todo: implementation
+    }
+
+    template <typename Data>
+    Data &BST<Data>::PredecessorNRemove(const Data &value)
+    {
+        if (Empty())
+            throw std::length_error("can't access predecessor because tree is empty");
+
+        // todo: implementation
+    }
+
+    template <typename Data>
+    void BST<Data>::RemovePredecessor(const Data &value)
+    {
+        if (Empty())
+            throw std::length_error("can't remove predecessor because tree is empty");
+
+        // todo: implementation
+    }
+
+    template <typename Data>
+    const Data &BST<Data>::Successor(const Data &value) const
+    {
+        if (Empty())
+            throw std::length_error("can't access successor because tree is empty");
+
+        // todo: implementation
+    }
+
+    template <typename Data>
+    Data &BST<Data>::SuccessorNRemove(const Data &value)
+    {
+        if (Empty())
+            throw std::length_error("can't access successor because tree is empty");
+
+        // todo: implementation
+    }
+
+    template <typename Data>
+    void BST<Data>::RemoveSuccessor(const Data &value)
+    {
+        if (Empty())
+            throw std::length_error("can't remove successor because tree is empty");
+
+        // todo: implementation
     }
 
     /* ************************************************************************** */
@@ -93,13 +201,40 @@ namespace lasd
     template <typename Data>
     void BST<Data>::Insert(const Data &value)
     {
-        // todo: implementation
+        Insert(new NodeLnk(value));
     }
 
     template <typename Data>
     void BST<Data>::Insert(Data &&value)
     {
-        // todo: implementation
+        Insert(new NodeLnk(std::move(value)));
+    }
+
+    template <typename Data>
+    void BST<Data>::Insert(NodeLnk *node) noexcept
+    {
+        if (Empty())
+        {
+            root = node;
+        }
+        else
+        {
+            NodeLnk *parent = nullptr;
+            NodeLnk *current = root;
+
+            while (current != nullptr)
+            {
+                parent = current;
+                current = value < current->Element() ? current->leftChild : current->rightChild;
+            }
+
+            if (value < parent->Element())
+                parent->leftChild = node;
+            else
+                parent->rightChild = node;
+        }
+
+        nodesCount++;
     }
 
     template <typename Data>
@@ -121,15 +256,40 @@ namespace lasd
 
     /* ************************************************************************** */
 
-    template <typename Data>
-    typename BinaryTreeLnk<Data>::NodeLnk *BST<Data>::FindPointerToMin(typename BinaryTreeLnk<Data>::NodeLnk *node) const noexcept
-    {
-        NodeLnk *node = root;
+    // template <typename Data>
+    // void BST<Data>::DetachMin(NodeLnk *node) noexcept
+    // {
+    //     if (node == nullptr)
+    //         return;
 
-        while (node != nullptr && node->HasLeftChild())
-            node = node->leftChild;
+    //     Node *parent = nullptr;
 
-        return node;
-    }
+    //     while (node->HasLeftChild())
+    //         node = node->leftChild;
+    // }
+
+    // template <typename Data>
+    // BST<Data>::NodeLnk *BST<Data>::FindPointerToMin(NodeLnk *node) const noexcept
+    // {
+    //     if (node != nullptr)
+    //     {
+    //         while (node->HasLeftChild())
+    //             node = node->leftChild;
+    //     }
+
+    //     return node;
+    // }
+
+    // template <typename Data>
+    // typename BinaryTreeLnk<Data>::NodeLnk *BST<Data>::FindPointerToMax(typename BinaryTreeLnk<Data>::NodeLnk *node) const noexcept
+    // {
+    //     if (node != nullptr)
+    //     {
+    //         while (node->HasRightChild())
+    //             node = node->rightChild;
+    //     }
+
+    //     return node;
+    // }
 
 }

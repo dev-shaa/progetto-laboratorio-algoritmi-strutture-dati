@@ -70,6 +70,9 @@ namespace lasd
   protected:
     // Auxiliary member functions
 
+    void Insert(NodeLnk *node) noexcept;
+    void Remove(NodeLnk *node) noexcept;
+
     // type DataNDelete(argument) specifiers;
 
     // type Detach(argument) specifiers;
@@ -79,6 +82,8 @@ namespace lasd
 
     // type Skip2Left(argument) specifiers;
     // type Skip2Left(argument) specifiers;
+
+    void DetachMin(NodeLnk *node, NodeLnk *parent) noexcept;
 
     NodeLnk *FindPointerToMin(NodeLnk *node) const noexcept;
     NodeLnk *FindPointerToMax(NodeLnk *node) const noexcept;
