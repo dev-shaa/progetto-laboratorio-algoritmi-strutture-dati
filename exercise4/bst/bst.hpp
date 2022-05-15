@@ -17,12 +17,12 @@ namespace lasd
   class BST : virtual public BinaryTreeLnk<Data>, virtual public DictionaryContainer<Data>
   {
   protected:
-    using BinaryTreeLnk<Data>::NodeLnk;
+    using typename BinaryTreeLnk<Data>::NodeLnk;
     using BinaryTreeLnk<Data>::root;
     using BinaryTreeLnk<Data>::nodesCount;
 
   public:
-    BST();
+    BST() = default;
     BST(const LinearContainer<Data> &container);
     BST(const BST &other);
     BST(BST &&other)
@@ -71,7 +71,7 @@ namespace lasd
     // Auxiliary member functions
 
     void Insert(NodeLnk *node) noexcept;
-    void Remove(NodeLnk *node) noexcept;
+    // void Remove(NodeLnk *node) noexcept;
 
     // type DataNDelete(argument) specifiers;
     Data &DataNDelete(NodeLnk *node);
@@ -87,12 +87,14 @@ namespace lasd
     NodeLnk *Skip2Left(NodeLnk *&node) noexcept;
     NodeLnk *Skip2Right(NodeLnk *&node) noexcept;
 
-    NodeLnk *&Detach(NodeLnk *&root) noexcept;
-    NodeLnk *&DetachMin(NodeLnk *&root) noexcept;
+    // NodeLnk *&Detach(NodeLnk *&root) noexcept;
+    // NodeLnk *&DetachMin(NodeLnk *&root) noexcept;
 
-    NodeLnk *&FindPointerToMin(NodeLnk *&root) const noexcept;
-    NodeLnk *&FindPointerToMax(NodeLnk *&root) const noexcept;
-    NodeLnk *FindPointerTo(NodeLnk *root, const Data &value) const noexcept;
+    NodeLnk *&FindPointerToMin(NodeLnk *const &root) const noexcept;
+    NodeLnk *&FindPointerToMax(NodeLnk *const &root) const noexcept;
+    NodeLnk *&FindPointerTo(NodeLnk *const &root, const Data &value) const noexcept;
+    NodeLnk *&FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept;
+    NodeLnk *&FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept;
 
     // type FindPointerToMin(argument) specifiers; // Both mutable & unmutable versions
     // type FindPointerToMax(argument) specifiers; // Both mutable & unmutable versions

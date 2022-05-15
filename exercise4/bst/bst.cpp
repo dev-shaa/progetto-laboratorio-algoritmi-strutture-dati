@@ -38,7 +38,7 @@ namespace lasd
     template <typename Data>
     bool BST<Data>::operator==(const BST<Data> &other) const noexcept
     {
-        if (Size() != other.Size())
+        if (this->Size() != other.Size())
             return false;
 
         BTInOrderIterator<Data> thisIterator(*this);
@@ -64,7 +64,7 @@ namespace lasd
     template <typename Data>
     const Data &BST<Data>::Min() const
     {
-        if (Empty())
+        if (BinaryTreeLnk<Data>::Empty())
             throw std::length_error("can't access min because tree is empty");
 
         return FindPointerToMin(root)->Element();
@@ -73,7 +73,7 @@ namespace lasd
     template <typename Data>
     Data &BST<Data>::MinNRemove()
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't access min because tree is empty");
 
         return DataNDelete(Skip2Right(FindPointerToMin(root)));
@@ -82,7 +82,7 @@ namespace lasd
     template <typename Data>
     void BST<Data>::RemoveMin()
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't access min because tree is empty");
 
         delete Skip2Right(FindPointerToMin(root));
@@ -91,7 +91,7 @@ namespace lasd
     template <typename Data>
     const Data &BST<Data>::Max() const
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't access max because tree is empty");
 
         return FindPointerToMax(root)->Element();
@@ -100,7 +100,7 @@ namespace lasd
     template <typename Data>
     Data &BST<Data>::MaxNRemove()
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't access max because tree is empty");
 
         return DataNDelete(Skip2Left(FindPointerToMax(root)));
@@ -109,7 +109,7 @@ namespace lasd
     template <typename Data>
     void BST<Data>::RemoveMax()
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't remove max because tree is empty");
 
         delete Skip2Left(FindPointerToMax(root));
@@ -118,7 +118,7 @@ namespace lasd
     template <typename Data>
     const Data &BST<Data>::Predecessor(const Data &value) const
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't access predecessor because tree is empty");
 
         // todo: implementation
@@ -127,7 +127,7 @@ namespace lasd
     template <typename Data>
     Data &BST<Data>::PredecessorNRemove(const Data &value)
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't access predecessor because tree is empty");
 
         // todo: implementation
@@ -136,7 +136,7 @@ namespace lasd
     template <typename Data>
     void BST<Data>::RemovePredecessor(const Data &value)
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't remove predecessor because tree is empty");
 
         // todo: implementation
@@ -145,36 +145,16 @@ namespace lasd
     template <typename Data>
     const Data &BST<Data>::Successor(const Data &value) const
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't access successor because tree is empty");
 
-        // todo: implementation
-
-        NodeLnk *curr = root;
-        NodeLnk *cand = nullptr;
-
-        // find node with value
-        while (curr != nullptr && curr->Element() != value)
-        {
-            if (curr->Element() < value)
-            {
-                curr = curr->rightChild;
-            }
-            else
-            {
-                cand = curr;
-                curr = curr->leftChild;
-            }
-        }
-
-        // find successor
-        return (curr == nullptr || !curr->HasRightChild()) ? cand->Element() : FindPointerToMin(curr->rightChild)->Element();
+        return FindPointerToSuccessor(root, value)->Element();
     }
 
     template <typename Data>
     Data &BST<Data>::SuccessorNRemove(const Data &value)
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't access successor because tree is empty");
 
         // todo: implementation
@@ -183,7 +163,7 @@ namespace lasd
     template <typename Data>
     void BST<Data>::RemoveSuccessor(const Data &value)
     {
-        if (Empty())
+        if (this->Empty())
             throw std::length_error("can't remove successor because tree is empty");
 
         // todo: implementation
@@ -206,7 +186,7 @@ namespace lasd
     template <typename Data>
     void BST<Data>::Remove(const Data &value)
     {
-        NodeLnk *node = FindPointerTo(root, value);
+        NodeLnk *&node = FindPointerTo(root, value);
 
         if (node != nullptr)
         {
@@ -245,36 +225,40 @@ namespace lasd
     template <typename Data>
     void BST<Data>::Insert(typename BST<Data>::NodeLnk *node) noexcept
     {
-        if (Empty())
-        {
-            root = node;
-        }
-        else
-        {
-            NodeLnk *parent = nullptr;
-            NodeLnk *current = root;
+        NodeLnk *&cand = FindPointerTo(root, node->Element());
 
-            while (current != nullptr)
-            {
-                parent = current;
-                current = value < current->Element() ? current->leftChild : current->rightChild;
-            }
-
-            if (value < parent->Element())
-                parent->leftChild = node;
-            else
-                parent->rightChild = node;
+        if (cand == nullptr)
+        {
+            cand = node;
+            nodesCount++;
         }
 
-        nodesCount++;
+        // if (Empty())
+        // {
+        //     root = node;
+        // }
+        // else
+        // {
+        //     NodeLnk *parent = nullptr;
+        //     NodeLnk *current = root;
+
+        //     while (current != nullptr)
+        //     {
+        //         parent = current;
+        //         current = value < current->Element() ? current->leftChild : current->rightChild;
+        //     }
+
+        //     if (value < parent->Element())
+        //         parent->leftChild = node;
+        //     else
+        //         parent->rightChild = node;
+        // }
     }
 
     template <typename Data>
-    typename BST<Data>::NodeLnk *&BST<Data>::FindPointerToMin(NodeLnk *&root) const noexcept
+    typename BST<Data>::NodeLnk *&BST<Data>::FindPointerToMin(NodeLnk *const &root) const noexcept
     {
-        // return root->HasLeftChild() ? FindPointerToMin(root->leftChild) : root;
-
-        NodeLnk **ptr = &root;
+        NodeLnk *const *ptr = &root;
         NodeLnk *cur = root;
 
         if (cur != nullptr)
@@ -290,21 +274,92 @@ namespace lasd
     }
 
     template <typename Data>
-    typename BST<Data>::NodeLnk *BST<Data>::FindPointerToMax(const typename BST<Data>::NodeLnk *&root) const noexcept
+    typename BST<Data>::NodeLnk *&BST<Data>::FindPointerToMax(NodeLnk *const &root) const noexcept
     {
-        while (root->HasRightChild())
-            root = root->rightChild;
+        NodeLnk *const *ptr = &root;
+        NodeLnk *cur = root;
 
-        return root;
+        if (cur != nullptr)
+        {
+            while (cur->HasRightChild())
+            {
+                ptr = &cur->rightChild;
+                cur = cur->rightChild;
+            }
+        }
+
+        return *ptr;
     }
 
     template <typename Data>
-    typename BST<Data>::NodeLnk *BST<Data>::FindPointerTo(typename BST<Data>::NodeLnk *root, const Data &value) const noexcept
+    typename BST<Data>::NodeLnk *&BST<Data>::FindPointerTo(NodeLnk *const &root, const Data &value) const noexcept
     {
-        while (root != nullptr && node->Element() != value)
-            root = value < root->Element() ? root->leftChild : root->rightChild;
+        NodeLnk *const *ptr = &root;
+        NodeLnk *cur = root;
 
-        return root;
+        while (cur != nullptr && cur->Element() != value)
+        {
+            if (value > cur->Element())
+            {
+                ptr = &cur->leftChild;
+                cur = cur->leftChild;
+            }
+            else
+            {
+                ptr = &cur->rightChild;
+                cur = cur->rightChild;
+            }
+        }
+
+        return *ptr;
+    }
+
+    template <typename Data>
+    typename BST<Data>::NodeLnk *&BST<Data>::FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept
+    {
+        NodeLnk **ptr = &root;
+        NodeLnk *cur = root;
+
+        while (cur != nullptr && cur->Element() != value)
+        {
+            if (value < cur->Element())
+            {
+                ptr = &cur->leftChild;
+                cur = cur->leftChild;
+            }
+            else
+            {
+                ptr = &cur->rightChild;
+                cur = cur->rightChild;
+            }
+        }
+
+        return *ptr;
+    }
+
+    template <typename Data>
+    typename BST<Data>::NodeLnk *&BST<Data>::FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept
+    {
+        NodeLnk *const *ptr = &root;
+        NodeLnk **cand = nullptr;
+        NodeLnk *cur = root;
+
+        while (cur != nullptr && cur->Element() != value)
+        {
+            if (value < cur->Element())
+            {
+                ptr = &cur->rightChild;
+                cur = cur->leftChild;
+            }
+            else
+            {
+                cand = &cur->rightChild;
+                ptr = &cur->rightChild;
+                cur = cur->rightChild;
+            }
+        }
+
+        return (cur == nullptr || cur->HasRightChild()) ? *cand : FindPointerToMin(cur->rightChild);
     }
 
     template <typename Data>
@@ -338,10 +393,10 @@ namespace lasd
     }
 
     template <typename Data>
-    Data &BST<Data>::DataNDelete(NodeLnk *node) noexcept
+    Data &BST<Data>::DataNDelete(NodeLnk *node)
     {
         Data *value = new Data(std::move(node->Element()));
-        delete removedNode;
+        delete node;
         return *value;
     }
 
