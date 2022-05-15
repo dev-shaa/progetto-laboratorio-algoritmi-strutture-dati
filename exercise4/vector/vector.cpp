@@ -39,6 +39,8 @@ namespace lasd
         delete[] array;
     }
 
+    /* ************************************************************************** */
+
     template <typename Data>
     Vector<Data> &Vector<Data>::operator=(const Vector &other)
     {
@@ -83,6 +85,8 @@ namespace lasd
 
         return array[index];
     }
+
+    /* ************************************************************************** */
 
     template <typename Data>
     void Vector<Data>::Resize(const ulong size)
@@ -138,6 +142,8 @@ namespace lasd
     {
         return size;
     }
+
+    /* ************************************************************************** */
 
     template <typename Data>
     void Vector<Data>::Map(MapFunctor functor, void *par)

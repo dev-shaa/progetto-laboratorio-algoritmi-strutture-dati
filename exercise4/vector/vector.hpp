@@ -47,8 +47,8 @@ namespace lasd
     void Resize(const ulong size);
     void Clear() override;
     void Clear(ulong size);
-    bool Empty() const noexcept override;
-    ulong Size() const noexcept override;
+    inline bool Empty() const noexcept override;
+    inline ulong Size() const noexcept override;
 
     /* ************************************************************************ */
 
