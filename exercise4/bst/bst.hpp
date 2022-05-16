@@ -87,11 +87,11 @@ namespace lasd
     NodeLnk *&FindPointerTo(NodeLnk *&root, const Data &value) noexcept;
     NodeLnk *const &FindPointerTo(NodeLnk *const &root, const Data &value) const noexcept;
 
-    NodeLnk *&FindPointerToPredecessor(NodeLnk *&root, const Data &value) noexcept;
-    NodeLnk *const &FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept;
+    NodeLnk **FindPointerToPredecessor(NodeLnk *&root, const Data &value) noexcept;
+    NodeLnk *const *FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept;
 
-    NodeLnk *&FindPointerToSuccessor(NodeLnk *&root, const Data &value) noexcept;
-    NodeLnk *const &FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept;
+    NodeLnk **FindPointerToSuccessor(NodeLnk *&root, const Data &value) noexcept;
+    NodeLnk *const *FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept;
   };
 
   /* ************************************************************************** */
