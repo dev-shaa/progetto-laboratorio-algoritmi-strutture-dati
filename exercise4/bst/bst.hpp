@@ -71,8 +71,7 @@ namespace lasd
     void Insert(NodeLnk *node) noexcept;
     Data &DataNDelete(NodeLnk *node);
 
-    // type Detach(argument) specifiers;
-
+    NodeLnk *Detach(NodeLnk *&node) noexcept;
     NodeLnk *DetachMin(NodeLnk *&root) noexcept;
     NodeLnk *DetachMax(NodeLnk *&root) noexcept;
 

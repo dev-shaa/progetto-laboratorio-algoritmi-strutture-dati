@@ -136,24 +136,24 @@ namespace lasd
         if (predecessor == nullptr)
             throw std::length_error("can't find predecessor of value");
 
-        // remove predecessor node
-
-        return DataNDelete(predecessor);
+        return DataNDelete(Detach(predecessor));
     }
 
     template <typename Data>
     void BST<Data>::RemovePredecessor(const Data &value)
     {
-        if (this->Empty())
-            throw std::length_error("can't remove predecessor because tree is empty");
+        NodeLnk *&predecessor = FindPointerToPredecessor(root, value);
 
-        // todo: implementation
+        if (predecessor == nullptr)
+            throw std::length_error("can't find predecessor of value");
+
+        delete Detach(predecessor);
     }
 
     template <typename Data>
     const Data &BST<Data>::Successor(const Data &value) const
     {
-        NodeLnk *&successor = FindPointerToSuccessor(root, value);
+        NodeLnk *const &successor = FindPointerToSuccessor(root, value);
 
         if (successor == nullptr)
             throw std::length_error("can't find successor of value");
@@ -164,19 +164,23 @@ namespace lasd
     template <typename Data>
     Data &BST<Data>::SuccessorNRemove(const Data &value)
     {
-        if (this->Empty())
-            throw std::length_error("can't access successor because tree is empty");
+        NodeLnk *&successor = FindPointerToPredecessor(root, value);
 
-        // todo: implementation
+        if (successor == nullptr)
+            throw std::length_error("can't find predecessor of value");
+
+        return DataNDelete(Detach(successor));
     }
 
     template <typename Data>
     void BST<Data>::RemoveSuccessor(const Data &value)
     {
-        if (this->Empty())
-            throw std::length_error("can't remove successor because tree is empty");
+        NodeLnk *&successor = FindPointerToPredecessor(root, value);
 
-        // todo: implementation
+        if (successor == nullptr)
+            throw std::length_error("can't find predecessor of value");
+
+        delete Detach(successor);
     }
 
     /* ************************************************************************** */
@@ -196,33 +200,35 @@ namespace lasd
     template <typename Data>
     void BST<Data>::Remove(const Data &value)
     {
-        NodeLnk *&node = FindPointerTo(root, value);
+        delete Detach(FindPointerTo(root, value));
 
-        if (node != nullptr)
-        {
-            NodeLnk *temp = node;
+        // NodeLnk *&node = FindPointerTo(root, value);
 
-            if (!node->HasLeftChild())
-            {
-                Skip2Right(node);
-            }
-            else if (!node->HasRightChild())
-            {
-                Skip2Left(node);
-            }
-            else
-            {
-                // temp = FindPointerToMin(node->rightChild);
-                // node->Element() = temp->Element();
+        // if (node != nullptr)
+        // {
+        //     NodeLnk *temp = node;
 
-                DetachMin(node->rightChild);
+        //     if (!node->HasLeftChild())
+        //     {
+        //         Skip2Right(node);
+        //     }
+        //     else if (!node->HasRightChild())
+        //     {
+        //         Skip2Left(node);
+        //     }
+        //     else
+        //     {
+        //         // temp = FindPointerToMin(node->rightChild);
+        //         // node->Element() = temp->Element();
 
-                // delete min of node right subtree
-                // rt->setRight(deletemin(rt->right()));
-            }
+        //         DetachMin(node->rightChild);
 
-            delete temp;
-        }
+        //         // delete min of node right subtree
+        //         // rt->setRight(deletemin(rt->right()));
+        //     }
+
+        //     delete temp;
+        // }
     }
 
     template <typename Data>
@@ -386,15 +392,32 @@ namespace lasd
     }
 
     template <typename Data>
+    typename BST<Data>::NodeLnk *BST<Data>::Detach(NodeLnk *&node) noexcept
+    {
+        if (node == nullptr)
+            return nullptr;
+
+        if (!node->HasLeftChild())
+            return Skip2Right(node);
+
+        if (!node->HasRightChild())
+            return Skip2Left(node);
+
+        NodeLnk *detachedNode = DetachMin(node->rightChild);
+        node->Element() = detachedNode->Element();
+        return detachedNode;
+    }
+
+    template <typename Data>
     typename BST<Data>::NodeLnk *BST<Data>::DetachMin(NodeLnk *&root) noexcept
     {
-        return Skip2Right(FindPointerToMin(root))
+        return Skip2Right(FindPointerToMin(root));
     }
 
     template <typename Data>
     typename BST<Data>::NodeLnk *BST<Data>::DetachMax(NodeLnk *&root) noexcept
     {
-        return Skip2Left(FindPointerToMax(root))
+        return Skip2Left(FindPointerToMax(root));
     }
 
     template <typename Data>
