@@ -68,40 +68,31 @@ namespace lasd
     bool Exists(const Data &value) const noexcept override;
 
   protected:
-    // Auxiliary member functions
-
     void Insert(NodeLnk *node) noexcept;
-    // void Remove(NodeLnk *node) noexcept;
-
-    // type DataNDelete(argument) specifiers;
     Data &DataNDelete(NodeLnk *node);
 
     // type Detach(argument) specifiers;
 
-    // type DetachMin(argument) specifiers;
-    // type DetachMax(argument) specifiers;
-
-    // type Skip2Left(argument) specifiers;
-    // type Skip2Right(argument) specifiers;
+    NodeLnk *DetachMin(NodeLnk *&root) noexcept;
+    NodeLnk *DetachMax(NodeLnk *&root) noexcept;
 
     NodeLnk *Skip2Left(NodeLnk *&node) noexcept;
     NodeLnk *Skip2Right(NodeLnk *&node) noexcept;
 
-    // NodeLnk *&Detach(NodeLnk *&root) noexcept;
-    // NodeLnk *&DetachMin(NodeLnk *&root) noexcept;
+    NodeLnk *&FindPointerToMin(NodeLnk *&root) noexcept;
+    NodeLnk *const &FindPointerToMin(NodeLnk *const &root) const noexcept;
 
-    NodeLnk *&FindPointerToMin(NodeLnk *const &root) const noexcept;
-    NodeLnk *&FindPointerToMax(NodeLnk *const &root) const noexcept;
-    NodeLnk *&FindPointerTo(NodeLnk *const &root, const Data &value) const noexcept;
-    NodeLnk *&FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept;
-    NodeLnk *&FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept;
+    NodeLnk *&FindPointerToMax(NodeLnk *&root) noexcept;
+    NodeLnk *const &FindPointerToMax(NodeLnk *const &root) const noexcept;
 
-    // type FindPointerToMin(argument) specifiers; // Both mutable & unmutable versions
-    // type FindPointerToMax(argument) specifiers; // Both mutable & unmutable versions
-    // type FindPointerTo(argument) specifiers; // Both mutable & unmutable versions
+    NodeLnk *&FindPointerTo(NodeLnk *&root, const Data &value) noexcept;
+    NodeLnk *const &FindPointerTo(NodeLnk *const &root, const Data &value) const noexcept;
 
-    // type FindPointerToPredecessor(argument) specifiers; // Both mutable & unmutable versions
-    // type FindPointerToSuccessor(argument) specifiers; // Both mutable & unmutable versions
+    NodeLnk *&FindPointerToPredecessor(NodeLnk *&root, const Data &value) noexcept;
+    NodeLnk *const &FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept;
+
+    NodeLnk *&FindPointerToSuccessor(NodeLnk *&root, const Data &value) noexcept;
+    NodeLnk *const &FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept;
   };
 
   /* ************************************************************************** */
