@@ -164,7 +164,7 @@ namespace lasd
     template <typename Data>
     Data &BST<Data>::SuccessorNRemove(const Data &value)
     {
-        NodeLnk **successor = FindPointerToPredecessor(root, value);
+        NodeLnk **successor = FindPointerToSuccessor(root, value);
 
         if (successor == nullptr)
             throw std::length_error("can't find predecessor of value");
@@ -175,7 +175,7 @@ namespace lasd
     template <typename Data>
     void BST<Data>::RemoveSuccessor(const Data &value)
     {
-        NodeLnk **successor = FindPointerToPredecessor(root, value);
+        NodeLnk **successor = FindPointerToSuccessor(root, value);
 
         if (successor == nullptr)
             throw std::length_error("can't find predecessor of value");
@@ -259,8 +259,10 @@ namespace lasd
 
             if (node->Element() < parent->Element())
                 parent->leftChild = node;
-            else
+            else if (node->Element() > parent->Element())
                 parent->rightChild = node;
+            else
+                nodesCount--;
         }
 
         nodesCount++;
@@ -353,6 +355,37 @@ namespace lasd
     typename BST<Data>::NodeLnk *const *BST<Data>::FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept
     {
         NodeLnk *const *currentReference = &root;
+        NodeLnk *const *predecessor = nullptr;
+        NodeLnk *current = root;
+
+        while (current != nullptr && current->Element() != value)
+        {
+            if (value < current->Element())
+            {
+                currentReference = &current->leftChild;
+                current = current->leftChild;
+            }
+            else
+            {
+                predecessor = currentReference;
+                currentReference = &current->rightChild;
+                current = current->rightChild;
+            }
+        }
+
+        return (current == nullptr || !current->HasLeftChild()) ? predecessor : &FindPointerToMax(current->leftChild);
+    }
+
+    template <typename Data>
+    typename BST<Data>::NodeLnk **BST<Data>::FindPointerToSuccessor(NodeLnk *&root, const Data &value) noexcept
+    {
+        return const_cast<NodeLnk **>(const_cast<const BST<Data> *>(this)->FindPointerToSuccessor(root, value));
+    }
+
+    template <typename Data>
+    typename BST<Data>::NodeLnk *const *BST<Data>::FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept
+    {
+        NodeLnk *const *currentReference = &root;
         NodeLnk *const *successor = nullptr;
         NodeLnk *current = root;
 
@@ -371,39 +404,7 @@ namespace lasd
             }
         }
 
-        return (current == nullptr || !current->HasLeftChild()) ? successor : &FindPointerToMax(current->leftChild);
-    }
-
-    template <typename Data>
-    typename BST<Data>::NodeLnk **BST<Data>::FindPointerToSuccessor(NodeLnk *&root, const Data &value) noexcept
-    {
-        return const_cast<NodeLnk **>(const_cast<const BST<Data> *>(this)->FindPointerToSuccessor(root, value));
-    }
-
-    template <typename Data>
-    typename BST<Data>::NodeLnk *const *BST<Data>::FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept
-    {
-        NodeLnk *const *currentReference = &root;
-        NodeLnk *const *predecessor = nullptr;
-        NodeLnk *current = root;
-
-        while (current != nullptr && current->Element() != value)
-        {
-            if (value < current->Element())
-            {
-                predecessor = currentReference;
-
-                currentReference = &current->leftChild;
-                current = current->leftChild;
-            }
-            else
-            {
-                currentReference = &current->rightChild;
-                current = current->rightChild;
-            }
-        }
-
-        return (current == nullptr || !current->HasRightChild()) ? predecessor : &FindPointerToMin(current->rightChild);
+        return (current == nullptr || !current->HasRightChild()) ? successor : &FindPointerToMin(current->rightChild);
     }
 
     template <typename Data>
