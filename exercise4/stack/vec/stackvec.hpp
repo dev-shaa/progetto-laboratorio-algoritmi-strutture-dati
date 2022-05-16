@@ -51,8 +51,8 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    bool Empty() const noexcept override;
-    ulong Size() const noexcept override;
+    inline bool Empty() const noexcept override;
+    inline ulong Size() const noexcept override;
     void Clear() override;
 
   protected:

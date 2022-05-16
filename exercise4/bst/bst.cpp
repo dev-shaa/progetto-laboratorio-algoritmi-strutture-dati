@@ -118,19 +118,25 @@ namespace lasd
     template <typename Data>
     const Data &BST<Data>::Predecessor(const Data &value) const
     {
-        if (this->Empty())
-            throw std::length_error("can't access predecessor because tree is empty");
+        NodeLnk *predecessor = FindPointerToPredecessor(root, value);
 
-        // todo: implementation
+        if (predecessor == nullptr)
+            throw std::length_error("can't find predecessor of value");
+
+        return predecessor->Element();
     }
 
     template <typename Data>
     Data &BST<Data>::PredecessorNRemove(const Data &value)
     {
-        if (this->Empty())
-            throw std::length_error("can't access predecessor because tree is empty");
+        NodeLnk *&predecessor = FindPointerToPredecessor(root, value);
 
-        // todo: implementation
+        if (predecessor == nullptr)
+            throw std::length_error("can't find predecessor of value");
+
+        // remove predecessor node
+
+        return DataNDelete(predecessor);
     }
 
     template <typename Data>
@@ -145,10 +151,12 @@ namespace lasd
     template <typename Data>
     const Data &BST<Data>::Successor(const Data &value) const
     {
-        if (this->Empty())
-            throw std::length_error("can't access successor because tree is empty");
+        NodeLnk *successor = FindPointerToSuccessor(root, value);
 
-        return FindPointerToSuccessor(root, value)->Element();
+        if (successor == nullptr)
+            throw std::length_error("can't find successor of value");
+
+        return successor->Element();
     }
 
     template <typename Data>
@@ -317,49 +325,52 @@ namespace lasd
     template <typename Data>
     typename BST<Data>::NodeLnk *&BST<Data>::FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept
     {
-        NodeLnk **ptr = &root;
-        NodeLnk *cur = root;
+        NodeLnk *const *currentReference = &root;
+        NodeLnk *const *successor = nullptr;
+        NodeLnk *current = root;
 
-        while (cur != nullptr && cur->Element() != value)
+        while (current != nullptr && current->Element() != value)
         {
-            if (value < cur->Element())
+            if (value < current->Element())
             {
-                ptr = &cur->leftChild;
-                cur = cur->leftChild;
+                successor = currentReference;
+                currentReference = &current->leftChild;
+                current = current->leftChild;
             }
             else
             {
-                ptr = &cur->rightChild;
-                cur = cur->rightChild;
+                currentReference = &current->rightChild;
+                current = current->rightChild;
             }
         }
 
-        return *ptr;
+        return (current == nullptr || !current->HasLeftChild()) ? *successor : FindPointerToMax(current->leftChild);
     }
 
     template <typename Data>
     typename BST<Data>::NodeLnk *&BST<Data>::FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept
     {
-        NodeLnk *const *ptr = &root;
-        NodeLnk **cand = nullptr;
-        NodeLnk *cur = root;
+        NodeLnk *const *currentReference = &root;
+        NodeLnk *const *predecessor = nullptr;
+        NodeLnk *current = root;
 
-        while (cur != nullptr && cur->Element() != value)
+        while (current != nullptr && current->Element() != value)
         {
-            if (value < cur->Element())
+            if (value < current->Element())
             {
-                ptr = &cur->rightChild;
-                cur = cur->leftChild;
+                predecessor = currentReference;
+
+                currentReference = &current->leftChild;
+                current = current->leftChild;
             }
             else
             {
-                cand = &cur->rightChild;
-                ptr = &cur->rightChild;
-                cur = cur->rightChild;
+                currentReference = &current->rightChild;
+                current = current->rightChild;
             }
         }
 
-        return (cur == nullptr || cur->HasRightChild()) ? *cand : FindPointerToMin(cur->rightChild);
+        return (current == nullptr || !current->HasRightChild()) ? *predecessor : FindPointerToMin(current->rightChild);
     }
 
     template <typename Data>
