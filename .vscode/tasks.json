@@ -1,0 +1,41 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "build",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "-O3",
+                "${workspaceFolder}/exercise4/zlasdtest/exercise1/simpletest.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/exercise1/fulltest.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/exercise2/simpletest.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/exercise2/fulltest.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/exercise3/simpletest.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/exercise3/fulltest.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/exercise4/simpletest.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/exercise4/fulltest.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/container/container.cpp",
+                "${workspaceFolder}/exercise4/zlasdtest/test.cpp",
+                "${workspaceFolder}/exercise4/zmytest/utilities.cpp",
+                "${workspaceFolder}/exercise4/zmytest/test.cpp",
+                "${workspaceFolder}/exercise4/main.cpp",
+                "-o",
+                "${workspaceFolder}/bin/main"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Attività generata dal debugger."
+        }
+    ],
+    "version": "2.0.0"
+}
