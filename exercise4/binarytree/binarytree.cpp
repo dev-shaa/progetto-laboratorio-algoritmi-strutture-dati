@@ -340,23 +340,23 @@ namespace lasd
     template <typename Data>
     void BTPostOrderIterator<Data>::PushElements()
     {
-        while (!expanded.Top())
+        while (!visitedNodeChildren.Top())
         {
-            expanded.Pop();
-            expanded.Push(true);
+            visitedNodeChildren.Pop();
+            visitedNodeChildren.Push(true);
 
             typename BinaryTree<Data>::Node *current = nodes.Top();
 
             if (current->HasRightChild())
             {
                 nodes.Push(&(current->RightChild()));
-                expanded.Push(false);
+                visitedNodeChildren.Push(false);
             }
 
             if (current->HasLeftChild())
             {
                 nodes.Push(&(current->LeftChild()));
-                expanded.Push(false);
+                visitedNodeChildren.Push(false);
             }
         }
     }
@@ -369,7 +369,7 @@ namespace lasd
 
         root = &(tree.Root());
         nodes.Push(root);
-        expanded.Push(false);
+        visitedNodeChildren.Push(false);
 
         PushElements();
     }
@@ -379,7 +379,7 @@ namespace lasd
     {
         root = other.root;
         nodes = other.nodes;
-        expanded = other.expanded;
+        visitedNodeChildren = other.visitedNodeChildren;
     }
 
     template <typename Data>
@@ -387,7 +387,7 @@ namespace lasd
     {
         std::swap(root, other.root);
         std::swap(nodes, other.nodes);
-        std::swap(expanded, other.expanded);
+        std::swap(visitedNodeChildren, other.visitedNodeChildren);
     }
 
     template <typename Data>
@@ -397,7 +397,7 @@ namespace lasd
         {
             root = other.root;
             nodes = other.nodes;
-            expanded = other.expanded;
+            visitedNodeChildren = other.visitedNodeChildren;
         }
 
         return *this;
@@ -410,7 +410,7 @@ namespace lasd
         {
             std::swap(root, other.root);
             std::swap(nodes, other.nodes);
-            std::swap(expanded, other.expanded);
+            std::swap(visitedNodeChildren, other.visitedNodeChildren);
         }
 
         return *this;
@@ -432,7 +432,7 @@ namespace lasd
     Data &BTPostOrderIterator<Data>::operator*() const
     {
         if (Terminated())
-            throw std::out_of_range("terminated");
+            throw std::out_of_range("can't access iterator because it has terminated");
 
         return nodes.Top()->Element();
     }
@@ -444,7 +444,8 @@ namespace lasd
             throw std::out_of_range("can't progess iterator because it has terminated");
 
         PushElements();
-        expanded.Pop();
+
+        visitedNodeChildren.Pop();
         nodes.Pop();
     }
 
@@ -457,11 +458,14 @@ namespace lasd
     template <typename Data>
     void BTPostOrderIterator<Data>::Reset() noexcept
     {
-        nodes.Clear();
-        expanded.Clear();
+        if (root != nullptr)
+        {
+            nodes.Clear();
+            visitedNodeChildren.Clear();
 
-        nodes.Push(root);
-        expanded.Push(false);
+            nodes.Push(root);
+            visitedNodeChildren.Push(false);
+        }
     }
 
     /* ************************************************************************** */

@@ -150,7 +150,7 @@ namespace lasd
   protected:
     typename BinaryTree<Data>::Node *root = nullptr;
     StackLst<typename BinaryTree<Data>::Node *> nodes;
-    StackLst<bool> expanded;
+    StackLst<bool> visitedNodeChildren;
 
     void PushElements();
 
