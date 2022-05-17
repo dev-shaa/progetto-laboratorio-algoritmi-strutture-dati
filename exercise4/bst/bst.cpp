@@ -200,35 +200,7 @@ namespace lasd
     template <typename Data>
     void BST<Data>::Remove(const Data &value)
     {
-        delete Detach(FindPointerTo(root, value));
-
-        // NodeLnk *&node = FindPointerTo(root, value);
-
-        // if (node != nullptr)
-        // {
-        //     NodeLnk *temp = node;
-
-        //     if (!node->HasLeftChild())
-        //     {
-        //         Skip2Right(node);
-        //     }
-        //     else if (!node->HasRightChild())
-        //     {
-        //         Skip2Left(node);
-        //     }
-        //     else
-        //     {
-        //         // temp = FindPointerToMin(node->rightChild);
-        //         // node->Element() = temp->Element();
-
-        //         DetachMin(node->rightChild);
-
-        //         // delete min of node right subtree
-        //         // rt->setRight(deletemin(rt->right()));
-        //     }
-
-        //     delete temp;
-        // }
+        delete Detach(FindPointerTo(root, value)); // todo: what if node isn't found
     }
 
     template <typename Data>

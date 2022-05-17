@@ -148,9 +148,9 @@ namespace lasd
   class BTPostOrderIterator : virtual public ForwardIterator<Data>, virtual public ResettableIterator<Data>
   {
   protected:
+    typename BinaryTree<Data>::Node *root = nullptr;
     StackLst<typename BinaryTree<Data>::Node *> nodes;
     StackLst<bool> expanded;
-    typename BinaryTree<Data>::Node *root = nullptr;
 
     void PushElements();
 

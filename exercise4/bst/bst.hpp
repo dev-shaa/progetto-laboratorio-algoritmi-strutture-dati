@@ -40,8 +40,6 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    // throw std::length_error when empty
-
     const Data &Min() const;
     Data &MinNRemove();
     void RemoveMin();
@@ -49,8 +47,6 @@ namespace lasd
     const Data &Max() const;
     Data &MaxNRemove();
     void RemoveMax();
-
-    // throw std::length_error when not found
 
     const Data &Predecessor(const Data &value) const;
     Data &PredecessorNRemove(const Data &value);

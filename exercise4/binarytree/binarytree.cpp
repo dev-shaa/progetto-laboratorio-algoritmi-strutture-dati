@@ -309,7 +309,7 @@ namespace lasd
     void BTPreOrderIterator<Data>::operator++()
     {
         if (Terminated())
-            throw std::length_error("can't progess iterator because it has terminated");
+            throw std::out_of_range("can't progess iterator because it has terminated");
 
         typename BinaryTree<Data>::Node *current = nodes.TopNPop();
 
@@ -432,7 +432,7 @@ namespace lasd
     Data &BTPostOrderIterator<Data>::operator*() const
     {
         if (Terminated())
-            throw std::length_error("terminated");
+            throw std::out_of_range("terminated");
 
         return nodes.Top()->Element();
     }
@@ -441,7 +441,7 @@ namespace lasd
     void BTPostOrderIterator<Data>::operator++()
     {
         if (Terminated())
-            throw std::length_error("can't progess iterator because it has terminated");
+            throw std::out_of_range("can't progess iterator because it has terminated");
 
         PushElements();
         expanded.Pop();
@@ -554,7 +554,7 @@ namespace lasd
     void BTInOrderIterator<Data>::operator++()
     {
         if (Terminated())
-            throw std::length_error("can't progess iterator because it has terminated");
+            throw std::out_of_range("can't progess iterator because it has terminated");
 
         typename BinaryTree<Data>::Node *current = nodes.TopNPop();
 
@@ -641,7 +641,7 @@ namespace lasd
     Data &BTBreadthIterator<Data>::operator*() const
     {
         if (Terminated())
-            throw std::length_error("terminated");
+            throw std::out_of_range("terminated");
 
         return nodes.Head()->Element();
     }
@@ -650,7 +650,7 @@ namespace lasd
     void BTBreadthIterator<Data>::operator++()
     {
         if (Terminated())
-            throw std::length_error("can't progess iterator because it has terminated");
+            throw std::out_of_range("can't progess iterator because it has terminated");
 
         typename BinaryTree<Data>::Node *current = nodes.HeadNDequeue();
 
