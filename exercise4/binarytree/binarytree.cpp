@@ -340,23 +340,23 @@ namespace lasd
     template <typename Data>
     void BTPostOrderIterator<Data>::PushElements()
     {
-        while (!visitedNodeChildren.Top())
+        while (!visitedChildren.Top())
         {
-            visitedNodeChildren.Pop();
-            visitedNodeChildren.Push(true);
+            visitedChildren.Pop();
+            visitedChildren.Push(true);
 
             typename BinaryTree<Data>::Node *current = nodes.Top();
 
             if (current->HasRightChild())
             {
                 nodes.Push(&(current->RightChild()));
-                visitedNodeChildren.Push(false);
+                visitedChildren.Push(false);
             }
 
             if (current->HasLeftChild())
             {
                 nodes.Push(&(current->LeftChild()));
-                visitedNodeChildren.Push(false);
+                visitedChildren.Push(false);
             }
         }
     }
@@ -369,7 +369,7 @@ namespace lasd
 
         root = &(tree.Root());
         nodes.Push(root);
-        visitedNodeChildren.Push(false);
+        visitedChildren.Push(false);
 
         PushElements();
     }
@@ -379,7 +379,7 @@ namespace lasd
     {
         root = other.root;
         nodes = other.nodes;
-        visitedNodeChildren = other.visitedNodeChildren;
+        visitedChildren = other.visitedChildren;
     }
 
     template <typename Data>
@@ -387,7 +387,7 @@ namespace lasd
     {
         std::swap(root, other.root);
         std::swap(nodes, other.nodes);
-        std::swap(visitedNodeChildren, other.visitedNodeChildren);
+        std::swap(visitedChildren, other.visitedChildren);
     }
 
     template <typename Data>
@@ -397,7 +397,7 @@ namespace lasd
         {
             root = other.root;
             nodes = other.nodes;
-            visitedNodeChildren = other.visitedNodeChildren;
+            visitedChildren = other.visitedChildren;
         }
 
         return *this;
@@ -410,7 +410,7 @@ namespace lasd
         {
             std::swap(root, other.root);
             std::swap(nodes, other.nodes);
-            std::swap(visitedNodeChildren, other.visitedNodeChildren);
+            std::swap(visitedChildren, other.visitedChildren);
         }
 
         return *this;
@@ -445,7 +445,7 @@ namespace lasd
 
         PushElements();
 
-        visitedNodeChildren.Pop();
+        visitedChildren.Pop();
         nodes.Pop();
     }
 
@@ -461,10 +461,12 @@ namespace lasd
         if (root != nullptr)
         {
             nodes.Clear();
-            visitedNodeChildren.Clear();
+            visitedChildren.Clear();
 
             nodes.Push(root);
-            visitedNodeChildren.Push(false);
+            visitedChildren.Push(false);
+
+            PushElements();
         }
     }
 
