@@ -36,11 +36,7 @@ namespace lasd
     public:
       friend class BinaryTree<Data>;
 
-      /* ********************************************************************** */
-
       virtual ~Node() = default;
-
-      /* ********************************************************************** */
 
       Node &operator=(const Node &other) = delete;
       Node &operator=(Node &&other) noexcept = delete;
@@ -74,10 +70,10 @@ namespace lasd
 
     virtual Node &Root() const = 0;
 
-    bool Exists(const Data &value) const noexcept override;
-    bool Empty() const noexcept = 0;
-    ulong Size() const noexcept = 0;
-    void Clear() = 0;
+    using Container::Clear;
+    using Container::Empty;
+    using Container::Size;
+    using TestableContainer<Data>::Exists;
 
     /* ************************************************************************ */
 
@@ -150,7 +146,7 @@ namespace lasd
   protected:
     typename BinaryTree<Data>::Node *root = nullptr;
     StackLst<typename BinaryTree<Data>::Node *> nodes;
-    StackLst<bool> visitedChildren;
+    StackLst<bool> pushedChildren;
 
     void PushElements();
 

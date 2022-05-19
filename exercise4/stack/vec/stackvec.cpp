@@ -135,7 +135,7 @@ namespace lasd
     void StackVec<Data>::Reduce()
     {
         if (size > DEFAULT_STACK_SIZE && top < size / 4)
-            Vector<Data>::Resize(size / 2);
+            Vector<Data>::Resize(std::max(size / 2, DEFAULT_STACK_SIZE));
     }
 
     /* ************************************************************************** */
