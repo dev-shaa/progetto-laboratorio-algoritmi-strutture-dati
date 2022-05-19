@@ -95,7 +95,7 @@ namespace lasd
 
     virtual void Insert(const Data &value) = 0;
     virtual void Insert(Data &&value) = 0;
-    virtual void Remove(const Data &value) = 0;
+    virtual void Remove(const Data &value) noexcept = 0;
   };
 
   /* ************************************************************************** */

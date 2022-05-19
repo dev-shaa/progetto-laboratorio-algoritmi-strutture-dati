@@ -198,9 +198,9 @@ namespace lasd
     }
 
     template <typename Data>
-    void BST<Data>::Remove(const Data &value)
+    void BST<Data>::Remove(const Data &value) noexcept
     {
-        delete Detach(FindPointerTo(root, value)); // todo: what if node isn't found
+        delete Detach(FindPointerTo(root, value));
     }
 
     template <typename Data>
@@ -220,13 +220,13 @@ namespace lasd
         }
         else
         {
-            NodeLnk *curr = root;
+            NodeLnk *current = root;
             NodeLnk *parent = nullptr;
 
-            while (curr != nullptr)
+            while (current != nullptr)
             {
-                parent = curr;
-                curr = (node->Element() < curr->Element()) ? curr->leftChild : curr->rightChild;
+                parent = current;
+                current = (node->Element() < current->Element()) ? current->leftChild : current->rightChild;
             }
 
             if (node->Element() < parent->Element())
@@ -249,19 +249,19 @@ namespace lasd
     template <typename Data>
     typename BST<Data>::NodeLnk *const &BST<Data>::FindPointerToMin(NodeLnk *const &root) const noexcept
     {
-        NodeLnk *const *ptr = &root;
-        NodeLnk *cur = root;
+        NodeLnk *const *minPointerReference = &root;
+        NodeLnk *current = root;
 
-        if (cur != nullptr)
+        if (current != nullptr)
         {
-            while (cur->HasLeftChild())
+            while (current->HasLeftChild())
             {
-                ptr = &cur->leftChild;
-                cur = cur->leftChild;
+                minPointerReference = &current->leftChild;
+                current = current->leftChild;
             }
         }
 
-        return *ptr;
+        return *minPointerReference;
     }
 
     template <typename Data>
@@ -273,19 +273,19 @@ namespace lasd
     template <typename Data>
     typename BST<Data>::NodeLnk *const &BST<Data>::FindPointerToMax(NodeLnk *const &root) const noexcept
     {
-        NodeLnk *const *ptr = &root;
-        NodeLnk *cur = root;
+        NodeLnk *const *maxPointerReference = &root;
+        NodeLnk *current = root;
 
-        if (cur != nullptr)
+        if (current != nullptr)
         {
-            while (cur->HasRightChild())
+            while (current->HasRightChild())
             {
-                ptr = &cur->rightChild;
-                cur = cur->rightChild;
+                maxPointerReference = &current->rightChild;
+                current = current->rightChild;
             }
         }
 
-        return *ptr;
+        return *maxPointerReference;
     }
 
     template <typename Data>
@@ -297,24 +297,24 @@ namespace lasd
     template <typename Data>
     typename BST<Data>::NodeLnk *const &BST<Data>::FindPointerTo(NodeLnk *const &root, const Data &value) const noexcept
     {
-        NodeLnk *const *pointerToNodePointer = &root;
+        NodeLnk *const *pointerReference = &root;
         NodeLnk *currentNode = root;
 
         while (currentNode != nullptr && currentNode->Element() != value)
         {
             if (value < currentNode->Element())
             {
-                pointerToNodePointer = &currentNode->leftChild;
+                pointerReference = &currentNode->leftChild;
                 currentNode = currentNode->leftChild;
             }
             else
             {
-                pointerToNodePointer = &currentNode->rightChild;
+                pointerReference = &currentNode->rightChild;
                 currentNode = currentNode->rightChild;
             }
         }
 
-        return *pointerToNodePointer;
+        return *pointerReference;
     }
 
     template <typename Data>
@@ -409,33 +409,33 @@ namespace lasd
     }
 
     template <typename Data>
-    typename BST<Data>::NodeLnk *BST<Data>::Skip2Left(NodeLnk *&nodeToDetach) noexcept
+    typename BST<Data>::NodeLnk *BST<Data>::Skip2Left(NodeLnk *&node) noexcept
     {
-        NodeLnk *temp = nullptr;
+        NodeLnk *detachedNode = nullptr;
 
-        if (nodeToDetach != nullptr)
+        if (node != nullptr)
         {
-            std::swap(temp, nodeToDetach->leftChild);
-            std::swap(temp, nodeToDetach);
+            std::swap(detachedNode, node->leftChild);
+            std::swap(detachedNode, node);
             nodesCount--;
         }
 
-        return temp;
+        return detachedNode;
     }
 
     template <typename Data>
-    typename BST<Data>::NodeLnk *BST<Data>::Skip2Right(NodeLnk *&nodeToDetach) noexcept
+    typename BST<Data>::NodeLnk *BST<Data>::Skip2Right(NodeLnk *&node) noexcept
     {
-        NodeLnk *temp = nullptr;
+        NodeLnk *detachedNode = nullptr;
 
-        if (nodeToDetach != nullptr)
+        if (node != nullptr)
         {
-            std::swap(temp, nodeToDetach->rightChild);
-            std::swap(temp, nodeToDetach);
+            std::swap(detachedNode, node->rightChild);
+            std::swap(detachedNode, node);
             nodesCount--;
         }
 
-        return temp;
+        return detachedNode;
     }
 
     template <typename Data>
