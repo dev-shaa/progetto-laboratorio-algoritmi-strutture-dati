@@ -23,28 +23,23 @@ int main()
   do
   {
     std::cout << "\navailable commands:\n- " << CMD_MENU_QUIT << " to quit\n- " << CMD_DEFAULT_TEST << " to execute default test\n- " << CMD_MANUAL_TEST << " to execute manual test\n>";
+    std::cin >> command;
 
-    if (std::cin >> command)
+    switch (command)
     {
-      switch (command)
-      {
-      case CMD_MENU_QUIT:
-        exitRequest = true;
-        break;
-      case CMD_DEFAULT_TEST:
-        lasdtest();
-        break;
-      case CMD_MANUAL_TEST:
-        std::cout << "\n";
-        manualTest();
-      default:
-        std::cerr << "invalid input\n";
-        break;
-      }
-    }
-    else
-    {
-      // handleInvalidInput();
+    case CMD_MENU_QUIT:
+      exitRequest = true;
+      break;
+    case CMD_DEFAULT_TEST:
+      lasdtest();
+      break;
+    case CMD_MANUAL_TEST:
+      std::cout << "\n";
+      manualTest();
+      break;
+    default:
+      std::cerr << "invalid input\n";
+      break;
     }
   } while (!exitRequest);
 
