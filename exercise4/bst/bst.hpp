@@ -58,13 +58,13 @@ namespace lasd
 
     /* ************************************************************************ */
 
-    void Insert(const Data &value) override;
-    void Insert(Data &&value) override;
-    void Remove(const Data &value) noexcept override;
+    bool Insert(const Data &value) override;
+    bool Insert(Data &&value) override;
+    bool Remove(const Data &value) noexcept override;
     bool Exists(const Data &value) const noexcept override;
 
   protected:
-    void Insert(NodeLnk *node) noexcept;
+    bool Insert(NodeLnk *node) noexcept;
     Data &DataNDelete(NodeLnk *node);
 
     NodeLnk *Detach(NodeLnk *&node) noexcept;

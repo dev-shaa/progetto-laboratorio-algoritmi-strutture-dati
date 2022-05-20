@@ -186,21 +186,23 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    void BST<Data>::Insert(const Data &value)
+    bool BST<Data>::Insert(const Data &value)
     {
-        Insert(new NodeLnk(value));
+        return Insert(new NodeLnk(value));
     }
 
     template <typename Data>
-    void BST<Data>::Insert(Data &&value)
+    bool BST<Data>::Insert(Data &&value)
     {
-        Insert(new NodeLnk(std::move(value)));
+        return Insert(new NodeLnk(std::move(value)));
     }
 
     template <typename Data>
-    void BST<Data>::Remove(const Data &value) noexcept
+    bool BST<Data>::Remove(const Data &value) noexcept
     {
-        delete Detach(FindPointerTo(root, value));
+        NodeLnk *detachedNode = Detach(FindPointerTo(root, value));
+        delete detachedNode;
+        return detachedNode != nullptr;
     }
 
     template <typename Data>
@@ -212,8 +214,10 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
-    void BST<Data>::Insert(typename BST<Data>::NodeLnk *node) noexcept
+    bool BST<Data>::Insert(typename BST<Data>::NodeLnk *node) noexcept
     {
+        bool inserted = true;
+
         if (this->Empty())
         {
             root = node;
@@ -234,10 +238,13 @@ namespace lasd
             else if (node->Element() > parent->Element())
                 parent->rightChild = node;
             else
-                nodesCount--;
+                inserted = false;
         }
 
-        nodesCount++;
+        if (inserted)
+            nodesCount++;
+
+        return inserted;
     }
 
     template <typename Data>
