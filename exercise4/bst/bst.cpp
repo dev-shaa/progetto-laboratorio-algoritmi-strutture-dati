@@ -326,7 +326,7 @@ namespace lasd
     template <typename Data>
     typename BST<Data>::NodeLnk *const *BST<Data>::FindPointerToPredecessor(NodeLnk *const &root, const Data &value) const noexcept
     {
-        NodeLnk *const *currentReference = &root;
+        NodeLnk *const *predecessorPointerReference = &root;
         NodeLnk *const *predecessor = nullptr;
         NodeLnk *current = root;
 
@@ -334,13 +334,13 @@ namespace lasd
         {
             if (value < current->Element())
             {
-                currentReference = &current->leftChild;
+                predecessorPointerReference = &current->leftChild;
                 current = current->leftChild;
             }
             else
             {
-                predecessor = currentReference;
-                currentReference = &current->rightChild;
+                predecessor = predecessorPointerReference;
+                predecessorPointerReference = &current->rightChild;
                 current = current->rightChild;
             }
         }
@@ -357,7 +357,7 @@ namespace lasd
     template <typename Data>
     typename BST<Data>::NodeLnk *const *BST<Data>::FindPointerToSuccessor(NodeLnk *const &root, const Data &value) const noexcept
     {
-        NodeLnk *const *currentReference = &root;
+        NodeLnk *const *successorPointerReference = &root;
         NodeLnk *const *successor = nullptr;
         NodeLnk *current = root;
 
@@ -365,13 +365,13 @@ namespace lasd
         {
             if (value < current->Element())
             {
-                successor = currentReference;
-                currentReference = &current->leftChild;
+                successor = successorPointerReference;
+                successorPointerReference = &current->leftChild;
                 current = current->leftChild;
             }
             else
             {
-                currentReference = &current->rightChild;
+                successorPointerReference = &current->rightChild;
                 current = current->rightChild;
             }
         }
