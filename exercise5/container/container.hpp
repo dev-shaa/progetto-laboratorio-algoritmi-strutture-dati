@@ -96,6 +96,10 @@ namespace lasd
     virtual bool Insert(const Data &value) = 0;
     virtual bool Insert(Data &&value) = 0;
     virtual bool Remove(const Data &value) noexcept = 0;
+
+    virtual bool Insert(const LinearContainer<Data> &container);
+    virtual bool Insert(LinearContainer<Data> &&container);
+    virtual bool Remove(const LinearContainer<Data> &container) noexcept;
   };
 
   /* ************************************************************************** */

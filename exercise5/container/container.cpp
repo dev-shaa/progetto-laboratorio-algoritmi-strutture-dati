@@ -44,6 +44,50 @@ namespace lasd
     /* ************************************************************************** */
 
     template <typename Data>
+    bool DictionaryContainer<Data>::Insert(const LinearContainer<Data> &container)
+    {
+        bool inserted = false;
+
+        for (ulong i = 0; i < other.Size(); i++)
+        {
+            if (Insert(other[i]))
+                inserted = true;
+        }
+
+        return inserted;
+    }
+
+    template <typename Data>
+    bool DictionaryContainer<Data>::Insert(LinearContainer<Data> &&container)
+    {
+        bool inserted = false;
+
+        for (ulong i = 0; i < other.Size(); i++)
+        {
+            if (Insert(std::move(other[i])))
+                inserted = true;
+        }
+
+        return inserted;
+    }
+
+    template <typename Data>
+    bool DictionaryContainer<Data>::Remove(const LinearContainer<Data> &container) noexcept
+    {
+        bool removed = false;
+
+        for (ulong i = 0; i < other.Size(); i++)
+        {
+            if (Remove(other[i]))
+                removed = true;
+        }
+
+        return removed;
+    }
+
+    /* ************************************************************************** */
+
+    template <typename Data>
     void SetFlagIfEqual(const Data &value, const void *otherData, void *flag)
     {
         if (value == *((Data *)otherData))
