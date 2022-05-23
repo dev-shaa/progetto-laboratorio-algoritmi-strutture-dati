@@ -5,107 +5,108 @@
 /* ************************************************************************** */
 
 #include "../hashtable.hpp"
-// #include ...
+#include "../../vector/vector.hpp"
+#include "../../list/list.hpp"
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class HashTableClsAdr { // Must extend HashTable<Data>
+  template <typename Data>
+  class HashTableClsAdr : virtual public HashTable<Data>
+  {
 
-private:
+  private:
+    // ...
 
-  // ...
+  protected:
+    // using HashTable<Data>::???;
 
-protected:
+    // ...
 
-  // using HashTable<Data>::???;
+    Vector<List<Data>> table;
 
-  // ...
+  public:
+    // Default constructor
+    // HashTableClsAdr() specifiers;
 
-public:
+    /* ************************************************************************ */
 
-  // Default constructor
-  // HashTableClsAdr() specifiers;
+    // Specific constructors
+    // HashTableClsAdr(argument) specifiers; // A hash table of a given size
+    // HashTableClsAdr(argument) specifiers; // A hash table obtained from a LinearContainer
+    // HashTableClsAdr(argument) specifiers; // A hash table of a given size obtained from a LinearContainer
 
-  /* ************************************************************************ */
+    HashTableClsAdr();
+    HashTableClsAdr(ulong size);
+    HashTableClsAdr(const LinearContainer<Data> container);
+    HashTableClsAdr(ulong size, const LinearContainer<Data> container);
 
-  // Specific constructors
-  // HashTableClsAdr(argument) specifiers; // A hash table of a given size
-  // HashTableClsAdr(argument) specifiers; // A hash table obtained from a LinearContainer
-  // HashTableClsAdr(argument) specifiers; // A hash table of a given size obtained from a LinearContainer
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    // Copy constructor
+    // HashTableClsAdr(argument) specifiers;
 
-  // Copy constructor
-  // HashTableClsAdr(argument) specifiers;
+    // Move constructor
+    // HashTableClsAdr(argument) specifiers;
 
-  // Move constructor
-  // HashTableClsAdr(argument) specifiers;
+    HashTableClsAdr(const HashTableClsAdr &other);
+    HashTableClsAdr(HashTableClsAdr &&other) noexcept;
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Destructor
-  // ~HashTableClsAdr() specifiers;
+    // Destructor
+    // ~HashTableClsAdr() specifiers;
+    virtual ~HashTableClsAdr();
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Copy assignment
-  // type operator=(argument) specifiers;
+    // Copy assignment
+    // type operator=(argument) specifiers;
 
-  // Move assignment
-  // type operator=(argument) specifiers;
+    // Move assignment
+    // type operator=(argument) specifiers;
 
-  /* ************************************************************************ */
+    HashTableClsAdr &operator=(const HashTableClsAdr &other);
+    HashTableClsAdr &operator=(HashTableClsAdr &&other) noexcept;
 
-  // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    // Comparison operators
+    // type operator==(argument) specifiers;
+    // type operator!=(argument) specifiers;
+    bool operator==(const HashTableClsAdr &other) const noexcept;
+    bool operator!=(const HashTableClsAdr &other) const noexcept;
 
-  // Specific member functions (inherited from HashTable)
+    /* ************************************************************************ */
 
-  // type Resize(argument) specifiers; // Resize the hashtable to a given size
+    void Resize(ulong size) override;
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Specific member functions (inherited from DictionaryContainer)
+    bool Insert(const Data &value) override;
+    bool Insert(Data &&value) override;
+    bool Remove(const Data &value) noexcept override;
 
-  // type Insert(argument) specifiers; // Override DictionaryContainer member (Copy of the value)
-  // type Insert(argument) specifiers; // Override DictionaryContainer member (Move of the value)
-  // type Remove(argument) specifiers; // Override DictionaryContainer member
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    bool Exists(const Data &value) const override;
 
-  // Specific member functions (inherited from TestableContainer)
+    using MappableContainer<Data>::MapFunctor;
+    void Map(MapFunctor functor, void *par) override;
 
-  // type Exists(argument) specifiers; // Override TestableContainer member
+    using FoldableContainer<Data>::FoldFunctor;
+    void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
 
-  /* ************************************************************************ */
+    bool Empty() const noexcept override;
+    ulong Size() const noexcept override;
+    void Clear() override;
+  };
 
-  // Specific member functions (inherited from MappableContainer)
-
-  // type Map(argument) specifiers; // Override MappableContainer member
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from FoldableContainer)
-
-  // type Fold(argument) specifiers; // Override FoldableContainer member
-
-  /* ************************************************************************ */
-
-  // Specific member functions (inherited from Container)
-
-  // type Clear() specifiers; // Override Container member
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 

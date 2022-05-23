@@ -12,70 +12,57 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class Hash {
+  template <typename Data>
+  class Hash
+  {
 
-public:
+  public:
+    virtual ulong operator()(const Data &value) const noexcept = 0;
+  };
 
-  // type operator()(argument) specifiers; // (concrete function should not throw exceptions)
+  /* ************************************************************************** */
 
-};
+  template <typename Data>
+  class HashTable : virtual public DictionaryContainer<Data>, virtual public MappableContainer<Data>, virtual public FoldableContainer<Data>
+  {
+  private:
+    // ...
 
-/* ************************************************************************** */
+  protected:
+    // using DictionaryContainer<Data>::???;
+    // ...
 
-template <typename Data>
-class HashTable { // Must extend DictionaryContainer<Data>,
-                  //             MappableContainer<Data>,
-                  //             FoldableContainer<Data>
+  public:
+    // Destructor
+    virtual ~HashTable() = default;
 
-private:
+    /* ************************************************************************ */
 
-  // ...
+    HashTable &operator=(const HashTable &other) = delete;
+    HashTable &operator=(HashTable &&other) noexcept = delete;
 
-protected:
+    /* ************************************************************************ */
 
-  // using DictionaryContainer<Data>::???;
+    // Comparison operators
+    // type operator==(argument) specifiers; // Comparison of abstract binary tree is possible.
+    // type operator!=(argument) specifiers; // Comparison of abstract binary tree is possible.
+    bool operator==(const HashTable &other) const noexcept;
+    bool operator!=(const HashTable &other) const noexcept;
 
-  // ...
+    /* ************************************************************************ */
 
-public:
+    virtual void Resize(ulong size) = 0;
 
-  // Destructor
-  // ~HashTable() specifiers
+  protected:
+    virtual ulong HashKey(ulong key) const noexcept;
+  };
 
-  /* ************************************************************************ */
-
-  // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types should not be possible.
-
-  // Move assignment
-  // type operator=(argument); // Move assignment of abstract types should not be possible.
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract binary tree is possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract binary tree is possible.
-
-  /* ************************************************************************ */
-
-  // Specific member function
-
-  // type Resize(argument) specifiers; // Resize the hashtable to a given size
-
-protected:
-
-  // Auxiliary member functions
-
-  // type HashKey(argument) specifiers;
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 

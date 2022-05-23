@@ -5,115 +5,114 @@
 /* ************************************************************************** */
 
 #include "../hashtable.hpp"
-// #include ...
+#include "../../vector/vector.hpp"
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class HashTableOpnAdr { // Must extend HashTable<Data>
+  template <typename Data>
+  class HashTableOpnAdr : virtual public HashTable<Data>
+  {
 
-private:
+  private:
+    // ...
+    Vector<Data> table;
+    Vector<unsigned char> foo;
 
-  // ...
+  protected:
+    // using HashTable<Data>::???;
 
-protected:
+    // ...
 
-  // using HashTable<Data>::???;
+  public:
+    // Default constructor
+    // HashTableOpnAdr() specifiers;
 
-  // ...
+    /* ************************************************************************ */
 
-public:
+    // Specific constructors
+    // HashTableOpnAdr(argument) specifiers; // A hash table of a given size
+    // HashTableOpnAdr(argument) specifiers; // A hash table obtained from a LinearContainer
+    // HashTableOpnAdr(argument) specifiers; // A hash table of a given size obtained from a LinearContainer
 
-  // Default constructor
-  // HashTableOpnAdr() specifiers;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    // Copy constructor
+    // HashTableOpnAdr(argument) specifiers;
 
-  // Specific constructors
-  // HashTableOpnAdr(argument) specifiers; // A hash table of a given size
-  // HashTableOpnAdr(argument) specifiers; // A hash table obtained from a LinearContainer
-  // HashTableOpnAdr(argument) specifiers; // A hash table of a given size obtained from a LinearContainer
+    // Move constructor
+    // HashTableOpnAdr(argument) specifiers;
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Copy constructor
-  // HashTableOpnAdr(argument) specifiers;
+    // Destructor
+    // ~HashTableOpnAdr() specifiers;
 
-  // Move constructor
-  // HashTableOpnAdr(argument) specifiers;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    // Copy assignment
+    // type operator=(argument) specifiers;
 
-  // Destructor
-  // ~HashTableOpnAdr() specifiers;
+    // Move assignment
+    // type operator=(argument) specifiers;
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Copy assignment
-  // type operator=(argument) specifiers;
+    // Comparison operators
+    // type operator==(argument) specifiers;
+    // type operator!=(argument) specifiers;
 
-  // Move assignment
-  // type operator=(argument) specifiers;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    // Specific member functions (inherited from HashTable)
 
-  // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
+    // type Resize(argument) specifiers; // Resize the hashtable to a given size
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Specific member functions (inherited from HashTable)
+    // Specific member functions (inherited from DictionaryContainer)
 
-  // type Resize(argument) specifiers; // Resize the hashtable to a given size
+    // type Insert(argument) specifiers; // Override DictionaryContainer member (Copy of the value)
+    // type Insert(argument) specifiers; // Override DictionaryContainer member (Move of the value)
+    // type Remove(argument) specifiers; // Override DictionaryContainer member
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Specific member functions (inherited from DictionaryContainer)
+    // Specific member functions (inherited from TestableContainer)
 
-  // type Insert(argument) specifiers; // Override DictionaryContainer member (Copy of the value)
-  // type Insert(argument) specifiers; // Override DictionaryContainer member (Move of the value)
-  // type Remove(argument) specifiers; // Override DictionaryContainer member
+    // type Exists(argument) specifiers; // Override TestableContainer member
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Specific member functions (inherited from TestableContainer)
+    // Specific member functions (inherited from MappableContainer)
 
-  // type Exists(argument) specifiers; // Override TestableContainer member
+    // type Map(argument) specifiers; // Override MappableContainer member
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Specific member functions (inherited from MappableContainer)
+    // Specific member functions (inherited from FoldableContainer)
 
-  // type Map(argument) specifiers; // Override MappableContainer member
+    // type Fold(argument) specifiers; // Override FoldableContainer member
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Specific member functions (inherited from FoldableContainer)
+    // Specific member functions (inherited from Container)
 
-  // type Fold(argument) specifiers; // Override FoldableContainer member
+    // type Clear() specifiers; // Override Container member
 
-  /* ************************************************************************ */
+  public:
+    // Auxiliary member functions
 
-  // Specific member functions (inherited from Container)
+    // type Find(argument) specifiers;
+    // type FindEmpty(argument) specifiers;
+    // type Remove(argument) specifiers;
+  };
 
-  // type Clear() specifiers; // Override Container member
-
-public:
-
-  // Auxiliary member functions
-
-  // type Find(argument) specifiers;
-  // type FindEmpty(argument) specifiers;
-  // type Remove(argument) specifiers;
-
-};
-
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
 }
 
