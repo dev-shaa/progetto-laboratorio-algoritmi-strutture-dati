@@ -48,9 +48,9 @@ namespace lasd
     {
         bool inserted = false;
 
-        for (ulong i = 0; i < other.Size(); i++)
+        for (ulong i = 0; i < container.Size(); i++)
         {
-            if (Insert(other[i]))
+            if (Insert(container[i]))
                 inserted = true;
         }
 
@@ -62,9 +62,9 @@ namespace lasd
     {
         bool inserted = false;
 
-        for (ulong i = 0; i < other.Size(); i++)
+        for (ulong i = 0; i < container.Size(); i++)
         {
-            if (Insert(std::move(other[i])))
+            if (Insert(std::move(container[i])))
                 inserted = true;
         }
 
@@ -76,9 +76,9 @@ namespace lasd
     {
         bool removed = false;
 
-        for (ulong i = 0; i < other.Size(); i++)
+        for (ulong i = 0; i < container.Size(); i++)
         {
-            if (Remove(other[i]))
+            if (Remove(container[i]))
                 removed = true;
         }
 

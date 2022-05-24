@@ -30,15 +30,11 @@ namespace lasd
   template <typename Data>
   class HashTable : virtual public DictionaryContainer<Data>, virtual public MappableContainer<Data>, virtual public FoldableContainer<Data>
   {
-  private:
-    // ...
-
   protected:
     // using DictionaryContainer<Data>::???;
-    // ...
+    Hash<Data> hashFunction;
 
   public:
-    // Destructor
     virtual ~HashTable() = default;
 
     /* ************************************************************************ */
@@ -46,20 +42,15 @@ namespace lasd
     HashTable &operator=(const HashTable &other) = delete;
     HashTable &operator=(HashTable &&other) noexcept = delete;
 
-    /* ************************************************************************ */
-
-    // Comparison operators
-    // type operator==(argument) specifiers; // Comparison of abstract binary tree is possible.
-    // type operator!=(argument) specifiers; // Comparison of abstract binary tree is possible.
-    bool operator==(const HashTable &other) const noexcept;
-    bool operator!=(const HashTable &other) const noexcept;
+    bool operator==(const HashTable &other) const noexcept; // possible
+    bool operator!=(const HashTable &other) const noexcept; // possible
 
     /* ************************************************************************ */
 
     virtual void Resize(ulong size) = 0;
 
   protected:
-    virtual ulong HashKey(ulong key) const noexcept;
+    virtual ulong HashKey(Data value) const noexcept;
   };
 
   /* ************************************************************************** */

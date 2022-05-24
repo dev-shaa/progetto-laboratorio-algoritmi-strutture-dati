@@ -5,6 +5,7 @@
             "name": "Launch",
             "type": "cppdbg",
             "request": "launch",
+            "preLaunchTask": "build",
             "program": "${workspaceFolder}/bin/main",
             "args": [],
             "stopAtEntry": false,
@@ -12,7 +13,6 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "build",
             "setupCommands": [
                 {
                     "description": "Abilita la riformattazione per gdb",

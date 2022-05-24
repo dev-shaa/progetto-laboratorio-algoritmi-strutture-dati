@@ -17,6 +17,17 @@ namespace lasd
     };
 
     template <>
+    class Hash<double>
+    {
+
+    public:
+        ulong operator()(const double &value) const noexcept
+        {
+            return value * value; // idk
+        }
+    };
+
+    template <>
     class Hash<std::string>
     {
 
@@ -34,6 +45,16 @@ namespace lasd
             return hash;
         }
     };
+
+    template <typename Data>
+    ulong HashTable<Data>::HashKey(Data value) const noexcept
+    {
+        ulong key = hashFunction(value);
+
+        // todo:
+
+        return key;
+    }
 
     /* ************************************************************************** */
 
