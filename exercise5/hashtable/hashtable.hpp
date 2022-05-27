@@ -55,7 +55,6 @@ namespace lasd
     virtual void Resize(ulong size) = 0;
 
   protected:
-    virtual void GenerateFactors(ulong capacity);
     virtual inline ulong HashKey(const Data &value) const noexcept;
   };
 

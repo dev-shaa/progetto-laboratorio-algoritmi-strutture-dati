@@ -25,7 +25,7 @@ namespace lasd
     public:
         ulong operator()(const double &value) const noexcept
         {
-            return value * value; // idk
+            // todo: impl
         }
     };
 
@@ -42,7 +42,7 @@ namespace lasd
             unsigned long hash = 5381;
 
             for (ulong i = 0; i < value.length(); i++)
-                hash = ((hash << 5) + hash) + value[i]; /* hash * 33 + c */
+                hash = ((hash << 5) + hash) + value[i];
 
             return hash;
         }
@@ -51,7 +51,14 @@ namespace lasd
     template <typename Data>
     HashTable<Data>::HashTable(ulong capacity)
     {
-        GenerateFactors(capacity);
+        this->capacity = capacity;
+
+        std::default_random_engine gen(std::random_device{}());
+        std::uniform_int_distribution<ulong> mulDist(1, PRIME_FACTOR);
+        std::uniform_int_distribution<ulong> addDist(0, PRIME_FACTOR);
+
+        a = mulDist(gen);
+        b = addDist(gen);
     }
 
     template <typename Data>
@@ -94,19 +101,6 @@ namespace lasd
         }
 
         return *this;
-    }
-
-    template <typename Data>
-    void HashTable<Data>::GenerateFactors(ulong capacity)
-    {
-        this->capacity = capacity;
-
-        std::default_random_engine gen(std::random_device{}());
-        std::uniform_int_distribution<ulong> mulDist(1, PRIME_FACTOR);
-        std::uniform_int_distribution<ulong> addDist(0, PRIME_FACTOR);
-
-        a = mulDist(gen);
-        b = addDist(gen);
     }
 
     template <typename Data>

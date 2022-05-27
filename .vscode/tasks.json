@@ -20,7 +20,6 @@
                 "${workspaceFolder}/exercise5/zlasdtest/exercise5/fulltest.cpp",
                 "${workspaceFolder}/exercise5/zlasdtest/container/container.cpp",
                 "${workspaceFolder}/exercise5/zlasdtest/test.cpp",
-                "${workspaceFolder}/exercise5/zmytest/utilities.cpp",
                 "${workspaceFolder}/exercise5/zmytest/test.cpp",
                 "${workspaceFolder}/exercise5/main.cpp",
                 "-o",

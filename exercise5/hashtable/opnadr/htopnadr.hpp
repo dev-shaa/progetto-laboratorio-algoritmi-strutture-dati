@@ -17,92 +17,55 @@ namespace lasd
   template <typename Data>
   class HashTableOpnAdr : virtual public HashTable<Data>
   {
-
-  private:
-    // ...
-    Vector<Data> table;
-    Vector<unsigned char> foo;
-
   protected:
     // using HashTable<Data>::???;
 
-    // ...
+    ulong size = 0;
+    Vector<Data> table;
+    Vector<unsigned char> state;
 
   public:
-    // Default constructor
-    // HashTableOpnAdr() specifiers;
+    HashTableOpnAdr();
+    HashTableOpnAdr(ulong size);
+    HashTableOpnAdr(const LinearContainer<Data> &container);
+    HashTableOpnAdr(ulong size, const LinearContainer<Data> &container);
+
+    HashTableOpnAdr(const HashTableOpnAdr &other);
+    HashTableOpnAdr(HashTableOpnAdr &&other) noexcept;
+
+    virtual ~HashTableOpnAdr() = default;
 
     /* ************************************************************************ */
 
-    // Specific constructors
-    // HashTableOpnAdr(argument) specifiers; // A hash table of a given size
-    // HashTableOpnAdr(argument) specifiers; // A hash table obtained from a LinearContainer
-    // HashTableOpnAdr(argument) specifiers; // A hash table of a given size obtained from a LinearContainer
+    HashTableOpnAdr &operator=(const HashTableOpnAdr &other);
+    HashTableOpnAdr &operator=(HashTableOpnAdr &&other) noexcept;
+
+    bool operator==(const HashTableOpnAdr &other) const noexcept;
+    bool operator!=(const HashTableOpnAdr &other) const noexcept;
 
     /* ************************************************************************ */
 
-    // Copy constructor
-    // HashTableOpnAdr(argument) specifiers;
-
-    // Move constructor
-    // HashTableOpnAdr(argument) specifiers;
+    void Resize(ulong size) override;
 
     /* ************************************************************************ */
 
-    // Destructor
-    // ~HashTableOpnAdr() specifiers;
+    bool Insert(const Data &value) override;
+    bool Insert(Data &&value) override;
+    bool Remove(const Data &value) noexcept override;
 
     /* ************************************************************************ */
 
-    // Copy assignment
-    // type operator=(argument) specifiers;
+    bool Exists(const Data &value) const noexcept override;
 
-    // Move assignment
-    // type operator=(argument) specifiers;
+    using typename MappableContainer<Data>::MapFunctor;
+    void Map(MapFunctor functor, void *par) override;
 
-    /* ************************************************************************ */
+    using typename FoldableContainer<Data>::FoldFunctor;
+    void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
 
-    // Comparison operators
-    // type operator==(argument) specifiers;
-    // type operator!=(argument) specifiers;
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from HashTable)
-
-    // type Resize(argument) specifiers; // Resize the hashtable to a given size
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from DictionaryContainer)
-
-    // type Insert(argument) specifiers; // Override DictionaryContainer member (Copy of the value)
-    // type Insert(argument) specifiers; // Override DictionaryContainer member (Move of the value)
-    // type Remove(argument) specifiers; // Override DictionaryContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from TestableContainer)
-
-    // type Exists(argument) specifiers; // Override TestableContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from MappableContainer)
-
-    // type Map(argument) specifiers; // Override MappableContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from FoldableContainer)
-
-    // type Fold(argument) specifiers; // Override FoldableContainer member
-
-    /* ************************************************************************ */
-
-    // Specific member functions (inherited from Container)
-
-    // type Clear() specifiers; // Override Container member
+    inline bool Empty() const noexcept override;
+    inline ulong Size() const noexcept override;
+    void Clear() override;
 
   public:
     // Auxiliary member functions
@@ -110,6 +73,9 @@ namespace lasd
     // type Find(argument) specifiers;
     // type FindEmpty(argument) specifiers;
     // type Remove(argument) specifiers;
+
+    // ulong Find(const Data &value) const noexcept;
+    // ulong FindEmpty(ulong start) const noexcept;
   };
 
   /* ************************************************************************** */
