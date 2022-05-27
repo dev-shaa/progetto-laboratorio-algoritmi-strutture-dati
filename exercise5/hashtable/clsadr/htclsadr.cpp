@@ -2,40 +2,41 @@
 namespace lasd
 {
 
+#define DEFAULT_HASH_TABLE_SIZE 8ul
+
     /* ************************************************************************** */
 
     template <typename Data>
-    HashTableClsAdr<Data>::HashTableClsAdr() : HashTableClsAdr(5)
+    HashTableClsAdr<Data>::HashTableClsAdr() : HashTableClsAdr(DEFAULT_HASH_TABLE_SIZE)
     {
     }
 
     template <typename Data>
-    HashTableClsAdr<Data>::HashTableClsAdr(ulong size)
+    HashTableClsAdr<Data>::HashTableClsAdr(ulong size) : HashTable<Data>(size)
     {
         table.Clear(size);
     }
 
     template <typename Data>
-    HashTableClsAdr<Data>::HashTableClsAdr(const LinearContainer<Data> container)
+    HashTableClsAdr<Data>::HashTableClsAdr(const LinearContainer<Data> &container) : HashTableClsAdr(container.Size(), container)
     {
-        // todo: impl
     }
 
     template <typename Data>
-    HashTableClsAdr<Data>::HashTableClsAdr(ulong size, const LinearContainer<Data> container) : HashTableClsAdr(size)
+    HashTableClsAdr<Data>::HashTableClsAdr(ulong size, const LinearContainer<Data> &container) : HashTableClsAdr(size)
     {
-        Insert(container);
+        DictionaryContainer<Data>::Insert(container);
     }
 
     template <typename Data>
-    HashTableClsAdr<Data>::HashTableClsAdr(const HashTableClsAdr &other)
+    HashTableClsAdr<Data>::HashTableClsAdr(const HashTableClsAdr &other) : HashTable<Data>(other)
     {
         size = other.size;
         table = other.table;
     }
 
     template <typename Data>
-    HashTableClsAdr<Data>::HashTableClsAdr(HashTableClsAdr &&other) noexcept
+    HashTableClsAdr<Data>::HashTableClsAdr(HashTableClsAdr &&other) noexcept : HashTable<Data>(std::move(other))
     {
         std::swap(size, other.size);
         std::swap(table, other.table);
@@ -46,6 +47,7 @@ namespace lasd
     {
         if (this != &other)
         {
+            HashTable<Data>::operator=(other);
             size = other.size;
             table = other.table;
         }
@@ -58,6 +60,7 @@ namespace lasd
     {
         if (this != &other)
         {
+            HashTable<Data>::operator=(std::move(other));
             std::swap(size, other.size);
             std::swap(table, other.table);
         }
@@ -68,7 +71,11 @@ namespace lasd
     template <typename Data>
     bool HashTableClsAdr<Data>::operator==(const HashTableClsAdr &other) const noexcept
     {
-        }
+        if (Size() != other.Size())
+            return false;
+
+        // todo: implementation
+    }
 
     template <typename Data>
     bool HashTableClsAdr<Data>::operator!=(const HashTableClsAdr &other) const noexcept
@@ -79,7 +86,7 @@ namespace lasd
     template <typename Data>
     bool HashTableClsAdr<Data>::Insert(const Data &value)
     {
-        bool inserted = table[HashKey(value)].Insert(value);
+        bool inserted = table[this->HashKey(value)].Insert(value);
 
         if (inserted)
             size++;
@@ -90,7 +97,7 @@ namespace lasd
     template <typename Data>
     bool HashTableClsAdr<Data>::Insert(Data &&value)
     {
-        bool inserted = table[HashKey(value)].Insert(std::move(value));
+        bool inserted = table[this->HashKey(value)].Insert(std::move(value));
 
         if (inserted)
             size++;
@@ -101,7 +108,7 @@ namespace lasd
     template <typename Data>
     bool HashTableClsAdr<Data>::Remove(const Data &value) noexcept
     {
-        bool removed = table[HashKey(value)].Remove(value);
+        bool removed = table[this->HashKey(value)].Remove(value);
 
         if (removed)
             size--;
@@ -112,23 +119,21 @@ namespace lasd
     template <typename Data>
     bool HashTableClsAdr<Data>::Exists(const Data &value) const noexcept
     {
-        return table[HashKey(value)].Exists(value);
+        return table[this->HashKey(value)].Exists(value);
+    }
+
+    template <typename Data>
+    void MoveToTable(Data &value, void *newTable)
+    {
+        ((HashTableClsAdr<Data> *)newTable)->Insert(std::move(value));
     }
 
     template <typename Data>
     void HashTableClsAdr<Data>::Resize(ulong size)
     {
         HashTableClsAdr<Data> newTable(size);
-
         Map(&MoveToTable<Data>, (void *)&newTable);
-
-        std::swap(table, newTable);
-    }
-
-    template <typename Data>
-    void HashTableClsAdr<Data>::MoveToTable(Data &value, void *newTable)
-    {
-        ((HashTableClsAdr *)newTable)->Insert(std::move(value));
+        std::swap(*this, newTable);
     }
 
     template <typename Data>
@@ -139,13 +144,20 @@ namespace lasd
     }
 
     template <typename Data>
-    bool HashTableClsAdr<Data>::Empty() const noexcept
+    void HashTableClsAdr<Data>::Fold(FoldFunctor functor, const void *par, void *accumulator) const
+    {
+        for (ulong i = 0; i < table.Size(); i++)
+            table[i].Fold(functor, par, accumulator);
+    }
+
+    template <typename Data>
+    inline bool HashTableClsAdr<Data>::Empty() const noexcept
     {
         return size == 0;
     }
 
     template <typename Data>
-    ulong HashTableClsAdr<Data>::Size() const noexcept
+    inline ulong HashTableClsAdr<Data>::Size() const noexcept
     {
         return size;
     }
@@ -153,7 +165,7 @@ namespace lasd
     template <typename Data>
     void HashTableClsAdr<Data>::Clear()
     {
-        table.Clear();
+        table.Clear(DEFAULT_HASH_TABLE_SIZE);
         size = 0;
     }
 

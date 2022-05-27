@@ -25,8 +25,8 @@ namespace lasd
   public:
     HashTableClsAdr();
     HashTableClsAdr(ulong size);
-    HashTableClsAdr(const LinearContainer<Data> container);
-    HashTableClsAdr(ulong size, const LinearContainer<Data> container);
+    HashTableClsAdr(const LinearContainer<Data> &container);
+    HashTableClsAdr(ulong size, const LinearContainer<Data> &container);
 
     HashTableClsAdr(const HashTableClsAdr &other);
     HashTableClsAdr(HashTableClsAdr &&other) noexcept;
@@ -61,12 +61,9 @@ namespace lasd
     using typename FoldableContainer<Data>::FoldFunctor;
     void Fold(FoldFunctor functor, const void *par, void *accumulator) const override;
 
-    bool Empty() const noexcept override;
-    ulong Size() const noexcept override;
+    inline bool Empty() const noexcept override;
+    inline ulong Size() const noexcept override;
     void Clear() override;
-
-  protected:
-    void MoveToTable(Data &value, void *newTable);
   };
 
   /* ************************************************************************** */
