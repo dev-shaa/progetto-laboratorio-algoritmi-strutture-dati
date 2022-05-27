@@ -101,9 +101,9 @@ namespace lasd
     {
         this->capacity = capacity;
 
-        default_random_engine gen(random_device{}());
-        uniform_int_distribution<ulong> mulDist(1, PRIME_FACTOR);
-        uniform_int_distribution<ulong> addDist(0, PRIME_FACTOR);
+        std::default_random_engine gen(std::random_device{}());
+        std::uniform_int_distribution<ulong> mulDist(1, PRIME_FACTOR);
+        std::uniform_int_distribution<ulong> addDist(0, PRIME_FACTOR);
 
         a = mulDist(gen);
         b = addDist(gen);
