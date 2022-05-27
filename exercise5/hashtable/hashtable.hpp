@@ -30,17 +30,22 @@ namespace lasd
   template <typename Data>
   class HashTable : virtual public DictionaryContainer<Data>, virtual public MappableContainer<Data>, virtual public FoldableContainer<Data>
   {
-  protected:
-    // using DictionaryContainer<Data>::???;
+  private:
     Hash<Data> hashFunction;
+    ulong a, b, capacity;
+
+  protected:
+    HashTable(ulong capacity);
+    HashTable(const HashTable &other);
+    HashTable(HashTable &&other) noexcept;
+
+    HashTable &operator=(const HashTable &other);
+    HashTable &operator=(HashTable &&other) noexcept;
 
   public:
     virtual ~HashTable() = default;
 
     /* ************************************************************************ */
-
-    HashTable &operator=(const HashTable &other) = delete;
-    HashTable &operator=(HashTable &&other) noexcept = delete;
 
     bool operator==(const HashTable &other) const noexcept; // possible
     bool operator!=(const HashTable &other) const noexcept; // possible
@@ -50,7 +55,8 @@ namespace lasd
     virtual void Resize(ulong size) = 0;
 
   protected:
-    virtual ulong HashKey(Data value) const noexcept;
+    virtual void GenerateFactors(ulong capacity);
+    virtual inline ulong HashKey(const Data &value) const noexcept;
   };
 
   /* ************************************************************************** */

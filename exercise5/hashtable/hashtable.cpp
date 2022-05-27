@@ -3,6 +3,8 @@
 namespace lasd
 {
 
+#define PRIME_FACTOR 18446744073709551557ul // biggest prime smaller than 2^64 according to this site: https://bit.ly/3z34gag
+
     /* ************************************************************************** */
 
     template <>
@@ -35,7 +37,7 @@ namespace lasd
         ulong operator()(const std::string &value) const noexcept
         {
             // hashing function: djb2
-            // http://www.cse.yorku.ca/~oz/hash.html
+            // https://bit.ly/3wSH7Wz
 
             unsigned long hash = 5381;
 
@@ -47,15 +49,74 @@ namespace lasd
     };
 
     template <typename Data>
-    ulong HashTable<Data>::HashKey(Data value) const noexcept
+    HashTable<Data>::HashTable(ulong capacity)
     {
-        ulong key = hashFunction(value);
+        GenerateFactors(capacity);
+    }
 
-        // todo:
+    template <typename Data>
+    HashTable<Data>::HashTable(const HashTable &other)
+    {
+        a = other.a;
+        b = other.b;
+        capacity = other.capacity;
+    }
 
-        return key;
+    template <typename Data>
+    HashTable<Data>::HashTable(HashTable &&other) noexcept
+    {
+        std::swap(a, other.a);
+        std::swap(b, other.b);
+        std::swap(capacity, other.capacity);
+    }
+
+    template <typename Data>
+    HashTable<Data> &HashTable<Data>::operator=(const HashTable &other)
+    {
+        if (this != &other)
+        {
+            a = other.a;
+            b = other.b;
+            capacity = other.capacity;
+        }
+
+        return *this;
+    }
+
+    template <typename Data>
+    HashTable<Data> &HashTable<Data>::operator=(HashTable &&other) noexcept
+    {
+        if (this != &other)
+        {
+            std::swap(a, other.a);
+            std::swap(b, other.b);
+            std::swap(capacity, other.capacity);
+        }
+
+        return *this;
+    }
+
+    template <typename Data>
+    void HashTable<Data>::GenerateFactors(ulong capacity)
+    {
+        this->capacity = capacity;
+
+        default_random_engine gen(random_device{}());
+        uniform_int_distribution<ulong> mulDist(1, PRIME_FACTOR);
+        uniform_int_distribution<ulong> addDist(0, PRIME_FACTOR);
+
+        a = mulDist(gen);
+        b = addDist(gen);
+    }
+
+    template <typename Data>
+    inline ulong HashTable<Data>::HashKey(const Data &value) const noexcept
+    {
+        return ((a * hashFunction(value) + b) % PRIME_FACTOR) % capacity;
     }
 
     /* ************************************************************************** */
+
+#undef PRIME_FACTOR
 
 }

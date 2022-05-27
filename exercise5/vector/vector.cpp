@@ -9,7 +9,7 @@ namespace lasd
         if (size == 0)
             return;
 
-        array = new Data[size];
+        array = new Data[size]{};
         this->size = size;
     }
 
@@ -127,7 +127,7 @@ namespace lasd
         }
 
         delete[] array;
-        array = new Data[size];
+        array = new Data[size]{};
         this->size = size;
     }
 
