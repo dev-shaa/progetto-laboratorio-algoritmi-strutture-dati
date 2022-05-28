@@ -74,8 +74,8 @@ namespace lasd
     // type FindEmpty(argument) specifiers;
     // type Remove(argument) specifiers;
 
-    // ulong Find(const Data &value) const noexcept;
-    // ulong FindEmpty(ulong start) const noexcept;
+    ulong Find(const Data &value) const noexcept;
+    ulong FindEmpty(ulong start) const noexcept;
   };
 
   /* ************************************************************************** */
