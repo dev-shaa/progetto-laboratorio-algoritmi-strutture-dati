@@ -188,13 +188,31 @@ namespace lasd
     template <typename Data>
     bool BST<Data>::Insert(const Data &value)
     {
-        return Insert(new NodeLnk(value));
+        NodeLnk *&pointer = FindPointerTo(root, value);
+
+        if (pointer == nullptr)
+        {
+            pointer = new NodeLnk(value);
+            nodesCount++;
+            return true;
+        }
+
+        return false;
     }
 
     template <typename Data>
     bool BST<Data>::Insert(Data &&value)
     {
-        return Insert(new NodeLnk(std::move(value)));
+        NodeLnk *&pointer = FindPointerTo(root, value);
+
+        if (pointer == nullptr)
+        {
+            pointer = new NodeLnk(std::move(value));
+            nodesCount++;
+            return true;
+        }
+
+        return false;
     }
 
     template <typename Data>
@@ -212,40 +230,6 @@ namespace lasd
     }
 
     /* ************************************************************************** */
-
-    template <typename Data>
-    bool BST<Data>::Insert(typename BST<Data>::NodeLnk *node) noexcept
-    {
-        bool inserted = true;
-
-        if (this->Empty())
-        {
-            root = node;
-        }
-        else
-        {
-            NodeLnk *current = root;
-            NodeLnk *parent = nullptr;
-
-            while (current != nullptr)
-            {
-                parent = current;
-                current = (node->Element() < current->Element()) ? current->leftChild : current->rightChild;
-            }
-
-            if (node->Element() < parent->Element())
-                parent->leftChild = node;
-            else if (node->Element() > parent->Element())
-                parent->rightChild = node;
-            else
-                inserted = false;
-        }
-
-        if (inserted)
-            nodesCount++;
-
-        return inserted;
-    }
 
     template <typename Data>
     typename BST<Data>::NodeLnk *&BST<Data>::FindPointerToMin(NodeLnk *&root) noexcept

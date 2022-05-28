@@ -64,7 +64,6 @@ namespace lasd
     bool Exists(const Data &value) const noexcept override;
 
   protected:
-    bool Insert(NodeLnk *node) noexcept;
     Data &DataNDelete(NodeLnk *node);
 
     NodeLnk *Detach(NodeLnk *&node) noexcept;
