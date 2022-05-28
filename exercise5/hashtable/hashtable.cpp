@@ -3,7 +3,8 @@
 namespace lasd
 {
 
-#define PRIME_FACTOR 18446744073709551557ul // biggest prime smaller than 2^64 according to this site: https://bit.ly/3z34gag
+#define FRACTIONAL_BIT 16777216ul
+#define PRIME_FACTOR 4294967291ul // biggest prime smaller than 2^32 according to this site: https://bit.ly/3wVgCzL
 
     /* ************************************************************************** */
 
@@ -26,6 +27,10 @@ namespace lasd
         ulong operator()(const double &value) const noexcept
         {
             // todo: impl
+            // https://youtu.be/jSbsbKnYFJA?t=3169
+            long intPart = floor(value);
+            long fracPart = FRACTIONAL_BIT * (value - intPart);
+            return intPart * fracPart;
         }
     };
 
@@ -49,10 +54,8 @@ namespace lasd
     };
 
     template <typename Data>
-    HashTable<Data>::HashTable(ulong capacity)
+    HashTable<Data>::HashTable()
     {
-        this->capacity = capacity;
-
         std::default_random_engine gen(std::random_device{}());
         std::uniform_int_distribution<ulong> mulDist(1, PRIME_FACTOR);
         std::uniform_int_distribution<ulong> addDist(0, PRIME_FACTOR);
@@ -66,7 +69,6 @@ namespace lasd
     {
         a = other.a;
         b = other.b;
-        capacity = other.capacity;
     }
 
     template <typename Data>
@@ -74,7 +76,6 @@ namespace lasd
     {
         std::swap(a, other.a);
         std::swap(b, other.b);
-        std::swap(capacity, other.capacity);
     }
 
     template <typename Data>
@@ -84,7 +85,6 @@ namespace lasd
         {
             a = other.a;
             b = other.b;
-            capacity = other.capacity;
         }
 
         return *this;
@@ -97,14 +97,37 @@ namespace lasd
         {
             std::swap(a, other.a);
             std::swap(b, other.b);
-            std::swap(capacity, other.capacity);
         }
 
         return *this;
     }
 
     template <typename Data>
-    inline ulong HashTable<Data>::HashKey(const Data &value) const noexcept
+    void FindInTable(const Data &value, const void *table, void *result)
+    {
+        if (!((HashTable<Data> *)table)->Exists(value))
+            *(bool *)result = false;
+    }
+
+    template <typename Data>
+    bool HashTable<Data>::operator==(const HashTable &other) const noexcept
+    {
+        if (this->Size() != other.Size())
+            return false;
+
+        bool result = true;
+        this->Fold(&FindInTable<Data>, (void *)&other, (void *)&result);
+        return result;
+    }
+
+    template <typename Data>
+    bool HashTable<Data>::operator!=(const HashTable &other) const noexcept
+    {
+        return !(*this == other);
+    }
+
+    template <typename Data>
+    inline ulong HashTable<Data>::HashKey(const Data &value, const ulong &capacity) const noexcept
     {
         return ((a * hashFunction(value) + b) % PRIME_FACTOR) % capacity;
     }

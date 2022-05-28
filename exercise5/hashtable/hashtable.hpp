@@ -32,10 +32,11 @@ namespace lasd
   {
   private:
     Hash<Data> hashFunction;
-    ulong a, b, capacity;
+    ulong a = 1;
+    ulong b = 0;
 
   protected:
-    HashTable(ulong capacity);
+    HashTable();
     HashTable(const HashTable &other);
     HashTable(HashTable &&other) noexcept;
 
@@ -45,17 +46,13 @@ namespace lasd
   public:
     virtual ~HashTable() = default;
 
-    /* ************************************************************************ */
-
-    bool operator==(const HashTable &other) const noexcept; // possible
-    bool operator!=(const HashTable &other) const noexcept; // possible
-
-    /* ************************************************************************ */
+    bool operator==(const HashTable &other) const noexcept;
+    bool operator!=(const HashTable &other) const noexcept;
 
     virtual void Resize(ulong size) = 0;
 
   protected:
-    virtual inline ulong HashKey(const Data &value) const noexcept;
+    virtual inline ulong HashKey(const Data &value, const ulong &capacity) const noexcept;
   };
 
   /* ************************************************************************** */
