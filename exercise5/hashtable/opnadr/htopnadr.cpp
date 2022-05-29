@@ -1,10 +1,10 @@
 namespace lasd
 {
 
+#define DEFAULT_SIZE 4ul
 #define EMPTY '\0'
 #define FULL '\1'
 #define REMOVED '\2'
-#define DEFAULT_HASH_TABLE 8ul
 
     /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ namespace lasd
     }
 
     template <typename Data>
-    HashTableOpnAdr<Data>::HashTableOpnAdr() : HashTableOpnAdr(DEFAULT_HASH_TABLE)
+    HashTableOpnAdr<Data>::HashTableOpnAdr() : HashTableOpnAdr(DEFAULT_SIZE)
     {
     }
 
@@ -56,7 +56,8 @@ namespace lasd
     template <typename Data>
     HashTableOpnAdr<Data>::HashTableOpnAdr(HashTableOpnAdr &&other) noexcept : HashTable<Data>(std::move(other))
     {
-        // fix initialization
+        table.Clear(DEFAULT_SIZE);
+        state.Clear(DEFAULT_SIZE);
 
         std::swap(size, other.size);
         std::swap(table, other.table);
@@ -115,20 +116,17 @@ namespace lasd
         bool encounteredFreeSpace = false;
         ulong freeSpace;
 
-        bool inserted = false;
-
         for (ulong i = 0; i < table.Size(); i++)
         {
-            // the value is not in the map
             if (state[current] == EMPTY)
             {
                 ulong positionToInsert = encounteredFreeSpace ? freeSpace : current;
                 table[positionToInsert] = value;
                 state[positionToInsert] = FULL;
+                size++;
                 return true;
             }
 
-            // the value is in the map
             if (table[current] == value && state[current] == FULL)
             {
                 if (encounteredFreeSpace)
@@ -136,6 +134,7 @@ namespace lasd
                     table[freeSpace] = value;
                     state[freeSpace] = FULL;
                     state[current] = REMOVED;
+                    size++;
                     return true;
                 }
                 else
@@ -144,38 +143,27 @@ namespace lasd
                 }
             }
 
+            // we found the first free space that was full before
+            // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
             if (state[current] == REMOVED && !encounteredFreeSpace)
             {
                 encounteredFreeSpace = true;
                 freeSpace = current;
             }
 
+            // probe to next position
             current = (start + ((i * i + i) / 2)) % table.Size();
         }
 
         if (encounteredFreeSpace)
         {
+            table[freeSpace] = value;
+            state[freeSpace] = FULL;
+            size++;
+            return true;
         }
 
-        // if (i < Size())
-        // {
-        //     if (encounteredFreeSpace)
-        //     {
-        //         state[positionToInsert] = REMOVED;
-        //         current = positionToInsert;
-        //     }
-
-        //     // insert into table[current]
-        // }
-
-        // if (state[current] == EMPTY)
-        // {
-        //     std::swap(table[current], value);
-        //     state[current] = FULL;
-        //     inserted = true;
-        // }
-
-        return inserted;
+        return false;
     }
 
     template <typename Data>
@@ -188,60 +176,74 @@ namespace lasd
         ulong current = start;
 
         bool encounteredFreeSpace = false;
-        ulong freeSpacePosition;
+        ulong freeSpace;
 
-        bool inserted = false;
-
-        for (ulong i = 0; i < Size() && (state[current] != EMPTY || (table[current] != value && state[current] == FULL)); i++)
+        for (ulong i = 0; i < table.Size(); i++)
         {
+            if (state[current] == EMPTY)
+            {
+                ulong positionToInsert = encounteredFreeSpace ? freeSpace : current;
+                std::swap(table[positionToInsert], value);
+                state[positionToInsert] = FULL;
+                return true;
+            }
+
+            if (table[current] == value && state[current] == FULL)
+            {
+                if (encounteredFreeSpace)
+                {
+                    std::swap(table[freeSpace], value);
+                    state[freeSpace] = FULL;
+                    state[current] = REMOVED;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            // we found the first free space that was full before
+            // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
             if (state[current] == REMOVED && !encounteredFreeSpace)
             {
                 encounteredFreeSpace = true;
-                freeSpacePosition = current;
+                freeSpace = current;
             }
 
+            // probe to next position
             current = (start + ((i * i + i) / 2)) % table.Size();
         }
 
-        // if (state[current] == EMPTY)
-        // {
-        //     std::swap(table[current], value);
-        //     state[current] = FULL;
-        //     inserted = true;
-        // }
+        if (encounteredFreeSpace)
+        {
+            std::swap(table[freeSpace], value);
+            state[freeSpace] = FULL;
+            return true;
+        }
 
-        return inserted;
+        return false;
     }
 
     template <typename Data>
     bool HashTableOpnAdr<Data>::Remove(const Data &value) noexcept
     {
-        ulong start = this->HashKey(value, table.Size());
-        ulong current = start;
-        bool removed = false;
+        ulong position = Find(value);
 
-        for (ulong i = 0; state[current] != EMPTY && table[current] != value; i++)
-            current = (start + ((i * i + i) / 2)) % table.Size();
-
-        if (table[current] == value)
+        if (position != table.Size())
         {
-            state[current] = REMOVED;
-            removed = true;
+            state[position] = REMOVED;
+            size--;
+            return true;
         }
 
-        return removed;
+        return false;
     }
 
     template <typename Data>
     bool HashTableOpnAdr<Data>::Exists(const Data &value) const noexcept
     {
-        ulong start = this->HashKey(value, table.Size());
-        ulong current = start;
-
-        for (ulong i = 0; state[current] != EMPTY && table[current] != value; i++)
-            current = (start + ((i * i + i) / 2)) % table.Size();
-
-        return table[current] == value;
+        return Find(value) != table.Size();
     }
 
     template <typename Data>
@@ -289,25 +291,42 @@ namespace lasd
     template <typename Data>
     void HashTableOpnAdr<Data>::Clear()
     {
-        table.Clear(DEFAULT_HASH_TABLE);
-        state.Clear(DEFAULT_HASH_TABLE);
+        table.Clear(DEFAULT_SIZE);
+        state.Clear(DEFAULT_SIZE);
         size = 0;
+    }
+
+    template <typename Data>
+    inline ulong HashTableOpnAdr<Data>::Probing(const ulong &start, const ulong &index) const noexcept
+    {
+        return (start + ((index * index + index) / 2)) % table.Size();
     }
 
     template <typename Data>
     ulong HashTableOpnAdr<Data>::Find(const Data &value) const noexcept
     {
         ulong start = this->HashKey(value, table.Size());
-        ulong current = start;
+        ulong position = start;
 
-        for (ulong i = 0; i < Size() && state[current] != EMPTY && table[current] != value; i++)
-            current = (start + ((i * i + i) / 2)) % table.Size();
+        for (ulong i = 0; i < table.Size(); i++)
+        {
+            if (state[position] == EMPTY)
+                return table.Size();
 
-        return table[current] == value;
+            if (table[position] == value && state[position] == FULL)
+                return position;
+
+            position = (start + ((i * i + i) / 2)) % table.Size();
+        }
+
+        return table.Size();
     }
 
     /* ************************************************************************** */
 
-#undef DEFAULT_HASH_TABLE
+#undef DEFAULT_SIZE
+#undef EMPTY
+#undef FULL
+#undef REMOVED
 
 }

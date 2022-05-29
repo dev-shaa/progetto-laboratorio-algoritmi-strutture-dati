@@ -28,6 +28,7 @@ namespace lasd
         {
             // todo: impl
             // https://youtu.be/jSbsbKnYFJA?t=3169
+
             long intPart = floor(value);
             long fracPart = FRACTIONAL_BIT * (value - intPart);
             return intPart * fracPart;

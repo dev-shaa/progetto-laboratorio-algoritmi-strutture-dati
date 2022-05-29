@@ -74,8 +74,9 @@ namespace lasd
     // type FindEmpty(argument) specifiers;
     // type Remove(argument) specifiers;
 
+    inline ulong Probing(const ulong &start, const ulong &index) const noexcept;
     ulong Find(const Data &value) const noexcept;
-    ulong FindEmpty(ulong start) const noexcept;
+    // ulong FindEmpty(ulong start) const noexcept;
   };
 
   /* ************************************************************************** */
