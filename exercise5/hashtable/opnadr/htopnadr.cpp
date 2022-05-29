@@ -1,3 +1,4 @@
+
 namespace lasd
 {
 
@@ -128,20 +129,7 @@ namespace lasd
             }
 
             if (table[current] == value && state[current] == FULL)
-            {
-                if (encounteredFreeSpace)
-                {
-                    table[freeSpace] = value;
-                    state[freeSpace] = FULL;
-                    state[current] = REMOVED;
-                    size++;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+                return false;
 
             // we found the first free space that was full before
             // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
@@ -185,23 +173,12 @@ namespace lasd
                 ulong positionToInsert = encounteredFreeSpace ? freeSpace : current;
                 std::swap(table[positionToInsert], value);
                 state[positionToInsert] = FULL;
+                size++;
                 return true;
             }
 
             if (table[current] == value && state[current] == FULL)
-            {
-                if (encounteredFreeSpace)
-                {
-                    std::swap(table[freeSpace], value);
-                    state[freeSpace] = FULL;
-                    state[current] = REMOVED;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+                return false;
 
             // we found the first free space that was full before
             // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
@@ -219,6 +196,7 @@ namespace lasd
         {
             std::swap(table[freeSpace], value);
             state[freeSpace] = FULL;
+            size++;
             return true;
         }
 
@@ -257,7 +235,7 @@ namespace lasd
     {
         HashTableOpnAdr<Data> newTable(std::max(size, Size()));
         Map(&RehashOpnAdr<Data>, (void *)&newTable);
-        std::swap(*this, newTable);
+        *this = std::move(newTable);
     }
 
     template <typename Data>
@@ -297,12 +275,6 @@ namespace lasd
     }
 
     template <typename Data>
-    inline ulong HashTableOpnAdr<Data>::Probing(const ulong &start, const ulong &index) const noexcept
-    {
-        return (start + ((index * index + index) / 2)) % table.Size();
-    }
-
-    template <typename Data>
     ulong HashTableOpnAdr<Data>::Find(const Data &value) const noexcept
     {
         ulong start = this->HashKey(value, table.Size());
@@ -315,6 +287,26 @@ namespace lasd
 
             if (table[position] == value && state[position] == FULL)
                 return position;
+
+            position = (start + ((i * i + i) / 2)) % table.Size();
+        }
+
+        return table.Size();
+    }
+
+    template <typename Data>
+    ulong HashTableOpnAdr<Data>::FindEmpty(const Data &value) const noexcept
+    {
+        ulong start = this->HashKey(value, table.Size());
+        ulong position = start;
+
+        for (ulong i = 0; i < table.Size(); i++)
+        {
+            if (state[position] == EMPTY)
+                return position;
+
+            if (table[position] == value && state[position] == FULL)
+                return table.Size();
 
             position = (start + ((i * i + i) / 2)) % table.Size();
         }
