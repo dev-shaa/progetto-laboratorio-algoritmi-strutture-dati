@@ -9,19 +9,6 @@ namespace lasd
 
     /* ************************************************************************** */
 
-    ulong RoundToPowerOfTwo(ulong v)
-    {
-        v--;
-        v |= v >> 1;
-        v |= v >> 2;
-        v |= v >> 4;
-        v |= v >> 8;
-        v |= v >> 16;
-        v |= v >> 32;
-        v++;
-        return v;
-    }
-
     template <typename Data>
     HashTableOpnAdr<Data>::HashTableOpnAdr() : HashTableOpnAdr(DEFAULT_SIZE)
     {
@@ -30,7 +17,15 @@ namespace lasd
     template <typename Data>
     HashTableOpnAdr<Data>::HashTableOpnAdr(ulong size) : HashTable<Data>()
     {
-        size = RoundToPowerOfTwo(size);
+        size--;
+        size |= size >> 1;
+        size |= size >> 2;
+        size |= size >> 4;
+        size |= size >> 8;
+        size |= size >> 16;
+        size |= size >> 32;
+        size++;
+
         table.Clear(size);
         state.Clear(size);
     }
@@ -112,13 +107,13 @@ namespace lasd
             Resize(2 * Size());
 
         ulong start = this->HashKey(value, table.Size());
-        ulong current = start;
-
+        ulong current, freeSpace;
         bool encounteredFreeSpace = false;
-        ulong freeSpace;
 
         for (ulong i = 0; i < table.Size(); i++)
         {
+            current = (start + ((i * i + i) / 2)) % table.Size();
+
             if (state[current] == EMPTY)
             {
                 ulong positionToInsert = encounteredFreeSpace ? freeSpace : current;
@@ -129,7 +124,16 @@ namespace lasd
             }
 
             if (table[current] == value && state[current] == FULL)
+            {
+                if (encounteredFreeSpace)
+                {
+                    table[freeSpace] = std::move(value);
+                    state[freeSpace] = FULL;
+                    state[current] = REMOVED;
+                }
+
                 return false;
+            }
 
             // we found the first free space that was full before
             // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
@@ -138,9 +142,6 @@ namespace lasd
                 encounteredFreeSpace = true;
                 freeSpace = current;
             }
-
-            // probe to next position
-            current = (start + ((i * i + i) / 2)) % table.Size();
         }
 
         if (encounteredFreeSpace)

@@ -67,13 +67,7 @@ namespace lasd
     inline ulong Size() const noexcept override;
     void Clear() override;
 
-  public:
-    // Auxiliary member functions
-
-    // type Find(argument) specifiers;
-    // type FindEmpty(argument) specifiers;
-    // type Remove(argument) specifiers;
-
+  protected:
     ulong Find(const Data &value) const noexcept;
     ulong FindEmpty(const Data &value) const noexcept;
   };
