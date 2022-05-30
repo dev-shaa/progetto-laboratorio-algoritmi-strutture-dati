@@ -18,8 +18,6 @@ namespace lasd
   class HashTableOpnAdr : virtual public HashTable<Data>
   {
   protected:
-    // using HashTable<Data>::???;
-
     ulong size = 0;
     Vector<Data> table;
     Vector<unsigned char> state;

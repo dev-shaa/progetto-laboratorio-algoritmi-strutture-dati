@@ -106,48 +106,12 @@ namespace lasd
         if (Size() == table.Size())
             Resize(2 * Size());
 
-        ulong start = this->HashKey(value, table.Size());
-        ulong current, freeSpace;
-        bool encounteredFreeSpace = false;
+        ulong position = FindEmpty(value);
 
-        for (ulong i = 0; i < table.Size(); i++)
+        if (position != table.Size())
         {
-            current = (start + ((i * i + i) / 2)) % table.Size();
-
-            if (state[current] == EMPTY)
-            {
-                ulong positionToInsert = encounteredFreeSpace ? freeSpace : current;
-                table[positionToInsert] = value;
-                state[positionToInsert] = FULL;
-                size++;
-                return true;
-            }
-
-            if (table[current] == value && state[current] == FULL)
-            {
-                if (encounteredFreeSpace)
-                {
-                    table[freeSpace] = std::move(value);
-                    state[freeSpace] = FULL;
-                    state[current] = REMOVED;
-                }
-
-                return false;
-            }
-
-            // we found the first free space that was full before
-            // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
-            if (state[current] == REMOVED && !encounteredFreeSpace)
-            {
-                encounteredFreeSpace = true;
-                freeSpace = current;
-            }
-        }
-
-        if (encounteredFreeSpace)
-        {
-            table[freeSpace] = value;
-            state[freeSpace] = FULL;
+            table[position] = value;
+            state[position] = FULL;
             size++;
             return true;
         }
@@ -161,42 +125,12 @@ namespace lasd
         if (Size() == table.Size())
             Resize(2 * Size());
 
-        ulong start = this->HashKey(value, table.Size());
-        ulong current = start;
+        ulong position = FindEmpty(value);
 
-        bool encounteredFreeSpace = false;
-        ulong freeSpace;
-
-        for (ulong i = 0; i < table.Size(); i++)
+        if (position != table.Size())
         {
-            if (state[current] == EMPTY)
-            {
-                ulong positionToInsert = encounteredFreeSpace ? freeSpace : current;
-                std::swap(table[positionToInsert], value);
-                state[positionToInsert] = FULL;
-                size++;
-                return true;
-            }
-
-            if (table[current] == value && state[current] == FULL)
-                return false;
-
-            // we found the first free space that was full before
-            // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
-            if (state[current] == REMOVED && !encounteredFreeSpace)
-            {
-                encounteredFreeSpace = true;
-                freeSpace = current;
-            }
-
-            // probe to next position
-            current = (start + ((i * i + i) / 2)) % table.Size();
-        }
-
-        if (encounteredFreeSpace)
-        {
-            std::swap(table[freeSpace], value);
-            state[freeSpace] = FULL;
+            table[position] = std::move(value);
+            state[position] = FULL;
             size++;
             return true;
         }
@@ -279,17 +213,17 @@ namespace lasd
     ulong HashTableOpnAdr<Data>::Find(const Data &value) const noexcept
     {
         ulong start = this->HashKey(value, table.Size());
-        ulong position = start;
+        ulong current;
 
         for (ulong i = 0; i < table.Size(); i++)
         {
-            if (state[position] == EMPTY)
+            current = (start + ((i * i + i) / 2)) % table.Size();
+
+            if (state[current] == EMPTY)
                 return table.Size();
 
-            if (table[position] == value && state[position] == FULL)
-                return position;
-
-            position = (start + ((i * i + i) / 2)) % table.Size();
+            if (table[current] == value && state[current] == FULL)
+                return current;
         }
 
         return table.Size();
@@ -299,20 +233,39 @@ namespace lasd
     ulong HashTableOpnAdr<Data>::FindEmpty(const Data &value) const noexcept
     {
         ulong start = this->HashKey(value, table.Size());
-        ulong position = start;
-
+        ulong current, freeSpace;
+        bool encounteredFreeSpace = false;
         for (ulong i = 0; i < table.Size(); i++)
         {
-            if (state[position] == EMPTY)
-                return position;
+            current = (start + ((i * i + i) / 2)) % table.Size();
 
-            if (table[position] == value && state[position] == FULL)
+            if (state[current] == EMPTY)
+                return encounteredFreeSpace ? freeSpace : current;
+
+            if (table[current] == value && state[current] == FULL)
+            {
+                // if the value is already in the table, move it to the first available position to speed up future searches
+
+                if (encounteredFreeSpace)
+                {
+                    state[current] = REMOVED;
+                    table[freeSpace] = std::move(table[current]);
+                    state[freeSpace] = FULL;
+                }
+
                 return table.Size();
+            }
 
-            position = (start + ((i * i + i) / 2)) % table.Size();
+            // we found the first free space that was full before
+            // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
+            if (state[current] == REMOVED && !encounteredFreeSpace)
+            {
+                encounteredFreeSpace = true;
+                freeSpace = current;
+            }
         }
 
-        return table.Size();
+        return encounteredFreeSpace ? freeSpace : table.Size();
     }
 
     /* ************************************************************************** */
