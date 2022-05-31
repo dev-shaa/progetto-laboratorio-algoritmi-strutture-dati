@@ -67,7 +67,7 @@ namespace lasd
 
   protected:
     ulong Find(const Data &value) const noexcept;
-    ulong FindEmpty(const Data &value) const noexcept;
+    ulong FindEmptyToInsert(const Data &value) const noexcept;
   };
 
   /* ************************************************************************** */

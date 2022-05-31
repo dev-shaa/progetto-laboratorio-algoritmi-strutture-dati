@@ -17,14 +17,22 @@ namespace lasd
     template <typename Data>
     HashTableOpnAdr<Data>::HashTableOpnAdr(ulong size) : HashTable<Data>()
     {
-        size--;
-        size |= size >> 1;
-        size |= size >> 2;
-        size |= size >> 4;
-        size |= size >> 8;
-        size |= size >> 16;
-        size |= size >> 32;
-        size++;
+        if (size < DEFAULT_SIZE)
+        {
+            size = DEFAULT_SIZE;
+        }
+        else
+        {
+            // rounding unsigned long to power of 2
+            size--;
+            size |= size >> 1;
+            size |= size >> 2;
+            size |= size >> 4;
+            size |= size >> 8;
+            size |= size >> 16;
+            size |= size >> 32;
+            size++;
+        }
 
         table.Clear(size);
         state.Clear(size);
@@ -103,10 +111,10 @@ namespace lasd
     template <typename Data>
     bool HashTableOpnAdr<Data>::Insert(const Data &value)
     {
-        if (Size() == table.Size())
-            Resize(2 * Size());
+        if (Size() * 2 >= table.Size())
+            Resize(2 * table.Size());
 
-        ulong position = FindEmpty(value);
+        ulong position = FindEmptyToInsert(value);
 
         if (position != table.Size())
         {
@@ -122,10 +130,10 @@ namespace lasd
     template <typename Data>
     bool HashTableOpnAdr<Data>::Insert(Data &&value)
     {
-        if (Size() == table.Size())
-            Resize(2 * Size());
+        if (Size() * 2 >= table.Size())
+            Resize(2 * table.Size());
 
-        ulong position = FindEmpty(value);
+        ulong position = FindEmptyToInsert(value);
 
         if (position != table.Size())
         {
@@ -230,11 +238,12 @@ namespace lasd
     }
 
     template <typename Data>
-    ulong HashTableOpnAdr<Data>::FindEmpty(const Data &value) const noexcept
+    ulong HashTableOpnAdr<Data>::FindEmptyToInsert(const Data &value) const noexcept
     {
         ulong start = this->HashKey(value, table.Size());
         ulong current, freeSpace;
         bool encounteredFreeSpace = false;
+
         for (ulong i = 0; i < table.Size(); i++)
         {
             current = (start + ((i * i + i) / 2)) % table.Size();
@@ -244,8 +253,7 @@ namespace lasd
 
             if (table[current] == value && state[current] == FULL)
             {
-                // if the value is already in the table, move it to the first available position to speed up future searches
-
+                // we can make a little optimization by moving the value in the first free space, to speed up future searches
                 if (encounteredFreeSpace)
                 {
                     state[current] = REMOVED;
@@ -256,8 +264,7 @@ namespace lasd
                 return table.Size();
             }
 
-            // we found the first free space that was full before
-            // the value may be already in the map further ahead, but in any case save this spot as the place we want to insert
+            // the value may be already in the table further ahead, but in any case remember this spot
             if (state[current] == REMOVED && !encounteredFreeSpace)
             {
                 encounteredFreeSpace = true;

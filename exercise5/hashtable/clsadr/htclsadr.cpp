@@ -2,7 +2,7 @@
 namespace lasd
 {
 
-#define DEFAULT_SIZE 8ul
+#define DEFAULT_SIZE 4ul
 
     template <typename Data>
     HashTableClsAdr<Data>::HashTableClsAdr() : HashTableClsAdr(DEFAULT_SIZE)
@@ -12,7 +12,7 @@ namespace lasd
     template <typename Data>
     HashTableClsAdr<Data>::HashTableClsAdr(ulong size) : HashTable<Data>()
     {
-        table.Clear(size);
+        table.Clear(std::max(1ul, size));
     }
 
     template <typename Data>
