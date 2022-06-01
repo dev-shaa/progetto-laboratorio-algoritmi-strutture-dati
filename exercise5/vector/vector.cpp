@@ -100,7 +100,7 @@ namespace lasd
         }
         else
         {
-            Data *newArray = new Data[size];
+            Data *newArray = new Data[size]{};
             std::copy(array, array + std::min(this->size, size), newArray);
 
             delete[] array;

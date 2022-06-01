@@ -189,7 +189,7 @@ namespace lasd
     template <typename Data>
     inline bool List<Data>::Empty() const noexcept
     {
-        return Size() == 0;
+        return size == 0;
     }
 
     template <typename Data>
