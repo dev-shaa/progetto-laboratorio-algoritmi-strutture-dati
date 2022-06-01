@@ -75,6 +75,13 @@ namespace lasd
     template <typename Data>
     HashTable<Data>::HashTable(HashTable &&other) noexcept
     {
+        std::default_random_engine gen(std::random_device{}());
+        std::uniform_int_distribution<ulong> mulDist(1, PRIME_FACTOR);
+        std::uniform_int_distribution<ulong> addDist(0, PRIME_FACTOR);
+
+        a = mulDist(gen);
+        b = addDist(gen);
+
         std::swap(a, other.a);
         std::swap(b, other.b);
     }
