@@ -7,8 +7,7 @@ namespace lasd
     template <typename Data>
     BST<Data>::BST(const LinearContainer<Data> &container)
     {
-        for (ulong i = 0; i < container.Size(); i++)
-            Insert(container[i]);
+        Insert(container);
     }
 
     template <typename Data>
@@ -221,6 +220,24 @@ namespace lasd
         NodeLnk *detachedNode = Detach(FindPointerTo(root, value));
         delete detachedNode;
         return detachedNode != nullptr;
+    }
+
+    template <typename Data>
+    bool BST<Data>::Insert(const LinearContainer<Data> &container)
+    {
+        return DictionaryContainer<Data>::Insert(container);
+    }
+
+    template <typename Data>
+    bool BST<Data>::Insert(LinearContainer<Data> &&container)
+    {
+        return DictionaryContainer<Data>::Insert(std::move(container));
+    }
+
+    template <typename Data>
+    bool BST<Data>::Remove(const LinearContainer<Data> &container) noexcept
+    {
+        return DictionaryContainer<Data>::Remove(container);
     }
 
     template <typename Data>
