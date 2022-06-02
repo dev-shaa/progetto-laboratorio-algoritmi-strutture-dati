@@ -51,6 +51,10 @@ namespace lasd
     bool Insert(Data &&value) override;
     bool Remove(const Data &value) noexcept override;
 
+    bool Insert(const LinearContainer<Data> &container) override;
+    bool Insert(LinearContainer<Data> &&container) override;
+    bool Remove(const LinearContainer<Data> &container) noexcept override;
+
     /* ************************************************************************ */
 
     bool Exists(const Data &value) const noexcept override;

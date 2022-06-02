@@ -46,7 +46,8 @@ namespace lasd
     template <typename Data>
     HashTableOpnAdr<Data>::HashTableOpnAdr(ulong size, const LinearContainer<Data> &container) : HashTableOpnAdr(std::max(size, container.Size()))
     {
-        DictionaryContainer<Data>::Insert(container);
+        // DictionaryContainer<Data>::Insert(container);
+        Insert(container);
     }
 
     template <typename Data>
@@ -159,6 +160,24 @@ namespace lasd
         }
 
         return false;
+    }
+
+    template <typename Data>
+    bool HashTableOpnAdr<Data>::Insert(const LinearContainer<Data> &container)
+    {
+        return DictionaryContainer<Data>::Insert(container);
+    }
+
+    template <typename Data>
+    bool HashTableOpnAdr<Data>::Insert(LinearContainer<Data> &&container)
+    {
+        return DictionaryContainer<Data>::Insert(std::move(container));
+    }
+
+    template <typename Data>
+    bool HashTableOpnAdr<Data>::Remove(const LinearContainer<Data> &container) noexcept
+    {
+        return DictionaryContainer<Data>::Remove(container);
     }
 
     template <typename Data>

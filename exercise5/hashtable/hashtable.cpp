@@ -3,7 +3,7 @@
 namespace lasd
 {
 
-#define FRACTIONAL_BIT 16777216ul
+#define POW_2_27 16777216ul
 #define PRIME_FACTOR 4294967291ul // biggest prime smaller than 2^32 according to this site: https://bit.ly/3wVgCzL
 
     /* ************************************************************************** */
@@ -15,7 +15,7 @@ namespace lasd
     public:
         ulong operator()(const int &value) const noexcept
         {
-            return value * value; // idk
+            return value * value;
         }
     };
 
@@ -26,11 +26,8 @@ namespace lasd
     public:
         ulong operator()(const double &value) const noexcept
         {
-            // todo: impl
-            // https://youtu.be/jSbsbKnYFJA?t=3169
-
             long intPart = floor(value);
-            long fracPart = FRACTIONAL_BIT * (value - intPart);
+            long fracPart = POW_2_27 * (value - intPart);
             return intPart * fracPart;
         }
     };
@@ -42,8 +39,7 @@ namespace lasd
     public:
         ulong operator()(const std::string &value) const noexcept
         {
-            // hashing function: djb2
-            // https://bit.ly/3wSH7Wz
+            // djb2: http://www.cse.yorku.ca/~oz/hash.html
 
             unsigned long hash = 5381;
 
@@ -143,5 +139,6 @@ namespace lasd
     /* ************************************************************************** */
 
 #undef PRIME_FACTOR
+#undef FRACTIONAL_BIT
 
 }

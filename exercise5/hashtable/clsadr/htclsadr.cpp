@@ -23,7 +23,7 @@ namespace lasd
     template <typename Data>
     HashTableClsAdr<Data>::HashTableClsAdr(ulong size, const LinearContainer<Data> &container) : HashTableClsAdr(size)
     {
-        DictionaryContainer<Data>::Insert(container);
+        Insert(container);
     }
 
     template <typename Data>
@@ -109,6 +109,24 @@ namespace lasd
             size--;
 
         return removed;
+    }
+
+    template <typename Data>
+    bool HashTableClsAdr<Data>::Insert(const LinearContainer<Data> &container)
+    {
+        return DictionaryContainer<Data>::Insert(container);
+    }
+
+    template <typename Data>
+    bool HashTableClsAdr<Data>::Insert(LinearContainer<Data> &&container)
+    {
+        return DictionaryContainer<Data>::Insert(std::move(container));
+    }
+
+    template <typename Data>
+    bool HashTableClsAdr<Data>::Remove(const LinearContainer<Data> &container) noexcept
+    {
+        return DictionaryContainer<Data>::Remove(container);
     }
 
     template <typename Data>
