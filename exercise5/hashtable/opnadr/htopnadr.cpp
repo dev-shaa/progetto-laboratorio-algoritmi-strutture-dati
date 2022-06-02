@@ -17,7 +17,7 @@ namespace lasd
     template <typename Data>
     HashTableOpnAdr<Data>::HashTableOpnAdr(ulong size) : HashTable<Data>()
     {
-        if (size < DEFAULT_SIZE)
+        if (size <= DEFAULT_SIZE)
         {
             size = DEFAULT_SIZE;
         }
@@ -46,7 +46,6 @@ namespace lasd
     template <typename Data>
     HashTableOpnAdr<Data>::HashTableOpnAdr(ulong size, const LinearContainer<Data> &container) : HashTableOpnAdr(std::max(size, container.Size()))
     {
-        // DictionaryContainer<Data>::Insert(container);
         Insert(container);
     }
 
@@ -112,9 +111,6 @@ namespace lasd
     template <typename Data>
     bool HashTableOpnAdr<Data>::Insert(const Data &value)
     {
-        if (Size() * 2 >= table.Size())
-            Resize(2 * table.Size());
-
         ulong position = FindEmptyToInsert(value);
 
         if (position != table.Size())
@@ -131,9 +127,6 @@ namespace lasd
     template <typename Data>
     bool HashTableOpnAdr<Data>::Insert(Data &&value)
     {
-        if (Size() * 2 >= table.Size())
-            Resize(2 * table.Size());
-
         ulong position = FindEmptyToInsert(value);
 
         if (position != table.Size())
@@ -259,6 +252,9 @@ namespace lasd
     template <typename Data>
     ulong HashTableOpnAdr<Data>::FindEmptyToInsert(const Data &value) const noexcept
     {
+        if (Size() * 2 >= table.Size())
+            Resize(2 * table.Size());
+
         ulong start = this->HashKey(value, table.Size());
         ulong current, freeSpace;
         bool encounteredFreeSpace = false;
